@@ -1,14 +1,10 @@
 export interface EventType {
-    id: string;
-    nameKey: string;
-    durationKey: string;
-    priceKey: string;
-    descriptionKey: string;
-    duration: number; // duration in minutes
-    price: number;
-    isPackage: boolean;
-    sessionsCount?: number;
-  }
+  id: string;
+  name: string;
+  duration: string;
+  price: string;
+  description: string;
+}
   
   export interface TimeSlot {
     time: string; // Format: HH:MM

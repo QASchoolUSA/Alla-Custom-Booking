@@ -3,6 +3,8 @@
 import React, { useState, useEffect, JSX } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
+import { SelectedEvent } from '@/types/bookings';
+
 
 // Type for the busy slots received from your API
 interface BusySlotData {
@@ -16,6 +18,11 @@ interface AvailableSlot {
     value: Date;      // Actual Date object for booking or further processing
 }
 
+interface BookingCalendarProps {
+    event: SelectedEvent;
+    onDateTimeSelected: (dateTime: Date) => void;
+  }
+
 // Helper to format Date to YYYY-MM-DD string
 const formatDateToYYYYMMDD = (date: Date | undefined): string => {
     if (!date) return '';
@@ -25,12 +32,16 @@ const formatDateToYYYYMMDD = (date: Date | undefined): string => {
     return `${year}-${month}-${day}`;
 };
 
-export default function BookingCalendar(): JSX.Element {
+const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSelected }) => {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
     const [busySlots, setBusySlots] = useState<BusySlotData[]>([]);
     const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+
+    const handleDateTimeSelected = (dateTime: Date): void => {
+        onDateTimeSelected(dateTime);
+    };
 
     useEffect(() => {
         if (selectedDate) {
@@ -137,7 +148,7 @@ export default function BookingCalendar(): JSX.Element {
                                 <Button
                                     key={slot.start}
                                     variant="outline"
-                                    onClick={() => alert(`Slot selected: ${slot.start} on ${selectedDate?.toLocaleDateString()}`)}
+                                    onClick={() => handleDateTimeSelected(slot.value)}
                                     className="w-full"
                                 >
                                     {slot.start}
@@ -150,3 +161,5 @@ export default function BookingCalendar(): JSX.Element {
         </div>
     );
 }
+
+export default BookingCalendar;

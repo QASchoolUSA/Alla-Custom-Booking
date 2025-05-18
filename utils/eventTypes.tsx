@@ -1,58 +1,41 @@
 import { EventType } from '../types';
 
-// Service data with translation keys
+// Service data with direct values
 export const events: EventType[] = [
   {
     id: 'initial-meeting',
-    nameKey: 'events.eventList.initialMeeting.name',
-    durationKey: 'events.eventList.initialMeeting.duration',
-    priceKey: 'events.eventList.initialMeeting.price',
-    descriptionKey: 'events.eventList.initialMeeting.description',
-    duration: 60, // 1 hour in minutes
-    price: 50,
-    isPackage: false
+    name: 'Initial Meeting',
+    duration: '1 hour',
+    price: '50',
+    description: 'A first introduction and discussion of your needs.'
   },
   {
     id: 'consultation-session',
-    nameKey: 'events.eventList.consultationSession.name',
-    durationKey: 'events.eventList.consultationSession.duration',
-    priceKey: 'events.eventList.consultationSession.price',
-    descriptionKey: 'events.eventList.consultationSession.description',
-    duration: 120, // 2 hours in minutes
-    price: 100,
-    isPackage: false
+    name: 'Consultation Session',
+    duration: '2 hours',
+    price: '100',
+    description: 'A deep-dive consultation session.'
   },
   {
     id: 'therapy-session',
-    nameKey: 'events.eventList.therapySession.name',
-    durationKey: 'events.eventList.therapySession.duration',
-    priceKey: 'events.eventList.therapySession.price',
-    descriptionKey: 'events.eventList.therapySession.description',
-    duration: 120, // 2 hours in minutes
-    price: 150,
-    isPackage: false
+    name: 'Therapy Session',
+    duration: '2 hours',
+    price: '150',
+    description: 'A full therapy session.'
   },
   {
     id: 'package-5',
-    nameKey: 'events.eventList.package5.name',
-    durationKey: 'events.eventList.package5.duration',
-    priceKey: 'events.eventList.package5.price',
-    descriptionKey: 'events.eventList.package5.description',
-    duration: 120, // 2 hours in minutes
-    price: 650,
-    isPackage: true,
-    sessionsCount: 5
+    name: '5 Session Package',
+    duration: '2 hours each',
+    price: '650',
+    description: 'A package of 5 therapy sessions.'
   },
   {
     id: 'package-10',
-    nameKey: 'events.eventList.package10.name',
-    durationKey: 'events.eventList.package10.duration',
-    priceKey: 'events.eventList.package10.price',
-    descriptionKey: 'events.eventList.package10.description',
-    duration: 120, // 2 hours in minutes
-    price: 1250,
-    isPackage: true,
-    sessionsCount: 10
+    name: '10 Session Package',
+    duration: '2 hours each',
+    price: '1250',
+    description: 'A package of 10 therapy sessions.'
   }
 ];
 

@@ -3,17 +3,48 @@
 import React, { useState } from "react";
 import BookingCalendar from "@/components/BookingCalendar";
 import EventSelection from "@/components/EventSelection";
+import StripePayment from "@/components/StripePayment";
+import { SelectedEvent } from "@/types/bookings";
 
 export default function BookingPage() {
-  const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
-  const [step, setStep] = useState<"select-event" | "calendar">("select-event");
+  const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
+  const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
+  const [step, setStep] = useState<"select-event" | "calendar" | "payment">("select-event");
+  const [paymentStatus, setPaymentStatus] = useState<"pending" | "success" | "error">("pending");
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const handleSelectEvent = (eventID: string) => {
-    setSelectedEvent(eventID);
+    console.log("BookingPage: handleSelectEvent called with eventID:", eventID); // DEBUG
+    // Find the event object based on ID or create a simple one for now
+    const event: SelectedEvent = {
+      id: eventID,
+      name: "Selected Service", // This would ideally come from your events data
+      price: 9900, // $99.00 in cents
+    };
+    setSelectedEvent(event);
   };
 
   const handleContinue = () => {
     setStep("calendar");
+  };
+
+  const handleDateTimeSelected = (dateTime: Date) => {
+    console.log("Selected date and time:", dateTime);
+    setSelectedDateTime(dateTime);
+    setStep("payment");
+  };
+
+  const handlePaymentSuccess = (paymentIntentId: string) => {
+    console.log("Payment successful with ID:", paymentIntentId);
+    setPaymentStatus("success");
+    // Here you would typically save the booking to your database
+    // and maybe redirect to a confirmation page
+  };
+
+  const handlePaymentError = (errorMessage: string) => {
+    console.error("Payment error:", errorMessage);
+    setPaymentStatus("error");
+    setPaymentError(errorMessage);
   };
 
   return (
@@ -22,15 +53,92 @@ export default function BookingPage() {
         <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-primary-700">
           Book Your Appointment
         </h1>
+        
         {step === "select-event" && (
           <EventSelection
-            selectedEvent={selectedEvent}
-            onSelectService={handleSelectEvent}
+            selectedEvent={selectedEvent ? selectedEvent.id : null}
+            onSelectEvent={handleSelectEvent}
             onContinue={handleContinue}
           />
         )}
+        
         {step === "calendar" && (
-          <BookingCalendar />
+          <div>
+            <BookingCalendar 
+              event={selectedEvent!}
+              onDateTimeSelected={handleDateTimeSelected}
+            />
+            <div className="mt-4">
+              <button 
+                onClick={() => setStep("select-event")}
+                className="text-primary-600 hover:text-primary-800"
+              >
+                ← Back to service selection
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {step === "payment" && selectedEvent && (
+          <div className="space-y-6">
+            <div className="bg-neutral-100 p-4 rounded-lg">
+              <h2 className="text-xl font-semibold mb-2">Booking Summary</h2>
+              <p><strong>Service:</strong> {selectedEvent.name}</p>
+              <p><strong>Date/Time:</strong> {selectedDateTime?.toLocaleString()}</p>
+              <p><strong>Price:</strong> ${(selectedEvent.price / 100).toFixed(2)}</p>
+            </div>
+            
+            {paymentStatus === "pending" && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Payment Details</h2>
+                <StripePayment 
+                  amount={selectedEvent.price}
+                  onPaymentSuccess={handlePaymentSuccess}
+                  onPaymentError={handlePaymentError}
+                />
+                <div className="mt-4">
+                  <button 
+                    onClick={() => setStep("calendar")}
+                    className="text-primary-600 hover:text-primary-800"
+                  >
+                    ← Back to calendar
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {paymentStatus === "success" && (
+              <div className="text-center p-6 bg-green-100 rounded-lg">
+                <h2 className="text-2xl font-bold text-green-700 mb-2">Payment Successful!</h2>
+                <p className="mb-4">Your appointment has been booked.</p>
+                <button 
+                  onClick={() => {
+                    // Reset the form for a new booking
+                    setSelectedEvent(null);
+                    setSelectedDateTime(null);
+                    setStep("select-event");
+                    setPaymentStatus("pending");
+                  }}
+                  className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700"
+                >
+                  Book Another Appointment
+                </button>
+              </div>
+            )}
+            
+            {paymentStatus === "error" && (
+              <div className="text-center p-6 bg-red-100 rounded-lg">
+                <h2 className="text-2xl font-bold text-red-700 mb-2">Payment Failed</h2>
+                <p className="mb-4">{paymentError || "There was an error processing your payment."}</p>
+                <button 
+                  onClick={() => setPaymentStatus("pending")}
+                  className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
