@@ -40,6 +40,6 @@ export const events: EventType[] = [
 ];
 
 // Helper function to get service by ID
-export const getServiceById = (id: string): EventType | undefined => {
+export const getEventById = (id: string): EventType | undefined => {
   return events.find(event => event.id === id);
 };

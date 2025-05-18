@@ -5,6 +5,7 @@ import BookingCalendar from "@/components/BookingCalendar";
 import EventSelection from "@/components/EventSelection";
 import StripePayment from "@/components/StripePayment";
 import { SelectedEvent } from "@/types/bookings";
+import { getEventById } from "@/utils/eventTypes";
 
 export default function BookingPage() {
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
@@ -14,14 +15,19 @@ export default function BookingPage() {
   const [paymentError, setPaymentError] = useState<string | null>(null);
 
   const handleSelectEvent = (eventID: string) => {
-    console.log("BookingPage: handleSelectEvent called with eventID:", eventID); // DEBUG
     // Find the event object based on ID or create a simple one for now
-    const event: SelectedEvent = {
-      id: eventID,
-      name: "Selected Service", // This would ideally come from your events data
-      price: 9900, // $99.00 in cents
-    };
-    setSelectedEvent(event);
+    const eventData = getEventById(eventID);
+    if (eventData) {
+      const priceInCents = parseInt(eventData.price) * 100;
+
+      const event: SelectedEvent = {
+        id: eventID,
+        name: eventData.name,
+        price: priceInCents,
+        duration: eventData.duration,
+      };
+      setSelectedEvent(event);
+    }
   };
 
   const handleContinue = () => {

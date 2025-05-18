@@ -5,7 +5,7 @@ export interface SelectedEvent {
   id: string;
   name: string;
   price: number; // Assuming price is a number
-  duration?: number; // Example: duration in minutes
+  duration?: string; // Example: duration in minutes
   // Add other event properties as needed
 }
 
