@@ -55,7 +55,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         setError(null);
         setAvailableSlots([]);
         try {
-            const response = await fetch(`/api/google-calendar-availability?date=${dateString}`);
+            const response = await fetch(`/api/calendar-availability?date=${dateString}`);
             if (!response.ok) {
                 const errorData: { message?: string } = await response.json();
                 throw new Error(errorData.message || `Error: ${response.status}`);
@@ -79,9 +79,9 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     }, [busySlots, isLoading, selectedDate]);
 
     const generateAvailableTimeSlots = (date: Date, currentBusySlots: BusySlotData[]): void => {
-        const dayStartHour = 9; // 9 AM
-        const dayEndHour = 17;  // 5 PM
-        const slotDurationMinutes = 30;
+        const dayStartHour = process.env.START_TIME ? parseInt(process.env.START_TIME, 10) : 9;
+        const dayEndHour = process.env.END_TIME? parseInt(process.env.END_TIME, 10) : 18;
+        const slotDurationMinutes = process.env.SLOT_DURATION? parseInt(process.env.SLOT_DURATION, 10) : 60;
         const generatedSlots: AvailableSlot[] = [];
 
         // Create date objects in the user's local timezone for display logic
