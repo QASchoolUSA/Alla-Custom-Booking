@@ -13,6 +13,7 @@ export default function BookingPage() {
   const [step, setStep] = useState<"select-event" | "calendar" | "payment">("select-event");
   const [paymentStatus, setPaymentStatus] = useState<"pending" | "success" | "error">("pending");
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [calendarEventLink, setCalendarEventLink] = useState<string | null>(null);
 
   const handleSelectEvent = (eventID: string) => {
     // Find the event object based on ID or create a simple one for now
@@ -40,11 +41,48 @@ export default function BookingPage() {
     setStep("payment");
   };
 
-  const handlePaymentSuccess = (paymentIntentId: string) => {
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
     console.log("Payment successful with ID:", paymentIntentId);
     setPaymentStatus("success");
     // Here you would typically save the booking to your database
     // and maybe redirect to a confirmation page
+    // Only proceed if we have all the necessary data
+    if (selectedEvent && selectedDateTime) {
+      try {
+        // Calculate end time based on duration (assuming duration is in format like "2 hours")
+        const durationMatch = selectedEvent.duration?.match(/(\d+)\s*hour/i);
+        const durationHours = durationMatch ? parseInt(durationMatch[1]) : 1; // Default to 1 hour
+
+        const endDateTime = new Date(selectedDateTime);
+        endDateTime.setHours(endDateTime.getHours() + durationHours);
+
+        // Add event to Google Calendar
+        const response = await fetch('/api/add-to-calendar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            eventName: selectedEvent.name,
+            startTime: selectedDateTime.toISOString(),
+            endTime: endDateTime.toISOString(),
+            // You can add customer details here if you collect them
+            // customerName: customerName,
+            // customerEmail: customerEmail,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.htmlLink) {
+          setCalendarEventLink(data.htmlLink);
+        } else {
+          console.error('Failed to add event to calendar:', data.error);
+        }
+      } catch (error) {
+        console.error('Error adding event to calendar:', error);
+      }
+    }
   };
 
   const handlePaymentError = (errorMessage: string) => {
@@ -124,6 +162,7 @@ export default function BookingPage() {
                     setSelectedDateTime(null);
                     setStep("select-event");
                     setPaymentStatus("pending");
+                    setCalendarEventLink(null);
                   }}
                   className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700"
                 >
