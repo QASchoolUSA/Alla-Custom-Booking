@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+**DEV ENV** - https://alla-custom-booking-git-develop-kedrov.vercel.app/
+
+**PROD ENV** - https://alla-custom-booking.vercel.app/
 
 ## Getting Started
 
