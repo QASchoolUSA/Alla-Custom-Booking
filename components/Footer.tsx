@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Heart, Facebook, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
 
 export default function Footer() {
 
@@ -14,39 +14,39 @@ export default function Footer() {
               Alla Sidor
             </Link>
             <p className="text-neutral-400 mt-4">
-              "Bio"
+              Bio
             </p>
           </div>
 
           {/* Column 2: Quick Links */}
           <div>
             <h4 className="text-lg font-medium mb-4 border-b border-neutral-700 pb-2">
-              "Home"
+              Home
             </h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  "Home"
+                  Home
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  "About"
+                  About
                 </Link>
               </li>
               <li>
                 <Link href="/services" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  "Services"
+                  Services
                 </Link>
               </li>
               <li>
                 <Link href="/booking" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  "Booking"
+                  Booking
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  "Contact"
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -72,7 +72,7 @@ export default function Footer() {
               </li>
               <li>
                 <h5 className="text-sm uppercase tracking-wider text-neutral-500 mb-2">
-                  "Social Media"
+                  Social Media
                 </h5>
                 <div className="flex space-x-4 mt-2">
                   <a 
@@ -118,7 +118,7 @@ export default function Footer() {
               Privacy Policy
             </Link>
             <Link href="/terms" className="text-neutral-500 hover:text-white text-sm transition-colors duration-200">
-              "Terms of Service"
+              Terms of Service
             </Link>
           </div>
         </div>

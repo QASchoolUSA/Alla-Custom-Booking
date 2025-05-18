@@ -155,6 +155,20 @@ export default function BookingPage() {
               <div className="text-center p-6 bg-green-100 rounded-lg">
                 <h2 className="text-2xl font-bold text-green-700 mb-2">Payment Successful!</h2>
                 <p className="mb-4">Your appointment has been booked.</p>
+                
+                {calendarEventLink && (
+                  <div className="mb-4">
+                    <a 
+                      href={calendarEventLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                      View in Google Calendar
+                    </a>
+                  </div>
+                )}
+                
                 <button 
                   onClick={() => {
                     // Reset the form for a new booking

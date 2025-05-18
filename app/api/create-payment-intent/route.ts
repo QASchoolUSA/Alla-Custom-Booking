@@ -4,6 +4,13 @@ import Stripe from 'stripe';
 // Initialize Stripe with your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
+interface StripeError extends Error {
+  type?: string;
+  code?: string;
+  param?: string;
+  statusCode?: number;
+}
+
 export async function POST(request: Request) {
   try {
     const { amount, currency = 'usd' } = await request.json();
@@ -24,8 +31,9 @@ export async function POST(request: Request) {
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const stripeError = error as StripeError;
     console.error('Error creating payment intent:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: stripeError.message }, { status: 500 });
   }
 }

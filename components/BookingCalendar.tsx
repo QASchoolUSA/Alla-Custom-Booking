@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, JSX } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { SelectedEvent } from '@/types/bookings';
@@ -21,7 +21,7 @@ interface AvailableSlot {
 interface BookingCalendarProps {
     event: SelectedEvent;
     onDateTimeSelected: (dateTime: Date) => void;
-  }
+}
 
 // Helper to format Date to YYYY-MM-DD string
 const formatDateToYYYYMMDD = (date: Date | undefined): string => {
@@ -38,6 +38,11 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Use the event prop to display event information
+    useEffect(() => {
+        console.log(`Booking calendar loaded for event: ${event.name}`);
+    }, [event]);
 
     const handleDateTimeSelected = (dateTime: Date): void => {
         onDateTimeSelected(dateTime);
@@ -62,9 +67,10 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
             }
             const data: { busySlots?: BusySlotData[] } = await response.json();
             setBusySlots(data.busySlots || []);
-        } catch (err: any) {
-            console.error("Failed to fetch availability:", err);
-            setError(err.message as string);
+        } catch (err: unknown) {
+            const error = err as Error;
+            console.error("Failed to fetch availability:", error);
+            setError(error.message);
         } finally {
             setIsLoading(false);
         }
