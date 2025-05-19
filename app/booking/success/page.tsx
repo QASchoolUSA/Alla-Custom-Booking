@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
+import Link from 'next/link';
 
-export default function SuccessPage() {
+// Create a client component that uses useSearchParams
+function SuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -65,7 +67,8 @@ export default function SuccessPage() {
           setStatus('error');
           setMessage(data.message || 'Payment verification failed');
         }
-      } catch (error) {
+      } catch (err) {
+        console.error('Error verifying payment:', err);
         setStatus('error');
         setMessage('An error occurred while verifying your payment');
       }
@@ -106,9 +109,9 @@ export default function SuccessPage() {
             )}
             
             <div className="mt-6">
-              <a href="/" className="text-primary-600 hover:text-primary-800 font-medium">
+              <Link href="/" className="text-primary-600 hover:text-primary-800 font-medium">
                 Return to Home
-              </a>
+              </Link>
             </div>
           </div>
         )}
@@ -116,20 +119,36 @@ export default function SuccessPage() {
         {status === 'error' && (
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-              <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <XCircle className="h-8 w-8 text-red-600" />
             </div>
             <h2 className="mt-6 text-2xl font-bold text-gray-900">Payment Verification Failed</h2>
-            <p className="mt-2 text-red-600">{message}</p>
+            <p className="mt-2 text-gray-600">{message}</p>
             <div className="mt-6">
-              <a href="/booking" className="text-primary-600 hover:text-primary-800 font-medium">
-                Try Again
-              </a>
+              <Link href="/" className="text-primary-600 hover:text-primary-800 font-medium">
+                Return to Home
+              </Link>
             </div>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+            <h2 className="mt-6 text-xl font-semibold text-gray-900">Loading...</h2>
+          </div>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }
