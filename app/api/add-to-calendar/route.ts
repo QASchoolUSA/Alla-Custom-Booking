@@ -17,12 +17,33 @@ const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
 export async function POST(request: Request) {
   try {
-    const { eventName, startTime, endTime, customerName, customerEmail } = await request.json();
+    const requestData = await request.json();
+    console.log('Calendar event request data:', requestData);
     
-    // Validate required fields
-    if (!eventName || !startTime || !endTime) {
+    const { eventName, startTime, endTime, customerName, customerEmail, customerPhone } = requestData;
+    
+    // More detailed validation with specific error messages
+    const missingFields = [];
+    if (!eventName) missingFields.push('eventName');
+    if (!startTime) missingFields.push('startTime');
+    if (!endTime) missingFields.push('endTime');
+    
+    if (missingFields.length > 0) {
+      console.error(`Missing required fields for calendar event: ${missingFields.join(', ')}`);
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { success: false, error: `Missing required fields: ${missingFields.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    // Validate date formats
+    try {
+      new Date(startTime).toISOString();
+      new Date(endTime).toISOString();
+    } catch (e) {
+      console.error('Invalid date format:', e);
+      return NextResponse.json(
+        { success: false, error: 'Invalid date format for startTime or endTime. Must be valid dates.' },
         { status: 400 }
       );
     }
@@ -34,7 +55,7 @@ export async function POST(request: Request) {
     // Create event object for Google Calendar
     const event = {
       summary: `${eventName} - ${customerName || 'Customer'}`,
-      description: `Booking for ${eventName}\nCustomer: ${customerName || 'N/A'}\nEmail: ${customerEmail || 'N/A'}`,
+      description: `Booking for ${eventName}\nCustomer: ${customerName || 'N/A'}\nEmail: ${customerEmail || 'N/A'}\nPhone: ${customerPhone || 'N/A'}`,
       start: {
         dateTime: startDateTime,
         timeZone: 'UTC', // Adjust to your timezone
@@ -47,12 +68,26 @@ export async function POST(request: Request) {
       reminders: {
         useDefault: true,
       },
+      // Add customer as an attendee if email is provided
+      ...(customerEmail ? {
+        attendees: [
+          { email: customerEmail, displayName: customerName }
+        ]
+      } : {})
     };
+
+    // Log the event being created
+    console.log('Creating calendar event:', {
+      summary: event.summary,
+      start: startDateTime,
+      end: endDateTime
+    });
 
     // Add event to Google Calendar
     const response = await calendar.events.insert({
       calendarId: process.env.GOOGLE_CALENDAR_ID!,
       requestBody: event,
+      sendUpdates: 'all', // Send email notifications to attendees
     });
 
     return NextResponse.json({ 
@@ -63,7 +98,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error adding event to Google Calendar:', error);
     return NextResponse.json(
-      { error: 'Failed to add event to Google Calendar' },
+      { success: false, error: 'Failed to add event to Google Calendar', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

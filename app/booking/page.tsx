@@ -1,16 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
-import BookingCalendar from "@/components/BookingCalendar";
-import EventSelection from "@/components/EventSelection";
-import StripePayment from "@/components/StripePayment";
+import BookingCalendar from "@/components/Booking/BookingCalendar";
+import EventSelection from "@/components/Booking/EventSelection";
+import StripeCheckout from "@/components/Booking/StripeCheckout";
+import ClientInfo from "@/components/Booking/ClientInfo";
 import { SelectedEvent } from "@/types/bookings";
 import { getEventById } from "@/utils/eventTypes";
 
 export default function BookingPage() {
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
-  const [step, setStep] = useState<"select-event" | "calendar" | "payment">("select-event");
+  const [step, setStep] = useState<"select-event" | "calendar" | "client-info" | "payment">("select-event");
+
+  const [clientData, setClientData] = useState<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  } | null>(null);
+  
   const [paymentStatus, setPaymentStatus] = useState<"pending" | "success" | "error">("pending");
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [calendarEventLink, setCalendarEventLink] = useState<string | null>(null);
@@ -38,6 +47,17 @@ export default function BookingPage() {
   const handleDateTimeSelected = (dateTime: Date) => {
     console.log("Selected date and time:", dateTime);
     setSelectedDateTime(dateTime);
+    setStep("client-info");
+  };
+  
+  const handleClientInfoSubmit = (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  }) => {
+    console.log("Client info submitted:", data);
+    setClientData(data);
     setStep("payment");
   };
 
@@ -47,7 +67,7 @@ export default function BookingPage() {
     // Here you would typically save the booking to your database
     // and maybe redirect to a confirmation page
     // Only proceed if we have all the necessary data
-    if (selectedEvent && selectedDateTime) {
+    if (selectedEvent && selectedDateTime && clientData) {
       try {
         // Calculate end time based on duration (assuming duration is in format like "2 hours")
         const durationMatch = selectedEvent.duration?.match(/(\d+)\s*hour/i);
@@ -66,9 +86,10 @@ export default function BookingPage() {
             eventName: selectedEvent.name,
             startTime: selectedDateTime.toISOString(),
             endTime: endDateTime.toISOString(),
-            // You can add customer details here if you collect them
-            // customerName: customerName,
-            // customerEmail: customerEmail,
+            // Now we can add customer details
+            customerName: `${clientData.firstName} ${clientData.lastName}`,
+            customerEmail: clientData.email,
+            customerPhone: clientData.phone
           }),
         });
 
@@ -94,9 +115,10 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-neutral-50 flex flex-col items-center py-8 px-2 md:px-6">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-4 md:p-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-primary-700">
+
+        {/* <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-primary-700">
           Book Your Appointment
-        </h1>
+        </h1> */}
         
         {step === "select-event" && (
           <EventSelection
@@ -123,29 +145,60 @@ export default function BookingPage() {
           </div>
         )}
         
+        {step === "client-info" && (
+          <div>
+            <ClientInfo onSubmit={handleClientInfoSubmit} />
+            <div className="mt-4">
+              <button 
+                onClick={() => setStep("calendar")}
+                className="text-primary-600 hover:text-primary-800"
+              >
+                ← Back to calendar
+              </button>
+            </div>
+          </div>
+        )}
+        
         {step === "payment" && selectedEvent && (
           <div className="space-y-6">
             <div className="bg-neutral-100 p-4 rounded-lg">
               <h2 className="text-xl font-semibold mb-2">Booking Summary</h2>
               <p><strong>Service:</strong> {selectedEvent.name}</p>
               <p><strong>Date/Time:</strong> {selectedDateTime?.toLocaleString()}</p>
+              {clientData && (
+                <>
+                  <p><strong>Name:</strong> {clientData.firstName} {clientData.lastName}</p>
+                  <p><strong>Email:</strong> {clientData.email}</p>
+                  <p><strong>Phone:</strong> {clientData.phone}</p>
+                </>
+              )}
               <p><strong>Price:</strong> ${(selectedEvent.price / 100).toFixed(2)}</p>
             </div>
             
             {paymentStatus === "pending" && (
               <div>
                 <h2 className="text-xl font-semibold mb-4">Payment Details</h2>
-                <StripePayment 
+                <StripeCheckout 
                   amount={selectedEvent.price}
+                  eventName={selectedEvent.name}
+                  customerName={clientData ? `${clientData.firstName} ${clientData.lastName}` : undefined}
+                  customerEmail={clientData?.email}
+                  customerPhone={clientData?.phone}
+                  appointmentDate={selectedDateTime ? selectedDateTime.toLocaleString() : undefined}
+                  startTime={selectedDateTime ? selectedDateTime.toISOString() : undefined}
+                  endTime={selectedDateTime && selectedEvent.duration ? 
+                    new Date(selectedDateTime.getTime() + (typeof selectedEvent.duration === 'number' ? 
+                      selectedEvent.duration : 60) * 60000).toISOString() 
+                    : undefined}
                   onPaymentSuccess={handlePaymentSuccess}
                   onPaymentError={handlePaymentError}
                 />
                 <div className="mt-4">
                   <button 
-                    onClick={() => setStep("calendar")}
+                    onClick={() => setStep("client-info")}
                     className="text-primary-600 hover:text-primary-800"
                   >
-                    ← Back to calendar
+                    ← Back to your information
                   </button>
                 </div>
               </div>

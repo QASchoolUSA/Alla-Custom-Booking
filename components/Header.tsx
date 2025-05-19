@@ -49,7 +49,9 @@ export default function Header() {
         >
           <div className="container mx-auto px-4 flex justify-between items-center">
             {/* Logo */}
-            <Link href="/" className="text-2xl font-semibold text-primary-600 flex items-center">
+            <Link href="/" className={`text-2xl font-semibold flex items-center ${
+              isScrolled ? 'text-neutral-800' : 'text-white'
+            }`}>
               <span className="ml-2">Alla Sidor</span>
             </Link>
     
@@ -61,10 +63,10 @@ export default function Header() {
                   href={link.path}
                   className={`font-medium transition-colors duration-200 hover:text-primary-600 ${
                     pathname === link.path
-                      ? 'text-primary-600'
+                      ? isScrolled ? 'text-primary-600' : 'text-primary-400 font-bold'
                       : isScrolled
                         ? 'text-neutral-800'
-                        : 'text-neutral-800'
+                        : 'text-white'
                   }`}
                 >
                   {link.label}
@@ -93,7 +95,9 @@ export default function Header() {
               </button> */}
               <button 
                 onClick={toggleMenu}
-                className="text-neutral-700 hover:text-primary-600 transition-colors duration-200"
+                className={`transition-colors duration-200 ${
+                  isScrolled ? 'text-neutral-700' : 'text-white'
+                } hover:text-primary-600`}
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}

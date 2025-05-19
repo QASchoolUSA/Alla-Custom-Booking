@@ -127,41 +127,54 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     };
 
     return (
-        <div className="flex flex-col items-center gap-8 p-4 sm:p-6 md:p-8">
-            <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl">
-                <div className="flex-1 bg-white rounded-lg shadow p-4 md:p-6">
-                    <h2 className="text-xl font-semibold mb-4 text-primary-700">Select a Date</h2>
-                    <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        className="rounded-md border"
-                        disabled={(date: Date) => date < new Date(new Date().setDate(new Date().getDate() -1))}
-                    />
+        <div className="flex flex-col items-center p-4 sm:p-6 md:p-8 w-full">
+            <div className="flex flex-col w-full max-w-4xl mx-auto">
+                {/* Calendar Section - Always on top for mobile */}
+                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6 mb-3">
+                    <h2 className="text-xl font-semibold mb-4 text-primary-700 text-center">Select a Date</h2>
+                    <div className="flex justify-center">
+                        <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
+                            className="rounded-md border mx-auto"
+                            disabled={(date: Date) => date < new Date(new Date().setDate(new Date().getDate() -1))}
+                        />
+                    </div>
                 </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 md:p-6 mt-6 md:mt-0">
-                    <h2 className="text-xl font-semibold mb-4 text-primary-700">
-                        Available Slots for {selectedDate ? selectedDate.toLocaleDateString() : 'N/A'}
-                    </h2>
-                    {isLoading && <p className="text-neutral-500">Loading availability...</p>}
-                    {error && <p className="text-red-600">Error: {error}</p>}
-                    {!isLoading && !error && availableSlots.length === 0 && selectedDate && (
-                        <p className="text-neutral-500">No available slots for this day or outside working hours.</p>
-                    )}
+                
+                {/* Available Slots Section - Below calendar on mobile */}
+                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6">
+                    {/* Removed the "Available Slots for" header */}
+                    
+                    <div className="text-center">
+                        {isLoading && <p className="text-neutral-500">Loading availability...</p>}
+                        {error && <p className="text-red-600">Error: {error}</p>}
+                        {!isLoading && !error && availableSlots.length === 0 && selectedDate && (
+                            <p className="text-neutral-500">No available slots for this day or outside working hours.</p>
+                        )}
+                    </div>
+                    
                     {!isLoading && !error && availableSlots.length > 0 && (
-                        <div className="flex flex-col gap-2 max-h-72 overflow-y-auto">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-72 overflow-y-auto p-2">
                             {availableSlots.map((slot) => (
                                 <Button
                                     key={slot.start}
                                     variant="outline"
                                     onClick={() => handleDateTimeSelected(slot.value)}
-                                    className="w-full"
+                                    className="w-full hover:bg-primary-50 hover:text-primary-700 transition-colors"
                                 >
                                     {slot.start}
                                 </Button>
                             ))}
                         </div>
                     )}
+                </div>
+                
+                {/* Desktop layout - side by side */}
+                <div className="hidden md:flex md:flex-row md:gap-8 w-full mt-6">
+                    {/* This is just a placeholder for desktop layout structure */}
+                    {/* The actual content is rendered in the sections above */}
                 </div>
             </div>
         </div>
