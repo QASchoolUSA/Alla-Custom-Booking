@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
-
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const pathname = usePathname();
   
     useEffect(() => {
       const handleScroll = () => {
@@ -25,7 +26,7 @@ export default function Header() {
     // Close menu when route changes
     useEffect(() => {
       setIsOpen(false);
-    }, [location.pathname]);
+    }, [pathname]);
   
     // Navigation links
     const navigationLinks = [
@@ -48,7 +49,9 @@ export default function Header() {
         >
           <div className="container mx-auto px-4 flex justify-between items-center">
             {/* Logo */}
-            <Link href="/" className="text-2xl font-semibold text-primary-600 flex items-center">
+            <Link href="/" className={`text-2xl font-semibold flex items-center ${
+              isScrolled ? 'text-neutral-800' : 'text-white'
+            }`}>
               <span className="ml-2">Alla Sidor</span>
             </Link>
     
@@ -59,11 +62,11 @@ export default function Header() {
                   key={link.path}
                   href={link.path}
                   className={`font-medium transition-colors duration-200 hover:text-primary-600 ${
-                    location.pathname === link.path
-                      ? 'text-primary-600'
+                    pathname === link.path
+                      ? isScrolled ? 'text-primary-600' : 'text-primary-400 font-bold'
                       : isScrolled
                         ? 'text-neutral-800'
-                        : 'text-neutral-800'
+                        : 'text-white'
                   }`}
                 >
                   {link.label}
@@ -92,7 +95,9 @@ export default function Header() {
               </button> */}
               <button 
                 onClick={toggleMenu}
-                className="text-neutral-700 hover:text-primary-600 transition-colors duration-200"
+                className={`transition-colors duration-200 ${
+                  isScrolled ? 'text-neutral-700' : 'text-white'
+                } hover:text-primary-600`}
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -113,7 +118,7 @@ export default function Header() {
                     key={link.path}
                     href={link.path}
                     className={`font-medium py-2 px-4 rounded-md ${
-                      location.pathname === link.path
+                      pathname === link.path
                         ? 'text-primary-600 bg-primary-50'
                         : 'text-neutral-800 hover:bg-neutral-100'
                     }`}

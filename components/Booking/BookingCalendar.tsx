@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, JSX } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
+import { SelectedEvent } from '@/types/bookings';
+
 
 // Type for the busy slots received from your API
 interface BusySlotData {
@@ -16,6 +18,11 @@ interface AvailableSlot {
     value: Date;      // Actual Date object for booking or further processing
 }
 
+interface BookingCalendarProps {
+    event: SelectedEvent;
+    onDateTimeSelected: (dateTime: Date) => void;
+}
+
 // Helper to format Date to YYYY-MM-DD string
 const formatDateToYYYYMMDD = (date: Date | undefined): string => {
     if (!date) return '';
@@ -25,12 +32,21 @@ const formatDateToYYYYMMDD = (date: Date | undefined): string => {
     return `${year}-${month}-${day}`;
 };
 
-export default function BookingCalendar(): JSX.Element {
+const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSelected }) => {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
     const [busySlots, setBusySlots] = useState<BusySlotData[]>([]);
     const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Use the event prop to display event information
+    useEffect(() => {
+        console.log(`Booking calendar loaded for event: ${event.name}`);
+    }, [event]);
+
+    const handleDateTimeSelected = (dateTime: Date): void => {
+        onDateTimeSelected(dateTime);
+    };
 
     useEffect(() => {
         if (selectedDate) {
@@ -44,16 +60,17 @@ export default function BookingCalendar(): JSX.Element {
         setError(null);
         setAvailableSlots([]);
         try {
-            const response = await fetch(`/api/google-calendar-availability?date=${dateString}`);
+            const response = await fetch(`/api/calendar-availability?date=${dateString}`);
             if (!response.ok) {
                 const errorData: { message?: string } = await response.json();
                 throw new Error(errorData.message || `Error: ${response.status}`);
             }
             const data: { busySlots?: BusySlotData[] } = await response.json();
             setBusySlots(data.busySlots || []);
-        } catch (err: any) {
-            console.error("Failed to fetch availability:", err);
-            setError(err.message as string);
+        } catch (err: unknown) {
+            const error = err as Error;
+            console.error("Failed to fetch availability:", error);
+            setError(error.message);
         } finally {
             setIsLoading(false);
         }
@@ -68,9 +85,9 @@ export default function BookingCalendar(): JSX.Element {
     }, [busySlots, isLoading, selectedDate]);
 
     const generateAvailableTimeSlots = (date: Date, currentBusySlots: BusySlotData[]): void => {
-        const dayStartHour = 9; // 9 AM
-        const dayEndHour = 17;  // 5 PM
-        const slotDurationMinutes = 30;
+        const dayStartHour = process.env.START_TIME ? parseInt(process.env.START_TIME, 10) : 9;
+        const dayEndHour = process.env.END_TIME? parseInt(process.env.END_TIME, 10) : 18;
+        const slotDurationMinutes = process.env.SLOT_DURATION? parseInt(process.env.SLOT_DURATION, 10) : 60;
         const generatedSlots: AvailableSlot[] = [];
 
         // Create date objects in the user's local timezone for display logic
@@ -110,35 +127,42 @@ export default function BookingCalendar(): JSX.Element {
     };
 
     return (
-        <div className="flex flex-col items-center gap-8 p-4 sm:p-6 md:p-8">
-            <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl">
-                <div className="flex-1 bg-white rounded-lg shadow p-4 md:p-6">
-                    <h2 className="text-xl font-semibold mb-4 text-primary-700">Select a Date</h2>
-                    <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        className="rounded-md border"
-                        disabled={(date: Date) => date < new Date(new Date().setDate(new Date().getDate() -1))}
-                    />
+        <div className="flex flex-col items-center p-4 sm:p-6 md:p-8 w-full">
+            <div className="flex flex-col w-full max-w-4xl mx-auto">
+                {/* Calendar Section - Always on top for mobile */}
+                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6 mb-3">
+                    <h2 className="text-xl font-semibold mb-4 text-primary-700 text-center">Select a Date</h2>
+                    <div className="flex justify-center">
+                        <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
+                            className="rounded-md border mx-auto"
+                            disabled={(date: Date) => date < new Date(new Date().setDate(new Date().getDate() -1))}
+                        />
+                    </div>
                 </div>
-                <div className="flex-1 bg-white rounded-lg shadow p-4 md:p-6 mt-6 md:mt-0">
-                    <h2 className="text-xl font-semibold mb-4 text-primary-700">
-                        Available Slots for {selectedDate ? selectedDate.toLocaleDateString() : 'N/A'}
-                    </h2>
-                    {isLoading && <p className="text-neutral-500">Loading availability...</p>}
-                    {error && <p className="text-red-600">Error: {error}</p>}
-                    {!isLoading && !error && availableSlots.length === 0 && selectedDate && (
-                        <p className="text-neutral-500">No available slots for this day or outside working hours.</p>
-                    )}
+                
+                {/* Available Slots Section - Below calendar on mobile */}
+                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6">
+                    {/* Removed the "Available Slots for" header */}
+                    
+                    <div className="text-center">
+                        {isLoading && <p className="text-neutral-500">Loading availability...</p>}
+                        {error && <p className="text-red-600">Error: {error}</p>}
+                        {!isLoading && !error && availableSlots.length === 0 && selectedDate && (
+                            <p className="text-neutral-500">No available slots for this day or outside working hours.</p>
+                        )}
+                    </div>
+                    
                     {!isLoading && !error && availableSlots.length > 0 && (
-                        <div className="flex flex-col gap-2 max-h-72 overflow-y-auto">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-72 overflow-y-auto p-2">
                             {availableSlots.map((slot) => (
                                 <Button
                                     key={slot.start}
                                     variant="outline"
-                                    onClick={() => alert(`Slot selected: ${slot.start} on ${selectedDate?.toLocaleDateString()}`)}
-                                    className="w-full"
+                                    onClick={() => handleDateTimeSelected(slot.value)}
+                                    className="w-full hover:bg-primary-50 hover:text-primary-700 transition-colors"
                                 >
                                     {slot.start}
                                 </Button>
@@ -146,7 +170,15 @@ export default function BookingCalendar(): JSX.Element {
                         </div>
                     )}
                 </div>
+                
+                {/* Desktop layout - side by side */}
+                <div className="hidden md:flex md:flex-row md:gap-8 w-full mt-6">
+                    {/* This is just a placeholder for desktop layout structure */}
+                    {/* The actual content is rendered in the sections above */}
+                </div>
             </div>
         </div>
     );
 }
+
+export default BookingCalendar;

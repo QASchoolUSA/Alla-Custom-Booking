@@ -15,6 +15,17 @@ interface AvailabilityResponse {
     details?: string;
 }
 
+// Define a more specific error type
+interface GoogleApiError extends Error {
+    response?: {
+        data?: {
+            error?: {
+                message?: string;
+            };
+        };
+    };
+}
+
 export async function GET(request: NextRequest): Promise<NextResponse<AvailabilityResponse>> {
 
     const { searchParams } = new URL(request.url);
@@ -61,13 +72,18 @@ export async function GET(request: NextRequest): Promise<NextResponse<Availabili
 
         return NextResponse.json({ busySlots: busySlotsResult as BusySlot[] || [] });
 
-    } catch (error: any) {
-        console.error('Error fetching Google Calendar availability:', error.message);
-        console.error('Error details:', error.response?.data || error);
+    } catch (error: unknown) {
+        // Type guard to safely access error properties
+        const apiError = error as GoogleApiError;
+        
+        console.error('Error fetching Google Calendar availability:', apiError.message);
+        console.error('Error details:', apiError.response?.data || apiError);
+        
         let errorMessage = 'Failed to fetch availability.';
-        if (error.response?.data?.error?.message) {
-            errorMessage += ` Google API Error: ${error.response.data.error.message}`;
+        if (apiError.response?.data?.error?.message) {
+            errorMessage += ` Google API Error: ${apiError.response.data.error.message}`;
         }
-        return NextResponse.json({ message: errorMessage, details: error.message }, { status: 500 });
+        
+        return NextResponse.json({ message: errorMessage, details: apiError.message }, { status: 500 });
     }
 }
