@@ -7,11 +7,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { amount, currency, eventName, customerName, appointmentDate, startTime, endTime, customerEmail, customerPhone } = body;
+    console.log('-- [Received request body] --', body);
+    console.log(body);
+    const { amount, currency, eventName, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'en' } = body;
+    const successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${locale}/booking/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/${locale}/booking?canceled=true`;
 
     // Log the request data for debugging
     console.log('Checkout session request data:', {
       eventName,
+      quantity,
       startTime,
       endTime,
       customerName,
@@ -45,6 +50,8 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
+    const sessionsCountValue = sessionsCount || quantity || 1;
+
     // Create a checkout session with metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -62,8 +69,8 @@ export async function POST(request: Request) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/booking`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
         eventName,
         startTime: finalStartTime,
@@ -71,7 +78,8 @@ export async function POST(request: Request) {
         customerName,
         customerEmail,
         customerPhone,
-        appointmentDate
+        appointmentDate,
+        sessionsCount: sessionsCountValue,
       },
     });
 

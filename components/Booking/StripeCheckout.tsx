@@ -9,12 +9,15 @@ interface StripeCheckoutProps {
   amount: number;
   currency?: string;
   eventName?: string;
+  quantity?: number;
+  sessionsCount?: number;
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
   appointmentDate?: string;
   startTime?: string;
   endTime?: string;
+  locale?: string;
   onPaymentSuccess: (paymentIntentId: string) => void;
   onPaymentError: (errorMessage: string) => void;
 }
@@ -23,12 +26,15 @@ const StripeCheckout = ({
   amount, 
   currency = 'usd', 
   eventName = 'Booking Service',
+  quantity = 1,
+  sessionsCount,
   customerName,
   customerEmail,
   customerPhone,
   appointmentDate,
   startTime,
   endTime,
+  locale = 'en',
   onPaymentSuccess, 
   onPaymentError 
 }: StripeCheckoutProps) => {
@@ -94,12 +100,15 @@ const StripeCheckout = ({
           amount,
           currency,
           eventName,
+          quantity,
+          sessionsCount,
           customerName,
           customerEmail,
           customerPhone,
           appointmentDate,
           startTime: startTimeValue,
-          endTime: endTimeValue
+          endTime: endTimeValue,
+          locale
         }),
       });
   

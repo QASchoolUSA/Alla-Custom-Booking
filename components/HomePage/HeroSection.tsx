@@ -19,10 +19,11 @@ const HeroSection: React.FC = () => {
         <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
           Schedule your appointments with ease. Our intuitive platform makes booking quick and simple.
         </p>
-        <Link href="/booking" legacyBehavior>
-          <a className="bg-white text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300 text-lg transform hover:scale-105">
-            Book Your Appointment Now
-          </a>
+        <Link
+          href="/booking"
+          className="bg-white text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300 text-lg transform hover:scale-105"
+        >
+          Book Your Appointment Now
         </Link>
       </div>
     </section>

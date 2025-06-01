@@ -43,15 +43,13 @@ export default function Header() {
         <header 
           className={`fixed w-full z-50 transition-all duration-300 ${
             isScrolled 
-              ? 'bg-white shadow-md py-2' 
-              : 'bg-transparent py-4'
+              ? 'bg-black/90 shadow-md py-2' 
+              : 'bg-black/70 py-4'
           }`}
         >
           <div className="container mx-auto px-4 flex justify-between items-center">
             {/* Logo */}
-            <Link href="/" className={`text-2xl font-semibold flex items-center ${
-              isScrolled ? 'text-neutral-800' : 'text-white'
-            }`}>
+            <Link href="/" className="text-2xl font-semibold flex items-center text-white">
               <span className="ml-2">Alla Sidor</span>
             </Link>
     
@@ -61,43 +59,22 @@ export default function Header() {
                 <Link
                   key={link.path}
                   href={link.path}
-                  className={`font-medium transition-colors duration-200 hover:text-primary-600 ${
+                  className={`font-medium transition-colors duration-200 hover:text-primary-400 ${
                     pathname === link.path
-                      ? isScrolled ? 'text-primary-600' : 'text-primary-400 font-bold'
-                      : isScrolled
-                        ? 'text-neutral-800'
-                        : 'text-white'
+                      ? 'text-primary-400 font-bold'
+                      : 'text-white'
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
-    
-              {/* Language Switcher */}
-              {/* <button
-                onClick={toggleLanguage}
-                className="flex items-center text-neutral-700 hover:text-primary-600 transition-colors duration-200"
-                aria-label={`Switch to ${language === 'ru' ? 'Ukrainian' : 'Russian'}`}
-              >
-                <Globe size={20} className="mr-2" />
-                <span>{t(`languageSwitcher.${language === 'ru' ? 'uk' : 'ru'}`)}</span>
-              </button> */}
             </nav>
     
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center">
-              {/* <button
-                onClick={toggleLanguage}
-                className="mr-4 text-neutral-700 hover:text-primary-600 transition-colors duration-200"
-                aria-label={`Switch to ${language === 'ru' ? 'Ukrainian' : 'Russian'}`}
-              >
-                <Globe size={24} />
-              </button> */}
               <button 
                 onClick={toggleMenu}
-                className={`transition-colors duration-200 ${
-                  isScrolled ? 'text-neutral-700' : 'text-white'
-                } hover:text-primary-600`}
+                className="text-white hover:text-primary-400 transition-colors duration-200"
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -107,20 +84,21 @@ export default function Header() {
     
           {/* Mobile Navigation */}
           <div 
-            className={`md:hidden fixed inset-x-0 top-16 bg-white shadow-lg transform ${
-              isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-            } transition-transform duration-300 ease-in-out z-40`}
+            className={`md:hidden fixed inset-0 bg-black/95 z-40 transition-opacity duration-300 ${
+              isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+            style={{ top: '64px' }} // Adjust based on your header height
           >
-            <div className="container mx-auto px-4 py-4">
-              <nav className="flex flex-col space-y-4">
+            <div className="container mx-auto px-4 py-8">
+              <nav className="flex flex-col space-y-6">
                 {navigationLinks.map((link) => (
                   <Link
                     key={link.path}
                     href={link.path}
-                    className={`font-medium py-2 px-4 rounded-md ${
+                    className={`font-medium py-3 px-4 text-center text-xl transition-colors duration-200 ${
                       pathname === link.path
-                        ? 'text-primary-600 bg-primary-50'
-                        : 'text-neutral-800 hover:bg-neutral-100'
+                        ? 'text-primary-400 border-b-2 border-primary-400'
+                        : 'text-white hover:text-primary-400'
                     }`}
                   >
                     {link.label}

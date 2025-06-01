@@ -8,6 +8,9 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_REDIRECT_URI
 );
 
+// Explicitly define required scopes for Google Calendar API
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+
 // Set credentials using refresh token
 oauth2Client.setCredentials({
   refresh_token: process.env.GOOGLE_REFRESH_TOKEN,

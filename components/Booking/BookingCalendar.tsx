@@ -38,14 +38,23 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
 
     // Use the event prop to display event information
     useEffect(() => {
-        console.log(`Booking calendar loaded for event: ${event.name}`);
+        if (event) {
+            console.log(`Booking calendar loaded for event: ${event.name}`);
+        }
     }, [event]);
 
-    const handleDateTimeSelected = (dateTime: Date): void => {
-        onDateTimeSelected(dateTime);
+    const handleTimeSlotSelect = (dateTime: Date): void => {
+        setSelectedTimeSlot(dateTime);
+    };
+    
+    const handleContinue = (): void => {
+        if (selectedTimeSlot) {
+            onDateTimeSelected(selectedTimeSlot);
+        }
     };
 
     useEffect(() => {
@@ -53,6 +62,11 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
             const formattedDate = formatDateToYYYYMMDD(selectedDate);
             fetchAvailability(formattedDate);
         }
+    }, [selectedDate]);
+
+    // Reset selected time slot when date changes
+    useEffect(() => {
+        setSelectedTimeSlot(null);
     }, [selectedDate]);
 
     const fetchAvailability = async (dateString: string): Promise<void> => {
@@ -102,6 +116,14 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         while (currentSlotTime < endOfDay) {
             const slotStart = new Date(currentSlotTime);
             const slotEnd = new Date(currentSlotTime.getTime() + slotDurationMinutes * 60000);
+
+            // Only show future slots if booking for today
+            const now = new Date();
+            const isToday = date.toDateString() === now.toDateString();
+            if (isToday && slotStart <= now) {
+                currentSlotTime = slotEnd;
+                continue;
+            }
 
             const isBusy = currentBusySlots.some(busy => {
                 if (!busy.start || !busy.end) return false; // Skip if start or end is missing
@@ -161,12 +183,27 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                                 <Button
                                     key={slot.start}
                                     variant="outline"
-                                    onClick={() => handleDateTimeSelected(slot.value)}
-                                    className="w-full hover:bg-primary-50 hover:text-primary-700 transition-colors"
+                                    onClick={() => handleTimeSlotSelect(slot.value)}
+                                    className={`w-full transition-colors ${
+                                        selectedTimeSlot && selectedTimeSlot.getTime() === slot.value.getTime()
+                                        ? 'border-2 border-black font-medium'
+                                        : 'hover:bg-primary-50 hover:text-primary-700'
+                                    }`}
                                 >
                                     {slot.start}
                                 </Button>
                             ))}
+                        </div>
+                    )}
+                    
+                    {selectedTimeSlot && (
+                        <div className="mt-6 flex justify-center">
+                            <Button 
+                                onClick={handleContinue}
+                                className="px-6 py-2 bg-black text-white hover:bg-gray-800"
+                            >
+                                Continue with {selectedTimeSlot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                            </Button>
                         </div>
                     )}
                 </div>

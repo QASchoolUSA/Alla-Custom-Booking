@@ -60,7 +60,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<Availabili
                 timeMin: timeMinDate.toISOString(),
                 timeMax: timeMaxDate.toISOString(),
                 items: [{ id: process.env.GOOGLE_CALENDAR_ID || 'primary' }],
-                timeZone: 'UTC', // Explicitly state you are sending UTC times
+                timeZone: 'UTC',
             },
         };
 
