@@ -2,7 +2,7 @@ import { Clock } from 'lucide-react';
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { events } from '../../utils/eventTypes'; // Import events from the correct path
-import type { EventType } from '../../types'; // Import EventType for better type safety if needed
+import type { EventType } from '../../utils/eventTypes';
 
 // Remove the local 'events' array definition that was here:
 // const events = [ ... ];

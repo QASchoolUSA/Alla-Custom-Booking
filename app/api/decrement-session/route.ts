@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, newQuantity });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Unknown error' }, { status: 500 });
+  } catch (err) {
+    const error = err as Error;
+    return NextResponse.json({ error: error.message || 'Unknown error' }, { status: 500 });
   }
 }

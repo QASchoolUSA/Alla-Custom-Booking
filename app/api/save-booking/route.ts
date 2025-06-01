@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ success: false, error: 'Failed to save booking' }, { status: 500 });
   }
 }

@@ -33,7 +33,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarClient, setCalendarClient] = useState<Booking | null>(null);
-  const [bookingLink, setBookingLink] = useState<string | null>(null);
+  // Removed unused bookingLink state
 
   useEffect(() => {
     fetch('/api/get-bookings')
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
     });
     const data = await res.json();
     if (data.success && data.link) {
-      setBookingLink(data.link);
+      setBookings(data.link);
       navigator.clipboard.writeText(data.link);
       alert('Booking link copied to clipboard!');
     }

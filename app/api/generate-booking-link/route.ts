@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Try to find an existing booking with a token for this client
-    let { data: bookings, error } = await supabase
+    const { data: bookings } = await supabase
       .from('bookings')
       .select('*')
       .eq('client_email', client_email)
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       // Generate a new token
       booking_token = randomBytes(16).toString('hex');
       // Attach token to the latest package booking for this client
-      const { data: latest, error: fetchError } = await supabase
+      const { data: latest } = await supabase
         .from('bookings')
         .select('*')
         .eq('client_email', client_email)
@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const link = `${baseUrl}/booking/package/${booking_token}`;
     return NextResponse.json({ success: true, link });
-  } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message || 'Unknown error' }, { status: 500 });
+  } catch (err) {
+    const error = err as Error;
+    return NextResponse.json({ success: false, error: error.message || 'Unknown error' }, { status: 500 });
   }
 }
