@@ -31,8 +31,24 @@ function SuccessContent() {
           try {
             // The verify-payment endpoint should return booking details
             if (data.bookingDetails) {
-              const { eventName, startTime, endTime, customerName, customerEmail, customerPhone } = data.bookingDetails;
-              
+              const { eventName, startTime, endTime, customerName, customerEmail, customerPhone, sessionsCount } = data.bookingDetails;
+
+              // Save booking to Supabase (add this block)
+              await fetch('/api/save-booking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  eventName,
+                  clientName: customerName,
+                  clientEmail: customerEmail,
+                  clientPhone: customerPhone,
+                  date: startTime ? startTime.split('T')[0] : undefined,
+                  startTime,
+                  endTime,
+                  quantity: sessionsCount || 1 // Use the quantity from bookingDetails
+                }),
+              });
+
               // Create calendar event
               const calendarResponse = await fetch('/api/add-to-calendar', {
                 method: 'POST',

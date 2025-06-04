@@ -12,13 +12,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const clientInfoSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  firstName: z.string().min(2, "First name is required."),
+  lastName: z.string().min(2, "Last name is required."),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
+  phone: z
+    .string()
+    .regex(/^\+1 \(\d{3}\) \d{3}-\d{4}$/, "Please enter a valid US phone number."),
 });
 
 type ClientInfoFormValues = z.infer<typeof clientInfoSchema>;
@@ -28,6 +31,7 @@ interface ClientInfoProps {
 }
 
 export default function ClientInfo({ onSubmit }: ClientInfoProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<ClientInfoFormValues>({
     resolver: zodResolver(clientInfoSchema),
     defaultValues: {
@@ -105,9 +109,38 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                   <FormControl>
                     <Input
                       type="tel"
-                      placeholder="+1 (555) 000-0000"
-                      {...field}
+                      placeholder="+1 (XXX) XXX-XXXX"
+                      ref={inputRef}
+                      value={field.value}
+                      onChange={e => {
+                        let value = e.target.value;
+                        // Remove all non-digit characters except leading +
+                        value = value.replace(/[^\d+]/g, "");
+                        // Remove leading + if present and not followed by 1
+                        if (value.startsWith("+") && !value.startsWith("+1")) {
+                          value = value.replace(/^\+/, "");
+                        }
+                        // Remove leading 1 if present (for US numbers)
+                        if (value.startsWith("+1")) {
+                          value = value.slice(2);
+                        } else if (value.startsWith("1")) {
+                          value = value.slice(1);
+                        }
+                        // Only keep up to 10 digits
+                        value = value.replace(/\D/g, "").slice(0, 10);
+                        let formatted = "";
+                        if (value.length > 0) formatted = "+1 (";
+                        if (value.length >= 1) formatted += value.slice(0, 3);
+                        if (value.length >= 4) formatted += ") ";
+                        if (value.length >= 4) formatted += value.slice(3, 6);
+                        if (value.length >= 7) formatted += "-";
+                        if (value.length >= 7) formatted += value.slice(6, 10);
+                        field.onChange(formatted);
+                      }}
+                      inputMode="tel"
+                      autoComplete="tel"
                     />
+
                   </FormControl>
                   <FormMessage />
                 </FormItem>

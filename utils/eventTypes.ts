@@ -1,12 +1,19 @@
-import { EventType } from '../types';
+export interface EventType {
+  id: string;
+  name: string;
+  duration: string;
+  price: string;
+  quantity: number;
+  description: string;
+}
 
-// Service data with direct values
 export const events: EventType[] = [
   {
     id: 'initial-meeting',
     name: 'Initial Meeting',
     duration: '1 hour',
     price: '50',
+    quantity: 1,
     description: 'A first introduction and discussion of your needs.'
   },
   {
@@ -14,6 +21,7 @@ export const events: EventType[] = [
     name: 'Consultation Session',
     duration: '2 hours',
     price: '100',
+    quantity: 1,
     description: 'A deep-dive consultation session.'
   },
   {
@@ -21,6 +29,7 @@ export const events: EventType[] = [
     name: 'Therapy Session',
     duration: '2 hours',
     price: '150',
+    quantity: 1,
     description: 'A full therapy session.'
   },
   {
@@ -28,6 +37,7 @@ export const events: EventType[] = [
     name: '5 Session Package',
     duration: '2 hours each',
     price: '650',
+    quantity: 5,
     description: 'A package of 5 therapy sessions.'
   },
   {
@@ -35,6 +45,7 @@ export const events: EventType[] = [
     name: '10 Session Package',
     duration: '2 hours each',
     price: '1250',
+    quantity: 10,
     description: 'A package of 10 therapy sessions.'
   }
 ];

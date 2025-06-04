@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import Image from 'next/image';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -9,12 +8,15 @@ interface StripeCheckoutProps {
   amount: number;
   currency?: string;
   eventName?: string;
+  quantity?: number;
+  sessionsCount?: number;
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
   appointmentDate?: string;
   startTime?: string;
   endTime?: string;
+  locale?: string;
   onPaymentSuccess: (paymentIntentId: string) => void;
   onPaymentError: (errorMessage: string) => void;
 }
@@ -23,12 +25,15 @@ const StripeCheckout = ({
   amount, 
   currency = 'usd', 
   eventName = 'Booking Service',
+  quantity = 1,
+  sessionsCount,
   customerName,
   customerEmail,
   customerPhone,
   appointmentDate,
   startTime,
   endTime,
+  locale = 'en',
   onPaymentSuccess, 
   onPaymentError 
 }: StripeCheckoutProps) => {
@@ -94,12 +99,15 @@ const StripeCheckout = ({
           amount,
           currency,
           eventName,
+          quantity,
+          sessionsCount,
           customerName,
           customerEmail,
           customerPhone,
           appointmentDate,
           startTime: startTimeValue,
-          endTime: endTimeValue
+          endTime: endTimeValue,
+          locale
         }),
       });
   
@@ -167,15 +175,6 @@ const StripeCheckout = ({
           `Pay $${(amount / 100).toFixed(2)} with Stripe`
         )}
       </button>
-      
-      <div className="mt-4 text-center text-sm text-gray-500">
-        <p>You&apos;ll be redirected to Stripe&apos;s secure payment page</p>
-        <div className="mt-2 flex justify-center space-x-2">
-          <Image src="https://cdn.jsdelivr.net/npm/@pay-assets/stripe@1.0.0/visa.svg" alt="Visa" width={24} height={24} className="h-6" />
-          <Image src="https://cdn.jsdelivr.net/npm/@pay-assets/stripe@1.0.0/mastercard.svg" alt="Mastercard" width={24} height={24} className="h-6" />
-          <Image src="https://cdn.jsdelivr.net/npm/@pay-assets/stripe@1.0.0/amex.svg" alt="American Express" width={24} height={24} className="h-6" />
-        </div>
-      </div>
     </div>
   );
 };

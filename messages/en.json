@@ -1,0 +1,34 @@
+{
+    "hero": {
+      "title": "Effortless Appointment Booking",
+      "subtitle": "Schedule your appointments with ease and convenience. Join our community of satisfied clients today!",
+      "cta": "Book Your Appointment Now"
+    },
+    "about": {
+      "title": "About Us",
+      "description": "We are dedicated to providing top-notch appointment scheduling services tailored to your needs."
+    },
+    "services": {
+      "title": "Our Services",
+      "service1": {
+        "title": "Consultation",
+        "description": "Personalized consultations to understand your requirements."
+      },
+      "service2": {
+        "title": "Booking Management",
+        "description": "Seamless management of your bookings and appointments."
+      },
+      "service3": {
+        "title": "Reminders",
+        "description": "Automated reminders so you never miss an appointment."
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "message": "Message",
+      "submit": "Send Message"
+    }
+  }

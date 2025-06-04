@@ -5,11 +5,11 @@ import ServicesSection from "@/components/HomePage/ServicesSection";
 
 export default function Home() {
   return (
-    <div>
+    <>
       <HeroSection />
       <AboutSection />
       <ServicesSection />
       <ContactForm />
-    </div>
+    </>
   );
 }
