@@ -137,26 +137,8 @@ export default function BookingPage() {
             </button>
           </div>
         )}
-        {/* Pay button at the top for payment step */}
-        {step === "payment" && selectedEvent && paymentStatus === "pending" && (
-          <div className="mb-6 flex justify-center">
-            <StripeCheckout
-              amount={selectedEvent.price}
-              eventName={selectedEvent.name}
-              quantity={1}
-              sessionsCount={selectedEvent.quantity}
-              customerName={clientData ? `${clientData.firstName} ${clientData.lastName}` : undefined}
-              customerEmail={clientData?.email}
-              customerPhone={clientData?.phone}
-              appointmentDate={selectedDateTime ? selectedDateTime.toISOString() : undefined}
-              startTime={selectedDateTime ? selectedDateTime.toISOString() : undefined}
-              endTime={selectedDateTime ? new Date(selectedDateTime.getTime() + (selectedEvent?.duration ? parseDurationToMinutes(selectedEvent.duration) : 60) * 60000).toISOString() : undefined}
-              locale={locale}
-              onPaymentSuccess={handlePaymentSuccess}
-              onPaymentError={handlePaymentError}
-            />
-          </div>
-        )}
+        
+        {/* Removed the top Pay button */}
 
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 text-primary-700">
           Book Your Appointment

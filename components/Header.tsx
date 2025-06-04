@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from "next/image";
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -24,12 +25,13 @@ export default function Header() {
 
     return (
         <header 
-          className="fixed w-full z-50 transition-all duration-300 bg-black/70 py-4"
+          className="fixed w-full z-50 transition-all duration-300 bg-black/70"
         >
           <div className="container mx-auto px-4 flex justify-between items-center">
             {/* Logo */}
-            <Link href="/" className="text-2xl font-semibold flex items-center text-white">
-              <span className="ml-2">Alla Sidor</span>
+            <Link href="/" className="flex items-center space-x-3">
+              <Image src="/alla-psychology-logo.webp" alt="Alla Psychology Logo" width={90} height={90} priority />
+              <span className="text-white font-semibold text-lg font-alla-custom">Alla Psychology</span>
             </Link>
     
             {/* Desktop Navigation */}

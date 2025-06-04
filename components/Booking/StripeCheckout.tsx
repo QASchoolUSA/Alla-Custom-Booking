@@ -175,8 +175,6 @@ const StripeCheckout = ({
           `Pay $${(amount / 100).toFixed(2)} with Stripe`
         )}
       </button>
-      
-
     </div>
   );
 };

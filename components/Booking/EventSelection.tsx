@@ -42,7 +42,7 @@ const EventSelection: React.FC<EventSelectionProps> = ({
                 </h3>
                 <div className="flex items-center text-neutral-600 mt-1">
                   <Clock size={16} className="mr-2" />
-                  <span>{event.duration} minutes</span>
+                  <span>{event.duration}</span>
                 </div>
                 <p className="text-neutral-700 mt-2">
                   {event.description}

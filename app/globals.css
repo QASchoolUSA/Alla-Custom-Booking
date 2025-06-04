@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Rozha+One&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -78,6 +79,10 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+.font-alla-custom {
+  font-family: 'Rozha One', serif;
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -118,5 +123,16 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.font-alla-custom {
+  font-family: 'Rozha One', serif;
+  font-size: 25px;
+}
+
+@media (min-width: 768px) {
+  .font-alla-custom {
+    font-size: 32px;
   }
 }
