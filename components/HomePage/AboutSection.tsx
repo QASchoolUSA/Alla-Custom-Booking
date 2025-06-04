@@ -4,8 +4,11 @@
 import React from 'react';
 import { Clock, Smartphone, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 const AboutSection: React.FC = () => {
+  const t = useTranslations('about');
+  
   // Animation variants for container
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,10 +69,10 @@ const AboutSection: React.FC = () => {
           viewport={{ once: true, amount: 0.2 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold text-primary-700">
-            Why Choose Us?
+            {t('title')}
           </h2>
           <p className="text-neutral-600 mt-4 max-w-xl mx-auto">
-            We are dedicated to providing a seamless and efficient booking experience.
+            {t('description')}
           </p>
         </motion.div>
         
@@ -91,9 +94,9 @@ const AboutSection: React.FC = () => {
             >
               <Clock className="w-6 h-6" />
             </motion.div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Save Time</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('saveTime.title')}</h3>
             <p className="text-neutral-600">
-              Quickly find available slots and book in minutes. No more back-and-forth emails or calls.
+              {t('saveTime.description')}
             </p>
           </motion.div>
           
@@ -108,9 +111,9 @@ const AboutSection: React.FC = () => {
             >
               <Smartphone className="w-6 h-6" />
             </motion.div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Accessible 24/7</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('accessible.title')}</h3>
             <p className="text-neutral-600">
-              Book your appointments anytime, anywhere, from any device.
+              {t('accessible.description')}
             </p>
           </motion.div>
           
@@ -125,9 +128,9 @@ const AboutSection: React.FC = () => {
             >
               <CheckCircle className="w-6 h-6" />
             </motion.div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Instant Confirmation</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('confirmation.title')}</h3>
             <p className="text-neutral-600">
-              Receive immediate confirmation and reminders for your scheduled appointments.
+              {t('confirmation.description')}
             </p>
           </motion.div>
         </motion.div>
