@@ -7,21 +7,7 @@ import { usePathname } from 'next/navigation';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
     const pathname = usePathname();
-  
-    useEffect(() => {
-      const handleScroll = () => {
-        if (window.scrollY > 20) {
-          setIsScrolled(true);
-        } else {
-          setIsScrolled(false);
-        }
-      };
-  
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
   
     // Close menu when route changes
     useEffect(() => {

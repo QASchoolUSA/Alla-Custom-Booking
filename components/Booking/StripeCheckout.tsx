@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import Image from 'next/image';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
