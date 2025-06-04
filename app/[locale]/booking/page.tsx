@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { ReceiptText, ChevronLeft, Check, X } from "lucide-react";
 import BookingCalendar from "@/components/Booking/BookingCalendar";
 import EventSelection from "@/components/Booking/EventSelection";
 import StripeCheckout from "@/components/Booking/StripeCheckout";
@@ -22,7 +23,7 @@ export default function BookingPage() {
     email: string;
     phone: string;
   } | null>(null);
-  
+
   const [paymentStatus, setPaymentStatus] = useState<"pending" | "success" | "error">("pending");
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [calendarEventLink, setCalendarEventLink] = useState<string | null>(null);
@@ -57,7 +58,7 @@ export default function BookingPage() {
     setSelectedDateTime(dateTime);
     setStep("client-info");
   };
-  
+
   const handleClientInfoSubmit = (data: {
     firstName: string;
     lastName: string;
@@ -124,19 +125,52 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-neutral-50 pt-24 md:pt-32 pb-16 flex flex-col items-center px-4 md:px-6">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        {/* Move 'Back to your information' button to the very top for payment step */}
+        {step === "payment" && selectedEvent && paymentStatus === "pending" && (
+          <div className="mb-6 flex justify-center">
+            <button
+              className="text-primary-600 hover:underline text-sm flex items-center"
+              onClick={() => setStep("client-info")}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back to your information
+            </button>
+          </div>
+        )}
+        {/* Pay button at the top for payment step */}
+        {step === "payment" && selectedEvent && paymentStatus === "pending" && (
+          <div className="mb-6 flex justify-center">
+            <StripeCheckout
+              amount={selectedEvent.price}
+              eventName={selectedEvent.name}
+              quantity={1}
+              sessionsCount={selectedEvent.quantity}
+              customerName={clientData ? `${clientData.firstName} ${clientData.lastName}` : undefined}
+              customerEmail={clientData?.email}
+              customerPhone={clientData?.phone}
+              appointmentDate={selectedDateTime ? selectedDateTime.toISOString() : undefined}
+              startTime={selectedDateTime ? selectedDateTime.toISOString() : undefined}
+              endTime={selectedDateTime ? new Date(selectedDateTime.getTime() + (selectedEvent?.duration ? parseDurationToMinutes(selectedEvent.duration) : 60) * 60000).toISOString() : undefined}
+              locale={locale}
+              onPaymentSuccess={handlePaymentSuccess}
+              onPaymentError={handlePaymentError}
+            />
+          </div>
+        )}
+
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 text-primary-700">
           Book Your Appointment
         </h1>
-        
+
         {/* Progress indicator */}
         <div className="mb-8 px-2">
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-            <div 
-              className="bg-black h-2 rounded-full transition-all duration-500 ease-in-out" 
-              style={{ 
-                width: step === "select-event" ? "25%" : 
-                       step === "calendar" ? "50%" : 
-                       step === "client-info" ? "75%" : "100%" 
+            <div
+              className="bg-lime-600 h-2 rounded-full transition-all duration-500 ease-in-out"
+              style={{
+                width: step === "select-event" ? "25%" :
+                  step === "calendar" ? "50%" :
+                    step === "client-info" ? "75%" : "100%"
               }}
             ></div>
           </div>
@@ -147,7 +181,7 @@ export default function BookingPage() {
             <span className={`transition-colors duration-300 ${step === "payment" ? "text-primary-600 font-medium" : ""}`}>Payment</span>
           </div>
         </div>
-        
+
         {step === "select-event" && (
           <div className="transition-all duration-300">
             <EventSelection
@@ -157,109 +191,123 @@ export default function BookingPage() {
             />
           </div>
         )}
-        
+
         {step === "calendar" && (
           <div className="transition-all duration-300">
-            <BookingCalendar 
+            <BookingCalendar
               event={selectedEvent!}
               onDateTimeSelected={handleDateTimeSelected}
             />
             <div className="mt-6 flex justify-start">
-              <button 
+              <button
                 onClick={() => setStep("select-event")}
                 className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
+                <ChevronLeft className="h-4 w-4 mr-1" />
                 Back to service selection
               </button>
             </div>
           </div>
         )}
-        
+
         {step === "client-info" && (
           <div className="transition-all duration-300">
             <ClientInfo onSubmit={handleClientInfoSubmit} />
             <div className="mt-6 flex justify-start">
-              <button 
+              <button
                 onClick={() => setStep("calendar")}
                 className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
+                <ChevronLeft className="h-4 w-4 mr-1" />
                 Back to calendar
               </button>
             </div>
           </div>
         )}
-        
+
         {step === "payment" && selectedEvent && (
           <div className="space-y-6 transition-all duration-300">
-            <div className="bg-neutral-100 p-5 rounded-lg border border-neutral-200">
-              <h2 className="text-xl font-semibold mb-3 text-primary-700">Booking Summary</h2>
-              <div className="space-y-2">
-                <p><strong className="text-neutral-700">Service:</strong> <span className="text-neutral-800">{selectedEvent.name}</span></p>
-                <p><strong className="text-neutral-700">Date/Time:</strong> <span className="text-neutral-800">{selectedDateTime?.toLocaleString()}</span></p>
-                {clientData && (
-                  <>
-                    <p><strong className="text-neutral-700">Name:</strong> <span className="text-neutral-800">{clientData.firstName} {clientData.lastName}</span></p>
-                    <p><strong className="text-neutral-700">Email:</strong> <span className="text-neutral-800">{clientData.email}</span></p>
-                    <p><strong className="text-neutral-700">Phone:</strong> <span className="text-neutral-800">{clientData.phone}</span></p>
-                  </>
-                )}
-                <p><strong className="text-neutral-700">Price:</strong> <span className="text-neutral-800 font-medium">${(selectedEvent.price / 100).toFixed(2)}</span></p>
+            {/* Booking Summary at the very top */}
+            <div className="w-full">
+              <div className="rounded-xl shadow-md border border-neutral-200 bg-white/90 backdrop-blur-md p-0 sm:p-0">
+                <div className="flex flex-col items-center gap-4 py-6">
+                  <ReceiptText className="w-10 h-10 text-primary-600 mb-2" />
+                  <h2 className="text-lg sm:text-xl font-semibold text-primary-700 text-center leading-tight tracking-tight">Booking Summary</h2>
+                </div>
+                <div className="w-full p-6">
+                  <ul className="divide-y divide-neutral-200">
+                    <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
+                      <span className="font-medium text-neutral-600">Service</span>
+                      <span className="text-neutral-900">{selectedEvent.name}</span>
+                    </li>
+                    <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
+                      <span className="font-medium text-neutral-600">Date/Time</span>
+                      <span className="text-neutral-900">{selectedDateTime?.toLocaleString()}</span>
+                    </li>
+                    {clientData && (
+                      <>
+                        <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
+                          <span className="font-medium text-neutral-600">Name</span>
+                          <span className="text-neutral-900">{clientData.firstName} {clientData.lastName}</span>
+                        </li>
+                        <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
+                          <span className="font-medium text-neutral-600">Email</span>
+                          <span className="text-neutral-900">{clientData.email}</span>
+                        </li>
+                        <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
+                          <span className="font-medium text-neutral-600">Phone</span>
+                          <span className="text-neutral-900">{clientData.phone}</span>
+                        </li>
+                      </>
+                    )}
+                    <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
+                      <span className="font-medium text-neutral-600">Price</span>
+                      <span className="text-neutral-900 font-semibold">${(selectedEvent.price / 100).toFixed(2)}</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-            
+
+            {/* Centered payment button at the bottom */}
             {paymentStatus === "pending" && (
-              <div>
-                <h2 className="text-xl font-semibold mb-4 text-primary-700">Payment Details</h2>
-                <StripeCheckout 
-                  amount={selectedEvent.price}
-                  eventName={selectedEvent.name}
-                  quantity={1}
-                  sessionsCount={selectedEvent.quantity}
-                  customerName={clientData ? `${clientData.firstName} ${clientData.lastName}` : undefined}
-                  customerEmail={clientData?.email}
-                  customerPhone={clientData?.phone}
-                  appointmentDate={selectedDateTime ? selectedDateTime.toISOString() : undefined}
-                  startTime={selectedDateTime ? selectedDateTime.toISOString() : undefined}
-                  endTime={selectedDateTime ? new Date(selectedDateTime.getTime() + (selectedEvent?.duration ? parseDurationToMinutes(selectedEvent.duration) : 60) * 60000).toISOString() : undefined}
-                  locale={locale}
-                  onPaymentSuccess={handlePaymentSuccess}
-                  onPaymentError={handlePaymentError}
-                />
-                <div className="mt-6 flex justify-start">
-                  <button 
-                    onClick={() => setStep("client-info")}
-                    className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Back to your information
-                  </button>
+              <div className="w-full flex justify-center">
+                <div className="flex flex-col gap-6 w-full max-w-md">
+                  <StripeCheckout
+                    amount={selectedEvent.price}
+                    eventName={selectedEvent.name}
+                    quantity={1}
+                    sessionsCount={selectedEvent.quantity}
+                    customerName={clientData ? `${clientData.firstName} ${clientData.lastName}` : undefined}
+                    customerEmail={clientData?.email}
+                    customerPhone={clientData?.phone}
+                    appointmentDate={selectedDateTime ? selectedDateTime.toISOString() : undefined}
+                    startTime={selectedDateTime ? selectedDateTime.toISOString() : undefined}
+                    endTime={selectedDateTime ? new Date(selectedDateTime.getTime() + (selectedEvent?.duration ? parseDurationToMinutes(selectedEvent.duration) : 60) * 60000).toISOString() : undefined}
+                    locale={locale}
+                    onPaymentSuccess={handlePaymentSuccess}
+                    onPaymentError={handlePaymentError}
+                  />
+                  {paymentError && (
+                    <div className="text-red-600 text-sm mt-2">{paymentError}</div>
+                  )}
                 </div>
               </div>
             )}
-            
+
             {paymentStatus === "success" && (
               <div className="text-center p-6 bg-green-50 rounded-lg border border-green-200">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <Check className="h-6 w-6 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-green-700 mb-2">Payment Successful!</h2>
                 <p className="mb-6 text-neutral-600">Your appointment has been booked.</p>
-                
+
                 {calendarEventLink && (
                   <div className="mb-6">
-                    <a 
-                      href={calendarEventLink} 
-                      target="_blank" 
+                    <a
+                      href={calendarEventLink}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition-colors"
                     >
@@ -267,8 +315,8 @@ export default function BookingPage() {
                     </a>
                   </div>
                 )}
-                
-                <button 
+
+                <button
                   onClick={() => {
                     // Reset the form for a new booking
                     setSelectedEvent(null);
@@ -283,17 +331,15 @@ export default function BookingPage() {
                 </button>
               </div>
             )}
-            
+
             {paymentStatus === "error" && (
               <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X className="h-6 w-6 text-red-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-red-700 mb-2">Payment Failed</h2>
                 <p className="mb-6 text-neutral-600">{paymentError || "There was an error processing your payment."}</p>
-                <button 
+                <button
                   onClick={() => setPaymentStatus("pending")}
                   className="bg-primary-600 text-white px-5 py-2 rounded-md hover:bg-primary-700 transition-colors"
                 >

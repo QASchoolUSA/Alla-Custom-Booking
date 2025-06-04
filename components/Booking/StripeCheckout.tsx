@@ -177,14 +177,7 @@ const StripeCheckout = ({
         )}
       </button>
       
-      <div className="mt-4 text-center text-sm text-gray-500">
-        <p>You&apos;ll be redirected to Stripe&apos;s secure payment page</p>
-        <div className="mt-2 flex justify-center space-x-2">
-          <Image src="https://cdn.jsdelivr.net/npm/@pay-assets/stripe@1.0.0/visa.svg" alt="Visa" width={24} height={24} className="h-6" />
-          <Image src="https://cdn.jsdelivr.net/npm/@pay-assets/stripe@1.0.0/mastercard.svg" alt="Mastercard" width={24} height={24} className="h-6" />
-          <Image src="https://cdn.jsdelivr.net/npm/@pay-assets/stripe@1.0.0/amex.svg" alt="American Express" width={24} height={24} className="h-6" />
-        </div>
-      </div>
+
     </div>
   );
 };

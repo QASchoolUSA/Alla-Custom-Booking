@@ -31,21 +31,14 @@ export default function Header() {
     // Navigation links
     const navigationLinks = [
       { path: '/', label: "Home" },
-      { path: '/about', label: "About" },
-      { path: '/services', label: "Services" },
       { path: '/booking', label: "Booking" },
-      { path: '/contact', label: "Contact" },
     ];
   
     const toggleMenu = () => setIsOpen(!isOpen);
 
     return (
         <header 
-          className={`fixed w-full z-50 transition-all duration-300 ${
-            isScrolled 
-              ? 'bg-black/90 shadow-md py-2' 
-              : 'bg-black/70 py-4'
-          }`}
+          className="fixed w-full z-50 transition-all duration-300 bg-black/70 py-4"
         >
           <div className="container mx-auto px-4 flex justify-between items-center">
             {/* Logo */}
