@@ -1,8 +1,9 @@
 import { Clock } from 'lucide-react';
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { events } from '../../utils/eventTypes'; // Import events from the correct path
+import { getLocalizedEvents } from '../../utils/eventTypes'; // Import localized events function
 import type { EventType } from '../../utils/eventTypes';
+import { useTranslations } from 'next-intl';
 
 // Remove the local 'events' array definition that was here:
 // const events = [ ... ];
@@ -18,10 +19,13 @@ const EventSelection: React.FC<EventSelectionProps> = ({
   onSelectEvent,
   onContinue,
 }) => {
+  const t = useTranslations('booking');
+  const events = getLocalizedEvents(t);
+  
   return (
     <div className="max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6">
-        Select a Service
+        {t('selectService')}
       </h2>
 
       <div className="space-y-4">
@@ -42,7 +46,7 @@ const EventSelection: React.FC<EventSelectionProps> = ({
                 </h3>
                 <div className="flex items-center text-neutral-600 mt-1">
                   <Clock size={16} className="mr-2" />
-                  <span>{event.duration}</span>
+                  <span>{event.duration} {t('minutes')}</span>
                 </div>
                 <p className="text-neutral-700 mt-2">
                   {event.description}
@@ -70,7 +74,7 @@ const EventSelection: React.FC<EventSelectionProps> = ({
               : 'bg-neutral-300 text-neutral-500'
             }`}
         >
-          Continue
+          {t('continue')}
         </Button>
       </div>
     </div>

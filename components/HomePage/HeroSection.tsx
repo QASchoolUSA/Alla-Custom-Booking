@@ -1,8 +1,14 @@
 // components/HomePage/HeroSection.tsx
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 
 const HeroSection: React.FC = () => {
+  const t = useTranslations('hero');
+  const locale = useLocale();
+  
   return (
     <section
       className="relative w-full h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white 
@@ -14,16 +20,16 @@ const HeroSection: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Effortless Appointment Booking
+          {t('title')}
         </h1>
         <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-          Schedule your appointments with ease. Our intuitive platform makes booking quick and simple.
+          {t('subtitle')}
         </p>
         <Link
-          href="/booking"
+          href={`/${locale}/booking`}
           className="bg-white text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300 text-lg transform hover:scale-105"
         >
-          Book Your Appointment Now
+          {t('cta')}
         </Link>
       </div>
     </section>

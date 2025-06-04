@@ -1,34 +1,156 @@
 {
-    "hero": {
-      "title": "Effortless Appointment Booking",
-      "subtitle": "Schedule your appointments with ease and convenience. Join our community of satisfied clients today!",
-      "cta": "Book Your Appointment Now"
+  "header": {
+    "brand": "Alla Psychology",
+    "home": "Home",
+    "booking": "Booking",
+    "about": "About",
+    "contact": "Contact",
+    "bookNow": "Book Now"
+  },
+  "hero": {
+    "title": "Effortless Appointment Booking",
+    "subtitle": "Schedule your appointments with ease and convenience. Join our community of satisfied clients today!",
+    "cta": "Book Your Appointment Now"
+  },
+  "about": {
+    "title": "Why Choose Us?",
+    "description": "We are dedicated to providing a seamless and efficient booking experience.",
+    "saveTime": {
+      "title": "Save Time",
+      "description": "Quickly find available slots and book in minutes. No more back-and-forth emails or calls."
     },
-    "about": {
-      "title": "About Us",
-      "description": "We are dedicated to providing top-notch appointment scheduling services tailored to your needs."
+    "accessible": {
+      "title": "Accessible 24/7",
+      "description": "Book your appointments anytime, anywhere, from any device."
     },
-    "services": {
-      "title": "Our Services",
-      "service1": {
-        "title": "Consultation",
-        "description": "Personalized consultations to understand your requirements."
-      },
-      "service2": {
-        "title": "Booking Management",
-        "description": "Seamless management of your bookings and appointments."
-      },
-      "service3": {
-        "title": "Reminders",
-        "description": "Automated reminders so you never miss an appointment."
-      }
-    },
-    "contact": {
-      "title": "Contact Us",
-      "name": "Name",
-      "phone": "Phone",
-      "email": "Email",
-      "message": "Message",
-      "submit": "Send Message"
+    "confirmation": {
+      "title": "Instant Confirmation",
+      "description": "Receive immediate confirmation and reminders for your scheduled appointments."
     }
+  },
+  "services": {
+    "title": "Our Services",
+    "service1": {
+      "title": "Consultation",
+      "description": "Personalized consultations to understand your requirements."
+    },
+    "service2": {
+      "title": "Booking Management",
+      "description": "Seamless management of your bookings and appointments."
+    },
+    "service3": {
+      "title": "Reminders",
+      "description": "Automated reminders so you never miss an appointment."
+    }
+  },
+  "contact": {
+    "title": "Got a question?",
+    "description": "Get in touch with us for any questions or inquiries.",
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Send Message"
+  },
+  "booking": {
+    "title": "Book Your Appointment",
+    "description": "Choose your preferred time and date for your appointment.",
+    "selectService": "Select a Service",
+    "minutes": "minutes",
+    "continue": "Continue",
+    "pickDateTime": "Pick Date & Time",
+    "clientDetails": "Client Details",
+    "payment": "Payment",
+    "bookingSummary": "Booking Summary",
+    "service": "Service",
+    "dateTime": "Date/Time",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "price": "Price",
+    "paymentSuccessful": "Payment Successful!",
+    "appointmentBooked": "Your appointment has been booked.",
+    "paymentFailed": "Payment Failed",
+    "paymentError": "There was an error processing your payment.",
+    "backToInfo": "Back to your information",
+    "payWithStripe": "Pay with Stripe",
+    "invalidPaymentAmount": "Invalid payment amount.",
+    "stripeNotConfigured": "Stripe is not configured correctly. Publishable key is missing.",
+    "loadingAvailability": "Loading availability...",
+    "noSlots": "No available slots for this day or outside working hours.",
+    "errorFetchingAvailability": "Error fetching availability.",
+    "selectDate": "Select a Date",
+    "events": {
+      "initialMeeting": {
+        "name": "Initial Meeting",
+        "duration": "1 hour",
+        "description": "A first introduction and discussion of your needs."
+      },
+      "consultation": {
+        "name": "Consultation Session",
+        "duration": "2 hours",
+        "description": "A deep-dive consultation session."
+      },
+      "therapy": {
+        "name": "Therapy Session",
+        "duration": "2 hours",
+        "description": "A full therapy session."
+      },
+      "package5": {
+        "name": "5 Session Package",
+        "duration": "2 hours each",
+        "description": "A package of 5 therapy sessions."
+      },
+      "package10": {
+        "name": "10 Session Package",
+        "duration": "2 hours each",
+        "description": "A package of 10 therapy sessions."
+      }
+    }
+  },
+  "admin": {
+    "adminAccessRequired": "Admin Access Required",
+    "clientName": "Client Name",
+    "event": "Event",
+    "date": "Date",
+    "sessionsLeft": "Sessions Left",
+    "actions": "Actions",
+    "scheduleNextSession": "Schedule Next Session for {clientName}",
+    "email": "Email"
+  },
+  "events": {
+    "initialMeeting": {
+      "name": "Initial Meeting",
+      "description": "A first introduction and discussion of your needs."
+    },
+    "consultationSession": {
+      "name": "Consultation Session",
+      "description": "A deep-dive consultation session."
+    },
+    "therapySession": {
+      "name": "Therapy Session",
+      "description": "A full therapy session."
+    },
+    "package5": {
+      "name": "5 Session Package",
+      "description": "A package of 5 therapy sessions."
+    },
+    "package10": {
+      "name": "10 Session Package",
+      "description": "A package of 10 therapy sessions."
+    }
+  },
+  "api": {
+    "missingClientEmail": "Missing client_email",
+    "noSessionsLeft": "No sessions left for this client.",
+    "unknownError": "Unknown error",
+    "missingRequiredFields": "Missing required fields",
+    "invalidDateFormat": "Invalid date format for startTime or endTime. Must be valid dates.",
+    "failedToAddEvent": "Failed to add event to Google Calendar",
+    "errorCreatingCheckoutSession": "Error creating checkout session",
+    "paymentVerified": "Payment verified successfully",
+    "paymentNotCompleted": "Payment not completed. Status: {status}",
+    "errorVerifyingPayment": "Error verifying payment",
+    "missingBookingDetails": "Missing required booking details in payment session"
   }
+}

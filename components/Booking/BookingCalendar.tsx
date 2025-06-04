@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { SelectedEvent } from '@/types/bookings';
 
 
@@ -170,7 +171,13 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                     {/* Removed the "Available Slots for" header */}
                     
                     <div className="text-center">
-                        {isLoading && <p className="text-neutral-500">Loading availability...</p>}
+                        {isLoading && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-72 overflow-y-auto p-2">
+                                {Array.from({ length: 6 }).map((_, index) => (
+                                    <Skeleton key={index} className="h-10 w-full" />
+                                ))}
+                            </div>
+                        )}
                         {error && <p className="text-red-600">Error: {error}</p>}
                         {!isLoading && !error && availableSlots.length === 0 && selectedDate && (
                             <p className="text-neutral-500">No available slots for this day or outside working hours.</p>

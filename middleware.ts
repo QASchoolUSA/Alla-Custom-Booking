@@ -1,29 +1,27 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest, NextFetchEvent } from 'next/server';
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import createMiddleware from 'next-intl/middleware';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-const clerkMw = clerkMiddleware() as (req: NextRequest, ev?: NextFetchEvent) => ReturnType<typeof clerkMiddleware>;
+const intlMiddleware = createMiddleware({
+  locales: ['en', 'ru', 'ua'],
+  defaultLocale: 'en',
+  localePrefix: 'always'
+});
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  // Redirect root to /en
-  if (pathname === '/') {
-    return NextResponse.redirect(new URL('/en', request.url));
+const isProtectedRoute = createRouteMatcher([
+  '/admin(.*)',
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) {
+    const session = await auth();
+    if (!session.userId) {
+      throw new Error('Unauthorized');
+    }
   }
-  // Redirect non-locale, non-admin paths to /en/...
-  const localePattern = /^\/(en|ru|ua)(\/|$)/;
-  if (!localePattern.test(pathname) && !pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL(`/en${pathname}`, request.url));
-  }
-  // Protect /admin with Clerk
-  if (pathname.startsWith('/admin')) {
-    return clerkMw(request);
-  }
-  return NextResponse.next();
-}
+  
+  return intlMiddleware(req);
+});
 
 export const config = {
-  matcher: [
-    '/((?!_next/|api/|static/|favicon.ico|[\\w-]+\\.\\w+$).*)',
-  ],
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 };
