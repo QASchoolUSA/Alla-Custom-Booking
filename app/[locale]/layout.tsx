@@ -17,6 +17,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
+        </head>
         <body>
           <Header />
           {children}
