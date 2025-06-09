@@ -36,18 +36,20 @@ export async function GET(request: NextRequest): Promise<NextResponse<Availabili
     }
 
     try {
-        const oauth2Client = new google.auth.OAuth2(
-            process.env.GOOGLE_CLIENT_ID,
-            process.env.GOOGLE_CLIENT_SECRET
-        );
-
-        oauth2Client.setCredentials({
-            refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+        // Initialize Service Account authentication
+        const serviceAccountAuth = new google.auth.GoogleAuth({
+            credentials: {
+                type: 'service_account',
+                project_id: process.env.GOOGLE_PROJECT_ID,
+                private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+                private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+                client_email: process.env.GOOGLE_CLIENT_EMAIL,
+                client_id: process.env.GOOGLE_CLIENT_ID,
+            },
+            scopes: ['https://www.googleapis.com/auth/calendar']
         });
 
-        await oauth2Client.getAccessToken();
-
-        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+        const calendar = google.calendar({ version: 'v3', auth: serviceAccountAuth });
 
         const timeMinDate = new Date(date);
         timeMinDate.setUTCHours(0, 0, 0, 0); // Using UTC for consistency
