@@ -6,12 +6,14 @@ import BookingCalendar from '@/components/Booking/BookingCalendar';
 import ClientInfo from '@/components/Booking/ClientInfo';
 import StripeCheckout from '@/components/Booking/StripeCheckout';
 import { SelectedEvent } from '@/types/bookings';
+import { useTranslations } from 'next-intl';
 
 interface BookingClientProps {
   booking_token: string;
 }
 
 const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
+  const t = useTranslations('booking');
   const [booking, setBooking] = useState<Record<string, unknown> | null>(null);
   const [step, setStep] = useState<'calendar' | 'client-info' | 'payment' | 'success'>('calendar');
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
@@ -89,8 +91,8 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
     case 'success':
       return (
         <div>
-          <h2>Booking Successful!</h2>
-          <p>Your booking has been confirmed.</p>
+          <h2>{t('paymentSuccessful')}</h2>
+          <p>{t('appointmentBooked')}</p>
         </div>
       );
     default:

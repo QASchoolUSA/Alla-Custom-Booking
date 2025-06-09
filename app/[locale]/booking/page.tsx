@@ -9,8 +9,10 @@ import ClientInfo from "@/components/Booking/ClientInfo";
 import { SelectedEvent } from "@/types/bookings";
 import { getEventById } from "@/utils/eventTypes";
 import { useParams } from "next/navigation";
+import { useTranslations } from 'next-intl';
 
 export default function BookingPage() {
+  const t = useTranslations('booking');
   const params = useParams();
   const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "en";
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
@@ -133,7 +135,7 @@ export default function BookingPage() {
               onClick={() => setStep("client-info")}
             >
               <ChevronLeft className="h-4 w-4 mr-1" />
-              Back to your information
+              {t('backToInfo')}
             </button>
           </div>
         )}
@@ -157,10 +159,10 @@ export default function BookingPage() {
             ></div>
           </div>
           <div className="flex justify-between text-xs text-gray-500 mt-2">
-            <span className={`transition-colors duration-300 ${step === "select-event" ? "text-primary-600 font-medium" : ""}`}>Select Service</span>
-            <span className={`transition-colors duration-300 ${step === "calendar" ? "text-primary-600 font-medium" : ""}`}>Pick Date & Time</span>
-            <span className={`transition-colors duration-300 ${step === "client-info" ? "text-primary-600 font-medium" : ""}`}>Client Details</span>
-            <span className={`transition-colors duration-300 ${step === "payment" ? "text-primary-600 font-medium" : ""}`}>Payment</span>
+            <span className={`transition-colors duration-300 ${step === "select-event" ? "text-primary-600 font-medium" : ""}`}>{t('selectService')}</span>
+            <span className={`transition-colors duration-300 ${step === "calendar" ? "text-primary-600 font-medium" : ""}`}>{t('pickDateTime')}</span>
+            <span className={`transition-colors duration-300 ${step === "client-info" ? "text-primary-600 font-medium" : ""}`}>{t('clientDetails')}</span>
+            <span className={`transition-colors duration-300 ${step === "payment" ? "text-primary-600 font-medium" : ""}`}>{t('payment')}</span>
           </div>
         </div>
 
@@ -186,7 +188,7 @@ export default function BookingPage() {
                 className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                Back to service selection
+                {t('backToService')}
               </button>
             </div>
           </div>
@@ -201,7 +203,7 @@ export default function BookingPage() {
                 className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                Back to calendar
+                {t('backToCalendar')}
               </button>
             </div>
           </div>
@@ -214,7 +216,7 @@ export default function BookingPage() {
               <div className="rounded-xl shadow-md border border-neutral-200 bg-white/90 backdrop-blur-md p-0 sm:p-0">
                 <div className="flex flex-col items-center gap-4 py-6">
                   <ReceiptText className="w-10 h-10 text-primary-600 mb-2" />
-                  <h2 className="text-lg sm:text-xl font-semibold text-primary-700 text-center leading-tight tracking-tight">Booking Summary</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-primary-700 text-center leading-tight tracking-tight">{t('bookingSummary')}</h2>
                 </div>
                 <div className="w-full p-6">
                   <ul className="divide-y divide-neutral-200">
