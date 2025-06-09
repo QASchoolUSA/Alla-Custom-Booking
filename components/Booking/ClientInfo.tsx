@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslations } from 'next-intl';
 
 const clientInfoSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -31,6 +32,7 @@ interface ClientInfoProps {
 }
 
 export default function ClientInfo({ onSubmit }: ClientInfoProps) {
+  const t = useTranslations('booking');
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<ClientInfoFormValues>({
     resolver: zodResolver(clientInfoSchema),
@@ -150,7 +152,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
               type="submit"
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-lg transition-colors"
             >
-              Continue
+              {t('continue')}
             </button>
           </form>
         </Form>

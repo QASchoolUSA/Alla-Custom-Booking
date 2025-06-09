@@ -5,6 +5,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SelectedEvent } from '@/types/bookings';
+import { useTranslations } from 'next-intl';
 
 
 // Type for the busy slots received from your API
@@ -34,6 +35,7 @@ const formatDateToYYYYMMDD = (date: Date | undefined): string => {
 };
 
 const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSelected }) => {
+    const t = useTranslations('booking');
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
     const [busySlots, setBusySlots] = useState<BusySlotData[]>([]);
     const [availableSlots, setAvailableSlots] = useState<AvailableSlot[]>([]);
@@ -209,7 +211,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                                 onClick={handleContinue}
                                 className="px-6 py-2 bg-black text-white hover:bg-gray-800"
                             >
-                                Continue with {selectedTimeSlot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                {t('continue')} {selectedTimeSlot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                             </Button>
                         </div>
                     )}
