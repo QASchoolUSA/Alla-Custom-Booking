@@ -65,9 +65,10 @@ export default function AdminDashboard() {
     });
     const data = await res.json();
     if (data.success && data.link) {
-      setBookings(data.link);
       navigator.clipboard.writeText(data.link);
       alert('Booking link copied to clipboard!');
+    } else {
+      alert('Failed to generate booking link: ' + (data.error || 'Unknown error'));
     }
   };
   return (
