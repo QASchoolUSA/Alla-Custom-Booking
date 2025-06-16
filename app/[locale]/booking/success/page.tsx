@@ -6,7 +6,7 @@ import { CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
 // Create a client component that uses useSearchParams
-function SuccessContent() {
+function SuccessContent({ params }: { params: { locale: string } }) {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -45,7 +45,8 @@ function SuccessContent() {
                   date: startTime ? startTime.split('T')[0] : undefined,
                   startTime,
                   endTime,
-                  quantity: sessionsCount || 1 // Use the quantity from bookingDetails
+                  quantity: sessionsCount || 1, // Use the quantity from bookingDetails
+                  locale: params.locale || 'en'
                 }),
               });
 
@@ -94,22 +95,22 @@ function SuccessContent() {
   }, [sessionId]);
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+    <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8" data-testid="success-page">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg" data-testid="success-container">
         {status === 'loading' && (
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-            <h2 className="mt-6 text-xl font-semibold text-gray-900">Verifying your payment...</h2>
+          <div className="text-center" data-testid="payment-verification-loading">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto" data-testid="loading-spinner"></div>
+            <h2 className="mt-6 text-xl font-semibold text-gray-900" data-testid="loading-message">Verifying your payment...</h2>
           </div>
         )}
         
         {status === 'success' && (
-          <div className="text-center">
+          <div className="text-center" data-testid="payment-success-state">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="mt-6 text-2xl font-bold text-gray-900">Payment Successful!</h2>
-            <p className="mt-2 text-gray-600">{message}</p>
+            <h2 className="mt-6 text-2xl font-bold text-gray-900" data-testid="success-title">Payment Successful!</h2>
+            <p className="mt-2 text-gray-600" data-testid="success-message">{message}</p>
             
             {calendarEventLink && (
               <div className="mt-6 mb-4">
@@ -118,6 +119,7 @@ function SuccessContent() {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  data-testid="success-calendar-link"
                 >
                   View in Google Calendar
                 </a>
@@ -125,7 +127,7 @@ function SuccessContent() {
             )}
             
             <div className="mt-6">
-              <Link href="/" className="text-primary-600 hover:text-primary-800 font-medium">
+              <Link href="/" className="text-primary-600 hover:text-primary-800 font-medium" data-testid="success-home-link">
                 Return to Home
               </Link>
             </div>
@@ -133,14 +135,14 @@ function SuccessContent() {
         )}
         
         {status === 'error' && (
-          <div className="text-center">
+          <div className="text-center" data-testid="payment-error-state">
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
               <XCircle className="h-8 w-8 text-red-600" />
             </div>
-            <h2 className="mt-6 text-2xl font-bold text-gray-900">Payment Verification Failed</h2>
-            <p className="mt-2 text-gray-600">{message}</p>
+            <h2 className="mt-6 text-2xl font-bold text-gray-900" data-testid="error-title">Payment Verification Failed</h2>
+            <p className="mt-2 text-gray-600" data-testid="error-message">{message}</p>
             <div className="mt-6">
-              <Link href="/" className="text-primary-600 hover:text-primary-800 font-medium">
+              <Link href="/" className="text-primary-600 hover:text-primary-800 font-medium" data-testid="error-home-link">
                 Return to Home
               </Link>
             </div>
@@ -152,19 +154,19 @@ function SuccessContent() {
 }
 
 // Main page component with Suspense boundary
-export default function SuccessPage() {
+export default function SuccessPage({ params }: { params: { locale: string } }) {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
+      <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8" data-testid="success-page-loading">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg" data-testid="success-page-loading-container">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-            <h2 className="mt-6 text-xl font-semibold text-gray-900">Loading...</h2>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto" data-testid="page-loading-spinner"></div>
+            <h2 className="mt-6 text-xl font-semibold text-gray-900" data-testid="page-loading-message">Loading...</h2>
           </div>
         </div>
       </div>
     }>
-      <SuccessContent />
+      <SuccessContent params={params} />
     </Suspense>
   );
 }

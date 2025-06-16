@@ -45,9 +45,9 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
   });
 
   return (
-    <Card className="w-full max-w-[600px] mx-auto">
+    <Card className="w-full max-w-[600px] mx-auto" data-testid="client-info-card">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">
+        <CardTitle className="text-2xl font-bold text-center" data-testid="client-info-title">
           Your Information
         </CardTitle>
       </CardHeader>
@@ -56,6 +56,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6"
+            data-testid="client-info-form"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
@@ -65,7 +66,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John" {...field} />
+                      <Input placeholder="John" {...field} data-testid="first-name-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -78,7 +79,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Doe" {...field} />
+                      <Input placeholder="Doe" {...field} data-testid="last-name-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -96,6 +97,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                       type="email"
                       placeholder="john.doe@example.com"
                       {...field}
+                      data-testid="email-input"
                     />
                   </FormControl>
                   <FormMessage />
@@ -107,14 +109,15 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="+1 (XXX) XXX-XXXX"
-                      ref={inputRef}
-                      value={field.value}
-                      onChange={e => {
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="+1 (XXX) XXX-XXXX"
+                        ref={inputRef}
+                        value={field.value}
+                        data-testid="phone-input"
+                        onChange={e => {
                         let value = e.target.value;
                         // Remove all non-digit characters except leading +
                         value = value.replace(/[^\d+]/g, "");
@@ -151,6 +154,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
             <button
               type="submit"
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-lg transition-colors"
+              data-testid="client-info-submit-btn"
             >
               {t('continue')}
             </button>

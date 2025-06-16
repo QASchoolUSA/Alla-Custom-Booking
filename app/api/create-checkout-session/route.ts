@@ -1,6 +1,8 @@
 // This is a suggested implementation - you'll need to adapt it to your actual data structure
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { getSessionEventName, calculateSessionNumber } from '@/utils/eventTypes';
+import { supabase } from '@/lib/supabase';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -52,6 +54,25 @@ export async function POST(request: Request) {
 
     const sessionsCountValue = sessionsCount || quantity || 1;
 
+    // Calculate session number for package deals
+    let finalEventName = eventName;
+    if (customerEmail && quantity && quantity > 1) {
+      // Get the client's remaining sessions to calculate current session number
+      const { data: clientBookings } = await supabase
+        .from('bookings')
+        .select('quantity')
+        .eq('client_email', customerEmail)
+        .gt('quantity', 0)
+        .order('date', { ascending: false })
+        .limit(1);
+      
+      if (clientBookings && clientBookings.length > 0) {
+        const remainingSessions = clientBookings[0].quantity;
+        const sessionNumber = calculateSessionNumber(quantity, remainingSessions);
+        finalEventName = getSessionEventName(eventName, quantity, sessionNumber, locale);
+      }
+    }
+
     // Create a checkout session with metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -60,7 +81,7 @@ export async function POST(request: Request) {
           price_data: {
             currency: currency || 'usd',
             product_data: {
-              name: eventName || 'Booking',
+              name: finalEventName || 'Booking',
               description: `Appointment on ${appointmentDate}`,
             },
             unit_amount: amount,
@@ -72,7 +93,7 @@ export async function POST(request: Request) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
-        eventName,
+        eventName: finalEventName,
         startTime: finalStartTime,
         endTime: finalEndTime,
         customerName,

@@ -1,14 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { getSessionEventName } from '@/utils/eventTypes';
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { eventName, clientName, clientEmail, clientPhone, date, startTime, endTime, quantity } = data;
+    const { eventName, clientName, clientEmail, clientPhone, date, startTime, endTime, quantity, locale } = data;
+
+    // For initial bookings, use session number 1 for package deals
+    const sessionEventName = getSessionEventName(eventName, quantity || 1, 1, locale || 'en');
 
     const { error } = await supabase.from('bookings').insert([
       {
-        event_name: eventName,
+        event_name: sessionEventName,
         client_name: clientName,
         client_email: clientEmail,
         client_phone: clientPhone,

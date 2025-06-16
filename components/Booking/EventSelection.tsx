@@ -24,11 +24,11 @@ const EventSelection: React.FC<EventSelectionProps> = ({
   
   return (
     <div className="max-w-3xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-6">
+      <h2 className="text-2xl font-semibold mb-6" data-testid="event-selection-title">
         {t('selectService')}
       </h2>
 
-      <div className="space-y-4">
+      <div className="space-y-4" data-testid="event-list">
         {events.map((event: EventType) => (
           <div
             key={event.id}
@@ -38,10 +38,11 @@ const EventSelection: React.FC<EventSelectionProps> = ({
                 : 'border-neutral-300 hover:border-primary-400 hover:shadow-lg bg-white'
             }`}
             onClick={() => onSelectEvent(event.id)}
+            data-testid={`event-card-${event.id}`}
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <div className="flex-1">
-                <h3 className="text-lg font-medium">
+                <h3 className="text-lg font-medium" data-testid={`event-name-${event.id}`}>
                   {event.name}
                 </h3>
                 <div className="flex items-center text-neutral-600 mt-1">
@@ -53,7 +54,7 @@ const EventSelection: React.FC<EventSelectionProps> = ({
                 </p>
               </div>
               <div className="mt-4 md:mt-0 md:ml-4 flex items-center">
-                <span className="text-xl font-medium text-primary-600 mr-4">
+                <span className="text-xl font-medium text-primary-600 mr-4" data-testid={`event-price-${event.id}`}>
                   ${event.price}
                 </span>
                 {/* The div that held the SVG checkmark has been removed from here */}
@@ -73,6 +74,7 @@ const EventSelection: React.FC<EventSelectionProps> = ({
               ? 'bg-black text-white hover:bg-gray-800'
               : 'bg-neutral-300 text-neutral-500'
             }`}
+          data-testid="event-selection-continue-btn"
         >
           {t('continue')}
         </Button>

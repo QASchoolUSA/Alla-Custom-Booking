@@ -151,8 +151,8 @@ const StripeCheckout = ({
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      {error && <div className="text-red-500 mb-4">{error}</div>}
+    <div className="max-w-md mx-auto p-4" data-testid="stripe-checkout">
+      {error && <div className="text-red-500 mb-4" data-testid="stripe-error-message">{error}</div>}
       
       <button
         onClick={(e) => {
@@ -162,6 +162,7 @@ const StripeCheckout = ({
         }}
         disabled={isLoading}
         className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center pointer"
+        data-testid="stripe-pay-button"
       >
         {isLoading ? (
           <>

@@ -36,18 +36,15 @@ export async function GET(request: NextRequest): Promise<NextResponse<Availabili
     }
 
     try {
-        // Initialize Service Account authentication
-        const serviceAccountAuth = new google.auth.GoogleAuth({
-            credentials: {
-                type: 'service_account',
-                project_id: process.env.GOOGLE_PROJECT_ID,
-                private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-                private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-                client_email: process.env.GOOGLE_CLIENT_EMAIL,
-                client_id: process.env.GOOGLE_CLIENT_ID,
-            },
-            scopes: ['https://www.googleapis.com/auth/calendar']
-        });
+        // GOOGLE WORKSPACE DOMAIN-WIDE DELEGATION (ACTIVE)
+        // Service account with Domain-Wide Delegation for calendar access
+        const serviceAccountAuth = new google.auth.JWT(
+          process.env.GOOGLE_CLIENT_EMAIL,
+          undefined,
+          process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+          ['https://www.googleapis.com/auth/calendar'],
+          process.env.GOOGLE_DOMAIN_USER_EMAIL // Domain-Wide Delegation
+        );
 
         const calendar = google.calendar({ version: 'v3', auth: serviceAccountAuth });
 

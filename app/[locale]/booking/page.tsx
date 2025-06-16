@@ -125,29 +125,30 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 pt-24 md:pt-32 pb-16 flex flex-col items-center px-4 md:px-6">
-      <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+    <div className="min-h-screen bg-neutral-50 pt-24 md:pt-32 pb-16 flex flex-col items-center px-4 md:px-6" data-testid="booking-page">
+      <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 md:p-8" data-testid="booking-container">
         {/* Move 'Back to your information' button to the very top for payment step */}
         {step === "payment" && selectedEvent && paymentStatus === "pending" && (
           <div className="mb-6 flex justify-center">
-            <button
-              className="text-primary-600 hover:underline text-sm flex items-center"
-              onClick={() => setStep("client-info")}
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              {t('backToInfo')}
-            </button>
-          </div>
+              <button
+                className="text-primary-600 hover:underline text-sm flex items-center"
+                onClick={() => setStep("client-info")}
+                data-testid="back-to-info-btn"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                {t('backToInfo')}
+              </button>
+            </div>
         )}
         
         {/* Removed the top Pay button */}
 
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 text-primary-700">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 text-primary-700" data-testid="booking-title">
           Book Your Appointment
         </h1>
 
         {/* Progress indicator */}
-        <div className="mb-8 px-2">
+        <div className="mb-8 px-2" data-testid="progress-indicator">
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
             <div
               className="bg-lime-600 h-2 rounded-full transition-all duration-500 ease-in-out"
@@ -156,6 +157,7 @@ export default function BookingPage() {
                   step === "calendar" ? "50%" :
                     step === "client-info" ? "75%" : "100%"
               }}
+              data-testid="progress-bar"
             ></div>
           </div>
           <div className="flex justify-between text-xs text-gray-500 mt-2">
@@ -167,7 +169,7 @@ export default function BookingPage() {
         </div>
 
         {step === "select-event" && (
-          <div className="transition-all duration-300">
+          <div className="transition-all duration-300" data-testid="step-select-event">
             <EventSelection
               selectedEvent={selectedEvent ? selectedEvent.id : null}
               onSelectEvent={handleSelectEvent}
@@ -177,7 +179,7 @@ export default function BookingPage() {
         )}
 
         {step === "calendar" && (
-          <div className="transition-all duration-300">
+          <div className="transition-all duration-300" data-testid="step-calendar">
             <BookingCalendar
               event={selectedEvent!}
               onDateTimeSelected={handleDateTimeSelected}
@@ -186,6 +188,7 @@ export default function BookingPage() {
               <button
                 onClick={() => setStep("select-event")}
                 className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
+                data-testid="back-to-service-btn"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 {t('backToService')}
@@ -195,12 +198,13 @@ export default function BookingPage() {
         )}
 
         {step === "client-info" && (
-          <div className="transition-all duration-300">
+          <div className="transition-all duration-300" data-testid="step-client-info">
             <ClientInfo onSubmit={handleClientInfoSubmit} />
             <div className="mt-6 flex justify-start">
               <button
                 onClick={() => setStep("calendar")}
                 className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
+                data-testid="back-to-calendar-btn"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
                 {t('backToCalendar')}
@@ -210,16 +214,16 @@ export default function BookingPage() {
         )}
 
         {step === "payment" && selectedEvent && (
-          <div className="space-y-6 transition-all duration-300">
+          <div className="space-y-6 transition-all duration-300" data-testid="step-payment">
             {/* Booking Summary at the very top */}
-            <div className="w-full">
+            <div className="w-full" data-testid="booking-summary-section">
               <div className="rounded-xl shadow-md border border-neutral-200 bg-white/90 backdrop-blur-md p-0 sm:p-0">
                 <div className="flex flex-col items-center gap-4 py-6">
                   <ReceiptText className="w-10 h-10 text-primary-600 mb-2" />
-                  <h2 className="text-lg sm:text-xl font-semibold text-primary-700 text-center leading-tight tracking-tight">{t('bookingSummary')}</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-primary-700 text-center leading-tight tracking-tight" data-testid="booking-summary-title">{t('bookingSummary')}</h2>
                 </div>
                 <div className="w-full p-6">
-                  <ul className="divide-y divide-neutral-200">
+                  <ul className="divide-y divide-neutral-200" data-testid="booking-summary-details">
                     <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
                       <span className="font-medium text-neutral-600">Service</span>
                       <span className="text-neutral-900">{selectedEvent.name}</span>
@@ -255,7 +259,7 @@ export default function BookingPage() {
 
             {/* Centered payment button at the bottom */}
             {paymentStatus === "pending" && (
-              <div className="w-full flex justify-center">
+              <div className="w-full flex justify-center" data-testid="payment-section">
                 <div className="flex flex-col gap-6 w-full max-w-md">
                   <StripeCheckout
                     amount={selectedEvent.price}
@@ -280,12 +284,12 @@ export default function BookingPage() {
             )}
 
             {paymentStatus === "success" && (
-              <div className="text-center p-6 bg-green-50 rounded-lg border border-green-200">
+              <div className="text-center p-6 bg-green-50 rounded-lg border border-green-200" data-testid="payment-success">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                   <Check className="h-6 w-6 text-green-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-green-700 mb-2">Payment Successful!</h2>
-                <p className="mb-6 text-neutral-600">Your appointment has been booked.</p>
+                <h2 className="text-2xl font-bold text-green-700 mb-2" data-testid="payment-success-title">Payment Successful!</h2>
+                <p className="mb-6 text-neutral-600" data-testid="payment-success-message">Your appointment has been booked.</p>
 
                 {calendarEventLink && (
                   <div className="mb-6">
@@ -294,6 +298,7 @@ export default function BookingPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                      data-testid="calendar-link-btn"
                     >
                       View in Google Calendar
                     </a>
@@ -310,6 +315,7 @@ export default function BookingPage() {
                     setCalendarEventLink(null);
                   }}
                   className="bg-primary-600 text-white px-5 py-2 rounded-md hover:bg-primary-700 transition-colors"
+                  data-testid="book-another-btn"
                 >
                   Book Another Appointment
                 </button>
@@ -317,15 +323,16 @@ export default function BookingPage() {
             )}
 
             {paymentStatus === "error" && (
-              <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
+              <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200" data-testid="payment-error">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
                   <X className="h-6 w-6 text-red-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-red-700 mb-2">Payment Failed</h2>
-                <p className="mb-6 text-neutral-600">{paymentError || "There was an error processing your payment."}</p>
+                <h2 className="text-2xl font-bold text-red-700 mb-2" data-testid="payment-error-title">Payment Failed</h2>
+                <p className="mb-6 text-neutral-600" data-testid="payment-error-message">{paymentError || "There was an error processing your payment."}</p>
                 <button
                   onClick={() => setPaymentStatus("pending")}
                   className="bg-primary-600 text-white px-5 py-2 rounded-md hover:bg-primary-700 transition-colors"
+                  data-testid="payment-retry-btn"
                 >
                   Try Again
                 </button>
