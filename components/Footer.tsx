@@ -60,8 +60,8 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-center">
                 <Mail size={18} className="mr-2 text-primary-400" />
-                <a href="mailhref:info@allasidor.com" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  info@allasidor.com
+                <a href="mailto:contact@allapsychology.com" className="text-neutral-400 hover:text-white transition-colors duration-200">
+                contact@allapsychology.com
                 </a>
               </li>
               <li className="flex items-center">

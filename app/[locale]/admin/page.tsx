@@ -16,16 +16,19 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import BookingCalendar from '@/components/Booking/BookingCalendar';
+import { calculateSessionNumber, getSessionEventName } from '@/utils/eventTypes';
 
 interface Booking {
   id: string;
   client_name: string;
   client_email: string;
+  client_phone?: string;
   event_name: string;
   date: string;
   start_time: string;
   end_time: string;
   quantity?: number;
+  sessions?: number;
 }
 
 export default function AdminDashboard() {
@@ -65,9 +68,10 @@ export default function AdminDashboard() {
     });
     const data = await res.json();
     if (data.success && data.link) {
-      setBookings(data.link);
       navigator.clipboard.writeText(data.link);
       alert('Booking link copied to clipboard!');
+    } else {
+      alert('Failed to generate booking link: ' + (data.error || 'Unknown error'));
     }
   };
   return (
@@ -188,16 +192,55 @@ export default function AdminDashboard() {
                 price: 0
               }}
               onDateTimeSelected={async (dateTime) => {
-                await fetch('/api/add-to-calendar', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    client_email: calendarClient.client_email,
-                    event_name: calendarClient.event_name,
-                    date: dateTime.toISOString().split('T')[0],
-                    start_time: dateTime.toISOString(),
-                  }),
-                });
+                // Calculate end time (1 hour after start time)
+                const endTime = new Date(dateTime.getTime() + 60 * 60 * 1000);
+                
+                // Calculate session number for package deals
+                const originalQuantity = calendarClient.quantity || 1;
+                const remainingSessions = calendarClient.sessions || 0;
+                const sessionNumber = calculateSessionNumber(originalQuantity, remainingSessions);
+                // Get locale from URL params
+                const locale = window.location.pathname.split('/')[1] || 'en';
+                const sessionEventName = getSessionEventName(calendarClient.event_name, originalQuantity, sessionNumber, locale);
+                
+                try {
+                  const response = await fetch('/api/add-to-calendar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      eventName: sessionEventName,
+                      startTime: dateTime.toISOString(),
+                      endTime: endTime.toISOString(),
+                      customerName: calendarClient.client_name,
+                      customerEmail: calendarClient.client_email,
+                      customerPhone: calendarClient.client_phone || ''
+                    }),
+                  });
+                  
+                  if (response.ok) {
+                     console.log('Calendar event created successfully');
+                     
+                     // Decrement session count after successful booking
+                     await fetch('/api/decrement-session', {
+                       method: 'POST',
+                       headers: { 'Content-Type': 'application/json' },
+                       body: JSON.stringify({ client_email: calendarClient.client_email }),
+                     });
+                     
+                     // Refresh bookings to show updated session count
+                     const bookingsResponse = await fetch('/api/get-bookings');
+                     if (bookingsResponse.ok) {
+                       const bookingsData = await bookingsResponse.json();
+                       setBookings(bookingsData.bookings || []);
+                     }
+                   } else {
+                     const errorData = await response.json();
+                     console.error('Failed to create calendar event:', errorData);
+                   }
+                } catch (error) {
+                  console.error('Error creating calendar event:', error);
+                }
+                
                 setShowCalendar(false);
               }}
             />

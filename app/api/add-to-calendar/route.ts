@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
-// Initialize Service Account authentication
+// GOOGLE WORKSPACE DOMAIN-WIDE DELEGATION (ACTIVE)
+// Service account with Domain-Wide Delegation to send calendar invitations
+const serviceAccountAuth = new google.auth.JWT(
+  process.env.GOOGLE_CLIENT_EMAIL,
+  undefined,
+  process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+  ['https://www.googleapis.com/auth/calendar'],
+  process.env.GOOGLE_DOMAIN_USER_EMAIL // Domain-Wide Delegation - allows sending invites
+);
+
+// Get Calendar client
 const getCalendarClient = async () => {
-  const serviceAccountAuth = new google.auth.GoogleAuth({
-    credentials: {
-      type: 'service_account',
-      project_id: process.env.GOOGLE_PROJECT_ID,
-      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      client_id: process.env.GOOGLE_CLIENT_ID
-    },
-    scopes: ['https://www.googleapis.com/auth/calendar']
-  });
+  await serviceAccountAuth.authorize();
   return google.calendar({ version: 'v3', auth: serviceAccountAuth });
 };
 
@@ -60,17 +60,16 @@ export async function POST(request: Request) {
       description: `Booking for ${eventName}\nCustomer: ${customerName || 'N/A'}\nEmail: ${customerEmail || 'N/A'}\nPhone: ${customerPhone || 'N/A'}`,
       start: {
         dateTime: startDateTime,
-        timeZone: 'UTC', // Adjust to your timezone
+        timeZone: 'Europe/Kiev', // Adjust to your timezone
       },
       end: {
         dateTime: endDateTime,
-        timeZone: 'UTC', // Adjust to your timezone
+        timeZone: 'Europe/Kiev', // Adjust to your timezone
       },
-      // Optional: Add reminders, attendees, etc.
       reminders: {
         useDefault: true,
       },
-      // Add customer as an attendee if email is provided
+      // Add customer as an attendee with Domain-Wide Delegation
       ...(customerEmail ? {
         attendees: [
           { email: customerEmail, displayName: customerName }

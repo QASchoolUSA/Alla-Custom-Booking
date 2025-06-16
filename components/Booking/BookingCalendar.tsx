@@ -155,8 +155,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         <div className="flex flex-col items-center p-4 sm:p-6 md:p-8 w-full">
             <div className="flex flex-col w-full max-w-4xl mx-auto">
                 {/* Calendar Section - Always on top for mobile */}
-                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6 mb-3">
-                    <h2 className="text-xl font-semibold mb-4 text-primary-700 text-center">Select a Date</h2>
+                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6 mb-3" data-testid="calendar-section">
+                    <h2 className="text-xl font-semibold mb-4 text-primary-700 text-center" data-testid="calendar-title">Select a Date</h2>
                     <div className="flex justify-center">
                         <Calendar
                             mode="single"
@@ -164,12 +164,13 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                             onSelect={setSelectedDate}
                             className="rounded-md border mx-auto"
                             disabled={(date: Date) => date < new Date(new Date().setDate(new Date().getDate() -1))}
+                            data-testid="date-picker"
                         />
                     </div>
                 </div>
                 
                 {/* Available Slots Section - Below calendar on mobile */}
-                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6">
+                <div className="w-full bg-white rounded-lg shadow p-4 md:p-6" data-testid="time-slots-section">
                     {/* Removed the "Available Slots for" header */}
                     
                     <div className="text-center">
@@ -187,7 +188,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                     </div>
                     
                     {!isLoading && !error && availableSlots.length > 0 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-72 overflow-y-auto p-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-72 overflow-y-auto p-2" data-testid="time-slots-grid">
                             {availableSlots.map((slot) => (
                                 <Button
                                     key={slot.start}
@@ -198,6 +199,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                                         ? 'border-2 border-black font-medium'
                                         : 'hover:bg-primary-50 hover:text-primary-700'
                                     }`}
+                                    data-testid={`time-slot-${slot.start.replace(/[^a-zA-Z0-9]/g, '-')}`}
                                 >
                                     {slot.start}
                                 </Button>
@@ -210,6 +212,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                             <Button 
                                 onClick={handleContinue}
                                 className="px-6 py-2 bg-black text-white hover:bg-gray-800"
+                                data-testid="calendar-continue-btn"
                             >
                                 {t('continue')} {selectedTimeSlot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                             </Button>
