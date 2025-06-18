@@ -111,14 +111,29 @@
     }
   },
   "admin": {
-    "adminAccessRequired": "Требуется доступ администратора",
-    "clientName": "Имя клиента",
-    "event": "Событие",
-    "date": "Дата",
-    "sessionsLeft": "Осталось сессий",
+    "dashboard": "Панель администратора",
+    "bookingsOverview": "Обзор бронирований",
+    "totalClients": "Всего клиентов",
+    "moneyReceived": "Получено денег",
+    "thisMonth": "В этом месяце",
+    "completed": "Завершено",
+    "client": "Клиент",
+    "eventType": "Тип события",
+    "lastSession": "Последняя сессия",
+    "sessions": "Сессии",
+    "sessionsLeft": "осталось",
+    "currentSession": "Текущая сессия",
     "actions": "Действия",
-    "scheduleNextSession": "Запланировать следующую сессию для {clientName}",
-    "email": "Электронная почта"
+    "scheduleNextSession": "Запланировать следующую сессию",
+    "generateBookingLink": "Создать ссылку для бронирования",
+    "markAsCompleted": "Отметить как завершенное",
+    "scheduleNextSessionFor": "Запланировать следующую сессию для {clientName}",
+    "noBookingsFound": "Бронирования не найдены.",
+    "adminAccessRequired": "Требуется доступ администратора",
+    "signInToAccess": "Войти для доступа к админ-панели",
+    "bookingLinkCopied": "Ссылка для бронирования скопирована в буфер обмена!",
+    "failedToGenerateLink": "Не удалось создать ссылку для бронирования",
+    "packageCompleted": "Пакет завершен"
   },
   "events": {
     "initialMeeting": {

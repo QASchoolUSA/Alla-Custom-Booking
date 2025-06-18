@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       .from('bookings')
       .select('*')
       .eq('client_email', client_email)
-      .gt('quantity', 0)
+      .gt('sessions', 0)
       .order('date', { ascending: false });
 
     if (fetchError) {
@@ -25,20 +25,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No sessions left for this client.' }, { status: 404 });
     }
 
-    // Decrement the quantity of the most recent booking with sessions left
+    // Decrement the sessions of the most recent booking with sessions left
     const booking = bookings[0];
-    const newQuantity = (booking.quantity || 1) - 1;
+    const newSessions = (booking.sessions || 1) - 1;
 
     const { error: updateError } = await supabase
       .from('bookings')
-      .update({ quantity: newQuantity })
+      .update({ sessions: newSessions })
       .eq('id', booking.id);
 
     if (updateError) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, newQuantity });
+    return NextResponse.json({ success: true, newSessions });
   } catch (err) {
     const error = err as Error;
     return NextResponse.json({ error: error.message || 'Unknown error' }, { status: 500 });

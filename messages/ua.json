@@ -111,14 +111,29 @@
     }
   },
   "admin": {
-    "adminAccessRequired": "Потрібен доступ адміністратора",
-    "clientName": "Ім'я клієнта",
-    "event": "Подія",
-    "date": "Дата",
-    "sessionsLeft": "Залишилось сесій",
+    "dashboard": "Панель адміністратора",
+    "bookingsOverview": "Огляд бронювань",
+    "totalClients": "Всього клієнтів",
+    "moneyReceived": "Отримано грошей",
+    "thisMonth": "Цього місяця",
+    "completed": "Завершено",
+    "client": "Клієнт",
+    "eventType": "Тип події",
+    "lastSession": "Остання сесія",
+    "sessions": "Сесії",
+    "sessionsLeft": "залишилось",
+    "currentSession": "Поточна сесія",
     "actions": "Дії",
-    "scheduleNextSession": "Запланувати наступну сесію для {clientName}",
-    "email": "Електронна пошта"
+    "scheduleNextSession": "Запланувати наступну сесію",
+    "generateBookingLink": "Створити посилання для бронювання",
+    "markAsCompleted": "Позначити як завершене",
+    "scheduleNextSessionFor": "Запланувати наступну сесію для {clientName}",
+    "noBookingsFound": "Бронювання не знайдено.",
+    "adminAccessRequired": "Потрібен доступ адміністратора",
+    "signInToAccess": "Увійти для доступу до адмін-панелі",
+    "bookingLinkCopied": "Посилання для бронювання скопійовано в буфер обміну!",
+    "failedToGenerateLink": "Не вдалося створити посилання для бронювання",
+    "packageCompleted": "Пакет завершено"
   },
   "events": {
     "initialMeeting": {
