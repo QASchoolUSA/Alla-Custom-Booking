@@ -30,7 +30,7 @@ import { MoreHorizontal, Calendar, Link, CheckCircle, User, Mail, DollarSign } f
 import BookingCalendar from '@/components/Booking/BookingCalendar';
 import { calculateSessionNumber, getSessionEventName } from '@/utils/eventTypes';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
+
 
 interface Booking {
   id: string;
@@ -47,8 +47,6 @@ interface Booking {
 
 export default function AdminDashboard() {
   const t = useTranslations('admin');
-  const params = useParams();
-  const locale = typeof params.locale === 'string' ? params.locale : Array.isArray(params.locale) ? params.locale[0] : 'en';
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -284,7 +282,7 @@ export default function AdminDashboard() {
                                           } else {
                                             throw new Error('Failed to mark session as completed');
                                           }
-                                        } catch (error) {
+                                        } catch {
                                           toast.error("Failed to mark session as completed. Please try again.");
                                         } finally {
                                           setLoading(false);
