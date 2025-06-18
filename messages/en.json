@@ -111,14 +111,29 @@
     }
   },
   "admin": {
-    "adminAccessRequired": "Admin Access Required",
-    "clientName": "Client Name",
-    "event": "Event",
-    "date": "Date",
-    "sessionsLeft": "Sessions Left",
+    "dashboard": "Admin Dashboard",
+    "bookingsOverview": "Bookings Overview",
+    "totalClients": "Total Clients",
+    "moneyReceived": "Money Received",
+    "thisMonth": "This Month",
+    "completed": "Completed",
+    "client": "Client",
+    "eventType": "Event Type",
+    "lastSession": "Last Session",
+    "sessions": "Sessions",
+    "sessionsLeft": "left",
+    "currentSession": "Current Session",
     "actions": "Actions",
-    "scheduleNextSession": "Schedule Next Session for {clientName}",
-    "email": "Email"
+    "scheduleNextSession": "Schedule Next Session",
+    "generateBookingLink": "Generate Booking Link",
+    "markAsCompleted": "Mark as Completed",
+    "scheduleNextSessionFor": "Schedule Next Session for {clientName}",
+    "noBookingsFound": "No bookings found.",
+    "adminAccessRequired": "Admin Access Required",
+    "signInToAccess": "Sign In to Access Admin",
+    "bookingLinkCopied": "Booking link copied to clipboard!",
+    "failedToGenerateLink": "Failed to generate booking link",
+    "packageCompleted": "Package Completed"
   },
   "events": {
     "initialMeeting": {

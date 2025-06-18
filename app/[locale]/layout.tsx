@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { ClerkProvider } from '@clerk/nextjs'
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default async function RootLayout({
             <Header />
             {children}
             <Footer />
+            <Toaster />
           </NextIntlClientProvider>
         </body>
       </html>

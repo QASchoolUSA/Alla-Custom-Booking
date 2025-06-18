@@ -20,6 +20,7 @@ export async function POST(request: Request) {
         start_time: startTime,
         end_time: endTime,
         quantity,
+        sessions: quantity || 1, // Initialize sessions with the same value as quantity
       }
     ]);
 
