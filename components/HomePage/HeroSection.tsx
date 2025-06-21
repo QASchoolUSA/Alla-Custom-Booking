@@ -11,15 +11,30 @@ const HeroSection: React.FC = () => {
   const locale = useLocale();
   
   return (
-    <section className="relative w-full h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white overflow-hidden">
-      {/* Background Image */}
+    <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white overflow-hidden">
+      {/* Background Image - Mobile */}
       <Image
         src="/alla-psychology-background.webp"
         alt="Alla Psychology Background"
         fill
         priority
-        className="object-cover"
+        className="object-cover md:hidden"
         sizes="100vw"
+        style={{
+          objectPosition: 'center 30%',
+        }}
+      />
+      {/* Background Image - Desktop */}
+      <Image
+        src="/alla-booking-bg.webp"
+        alt="Alla Psychology Background"
+        fill
+        priority
+        className="object-cover hidden md:block"
+        sizes="100vw"
+        style={{
+          objectPosition: 'center center',
+        }}
       />
       {/* Overlay */}
       <div className="absolute inset-0 bg-black opacity-80 z-10"></div>
