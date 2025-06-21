@@ -61,12 +61,27 @@ export default function AdminDashboard() {
       });
   }, []);
 
-  // Group bookings by client and calculate sessions left
+  // Group bookings by client and prioritize bookings with sessions > 0, then by latest date
   const clientSessions = bookings.reduce((acc, booking) => {
-    if (!acc[booking.client_email]) {
-      acc[booking.client_email] = { ...booking, sessions: 0 };
+    const currentBooking = acc[booking.client_email];
+    // Use the actual sessions value from database, fallback to quantity only if sessions is undefined
+    const bookingSessions = booking.sessions !== undefined ? booking.sessions : (booking.quantity || 1);
+    
+    if (!currentBooking) {
+      // First booking for this client
+      acc[booking.client_email] = { ...booking, sessions: bookingSessions };
+    } else {
+      const currentSessions = currentBooking.sessions || 0;
+      const bookingDate = new Date(booking.date);
+      const currentDate = new Date(currentBooking.date);
+      
+      // Prioritize bookings with sessions > 0, then by latest date
+      if ((bookingSessions > 0 && currentSessions === 0) || 
+          (bookingSessions > 0 && currentSessions > 0 && bookingDate > currentDate) ||
+          (bookingSessions === 0 && currentSessions === 0 && bookingDate > currentDate)) {
+        acc[booking.client_email] = { ...booking, sessions: bookingSessions };
+      }
     }
-    acc[booking.client_email].sessions += booking.quantity || 1;
     return acc;
   }, {} as Record<string, Booking & { sessions: number }>);
 
@@ -94,39 +109,39 @@ export default function AdminDashboard() {
         <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-primary-700 text-center">
           {t('dashboard')}
         </h1>
-        <div className="w-full max-w-6xl">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('bookingsOverview')}</CardTitle>
+        <div className="w-full max-w-6xl" data-testid="admin-dashboard-container">
+          <Card data-testid="admin-dashboard-card">
+            <CardHeader data-testid="admin-dashboard-header">
+              <CardTitle data-testid="admin-dashboard-title">{t('bookingsOverview')}</CardTitle>
             </CardHeader>
             <CardContent>
               {loading ? (
-                <div className="flex items-center justify-center py-8">
+                <div className="flex items-center justify-center py-8" data-testid="loading-spinner">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                   <span className="ml-2 text-muted-foreground">Loading bookings...</span>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {/* Stats Cards */}
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <Card>
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" data-testid="stats-cards-container">
+                    <Card data-testid="total-clients-card">
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-2">
                           <User className="h-4 w-4 text-muted-foreground" />
                           <div className="space-y-1">
-                            <p className="text-sm font-medium leading-none">{t('totalClients')}</p>
-                            <p className="text-2xl font-bold">{Object.values(clientSessions).length}</p>
+                            <p className="text-sm font-medium leading-none" data-testid="total-clients-label">{t('totalClients')}</p>
+                            <p className="text-2xl font-bold" data-testid="total-clients-count">{Object.values(clientSessions).length}</p>
                           </div>
                         </div>
                       </CardContent>
                     </Card>
-                    <Card>
+                    <Card data-testid="money-received-card">
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-2">
                           <DollarSign className="h-4 w-4 text-muted-foreground" />
                           <div className="space-y-1">
-                            <p className="text-sm font-medium leading-none">{t('moneyReceived')}</p>
-                            <p className="text-2xl font-bold">
+                            <p className="text-sm font-medium leading-none" data-testid="money-received-label">{t('moneyReceived')}</p>
+                            <p className="text-2xl font-bold" data-testid="money-received-amount">
                               ${bookings.reduce((sum, booking) => {
                                 // Assuming each booking has a standard price based on event type
                                 const price = booking.event_name.includes('Individual') ? 150 : 
@@ -138,24 +153,24 @@ export default function AdminDashboard() {
                         </div>
                       </CardContent>
                     </Card>
-                    <Card>
+                    <Card data-testid="this-month-card">
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-2">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
                           <div className="space-y-1">
-                            <p className="text-sm font-medium leading-none">{t('thisMonth')}</p>
-                            <p className="text-2xl font-bold">{bookings.length}</p>
+                            <p className="text-sm font-medium leading-none" data-testid="this-month-label">{t('thisMonth')}</p>
+                            <p className="text-2xl font-bold" data-testid="this-month-count">{bookings.length}</p>
                           </div>
                         </div>
                       </CardContent>
                     </Card>
-                    <Card>
+                    <Card data-testid="completed-card">
                       <CardContent className="p-6">
                         <div className="flex items-center space-x-2">
                           <CheckCircle className="h-4 w-4 text-muted-foreground" />
                           <div className="space-y-1">
-                            <p className="text-sm font-medium leading-none">{t('completed')}</p>
-                            <p className="text-2xl font-bold">
+                            <p className="text-sm font-medium leading-none" data-testid="completed-label">{t('completed')}</p>
+                            <p className="text-2xl font-bold" data-testid="completed-count">
                               {Object.values(clientSessions).filter(client => client.sessions === 0).length}
                             </p>
                           </div>
@@ -165,22 +180,22 @@ export default function AdminDashboard() {
                   </div>
 
                   {/* Table */}
-                  <div className="rounded-md border">
-                    <Table>
-                      <TableHeader>
+                  <div className="rounded-md border" data-testid="bookings-table-container">
+                    <Table data-testid="bookings-table">
+                      <TableHeader data-testid="table-header">
                         <TableRow>
-                          <TableHead className="w-1/3 sm:w-1/4">{t('client')}</TableHead>
-                          <TableHead className="hidden md:table-cell w-1/6">{t('eventType')}</TableHead>
-                          <TableHead className="hidden lg:table-cell w-1/6">{t('lastSession')}</TableHead>
-                          <TableHead className="w-1/3 sm:w-1/4">{t('sessions')}</TableHead>
-                          <TableHead className="text-right w-1/6">{t('actions')}</TableHead>
+                          <TableHead className="w-1/3 sm:w-1/4" data-testid="client-header">{t('client')}</TableHead>
+                          <TableHead className="hidden md:table-cell w-1/6" data-testid="event-type-header">{t('eventType')}</TableHead>
+                          <TableHead className="hidden lg:table-cell w-1/6" data-testid="last-session-header">{t('lastSession')}</TableHead>
+                          <TableHead className="w-1/3 sm:w-1/4" data-testid="sessions-header">{t('sessions')}</TableHead>
+                          <TableHead className="text-right w-1/6" data-testid="actions-header">{t('actions')}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {Object.values(clientSessions).length === 0 ? (
-                          <TableRow>
+                          <TableRow data-testid="no-bookings-row">
                             <TableCell colSpan={5} className="h-24 text-center">
-                              <div className="flex flex-col items-center justify-center space-y-2">
+                              <div className="flex flex-col items-center justify-center space-y-2" data-testid="no-bookings-message">
                                 <User className="h-8 w-8 text-muted-foreground" />
                                 <p className="text-muted-foreground">{t('noBookingsFound')}</p>
                               </div>
@@ -188,29 +203,29 @@ export default function AdminDashboard() {
                           </TableRow>
                         ) : (
                           Object.values(clientSessions).map((client) => (
-                            <TableRow key={client.client_email}>
-                              <TableCell>
+                            <TableRow key={client.client_email} data-testid={`client-row-${client.client_email}`}>
+                              <TableCell data-testid={`client-info-${client.client_email}`}>
                                 <div className="space-y-1">
-                                  <p className="font-medium leading-none">{client.client_name || 'Unknown'}</p>
-                                  <p className="text-sm text-muted-foreground flex items-center">
+                                  <p className="font-medium leading-none" data-testid={`client-name-${client.client_email}`}>{client.client_name || 'Unknown'}</p>
+                                  <p className="text-sm text-muted-foreground flex items-center" data-testid={`client-email-${client.client_email}`}>
                                     <Mail className="h-3 w-3 mr-1" />
                                     {client.client_email}
                                   </p>
                                 </div>
                               </TableCell>
-                              <TableCell className="hidden md:table-cell">
-                                <Badge variant="outline">{client.event_name}</Badge>
+                              <TableCell className="hidden md:table-cell" data-testid={`event-type-${client.client_email}`}>
+                                <Badge variant="outline" data-testid={`event-badge-${client.client_email}`}>{client.event_name}</Badge>
                               </TableCell>
-                              <TableCell className="hidden lg:table-cell">
-                                <p className="text-sm text-muted-foreground">
+                              <TableCell className="hidden lg:table-cell" data-testid={`last-session-${client.client_email}`}>
+                                <p className="text-sm text-muted-foreground" data-testid={`last-session-date-${client.client_email}`}>
                                   {new Date(client.date).toLocaleDateString()}
                                 </p>
                               </TableCell>
-                              <TableCell>
+                              <TableCell data-testid={`sessions-${client.client_email}`}>
                                 <div className="space-y-1">
                                   <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-1 sm:space-y-0">
                                     <div className="flex items-center space-x-2">
-                                      <Badge variant="outline" className="text-xs">
+                                      <Badge variant="outline" className="text-xs" data-testid={`booked-sessions-badge-${client.client_email}`}>
                                         Booked: {client.quantity || 1}
                                       </Badge>
                                       <Badge 
@@ -220,35 +235,37 @@ export default function AdminDashboard() {
                                             ? "bg-green-100 text-green-800 border-green-300" 
                                             : "bg-gray-100 text-gray-600 border-gray-300"
                                         }`}
+                                        data-testid={`left-sessions-badge-${client.client_email}`}
                                       >
                                         Left: {client.sessions}
                                       </Badge>
                                     </div>
                                   </div>
                                   {/* Mobile-only: Show event type and date */}
-                                  <div className="md:hidden space-y-1">
-                                    <Badge variant="outline" className="text-xs">{client.event_name}</Badge>
-                                    <p className="text-xs text-muted-foreground">
+                                  <div className="md:hidden space-y-1" data-testid={`mobile-info-${client.client_email}`}>
+                                    <Badge variant="outline" className="text-xs" data-testid={`mobile-event-badge-${client.client_email}`}>{client.event_name}</Badge>
+                                    <p className="text-xs text-muted-foreground" data-testid={`mobile-date-${client.client_email}`}>
                                       {new Date(client.date).toLocaleDateString()}
                                     </p>
                                   </div>
                                 </div>
                               </TableCell>
-                              <TableCell className="text-right">
+                              <TableCell className="text-right" data-testid={`actions-${client.client_email}`}>
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="h-8 w-8 p-0 sm:h-9 sm:w-9">
+                                    <Button variant="ghost" className="h-8 w-8 p-0 sm:h-9 sm:w-9" data-testid={`actions-menu-trigger-${client.client_email}`}>
                                       <span className="sr-only">Open menu</span>
                                       <MoreHorizontal className="h-4 w-4" />
                                     </Button>
                                   </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end" className="w-48">
-                                    <DropdownMenuLabel className="text-xs sm:text-sm">{t('actions')}</DropdownMenuLabel>
+                                  <DropdownMenuContent align="end" className="w-48" data-testid={`actions-menu-content-${client.client_email}`}>
+                                    <DropdownMenuLabel className="text-xs sm:text-sm" data-testid={`actions-label-${client.client_email}`}>{t('actions')}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                       onClick={() => handleScheduleNextSession(client)}
                                       disabled={client.sessions <= 0}
                                       className="cursor-pointer text-xs sm:text-sm"
+                                      data-testid={`schedule-session-${client.client_email}`}
                                     >
                                       <Calendar className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                                       <span className="truncate">{t('scheduleNextSession')}</span>
@@ -256,6 +273,7 @@ export default function AdminDashboard() {
                                     <DropdownMenuItem
                                       onClick={() => handleGenerateBookingLink(client)}
                                       className="cursor-pointer text-xs sm:text-sm"
+                                      data-testid={`generate-booking-link-${client.client_email}`}
                                     >
                                       <Link className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                                       <span className="truncate">{t('generateBookingLink')}</span>
@@ -272,8 +290,8 @@ export default function AdminDashboard() {
                                           });
                                           
                                           if (response.ok) {
-                                            // Refresh the bookings data
-                                            const bookingsResponse = await fetch('/api/get-bookings');
+                                            // Refresh the bookings data with cache busting
+                                            const bookingsResponse = await fetch('/api/get-bookings?' + new Date().getTime());
                                             const data = await bookingsResponse.json();
                                             setBookings(data.bookings || []);
                                             
@@ -290,6 +308,7 @@ export default function AdminDashboard() {
                                       }}
                                       disabled={client.sessions <= 0}
                                       className="cursor-pointer text-red-600 text-xs sm:text-sm"
+                                      data-testid={`mark-as-completed-${client.client_email}`}
                                     >
                                       <CheckCircle className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                                       <span className="truncate">{t('markAsCompleted')}</span>
@@ -310,26 +329,28 @@ export default function AdminDashboard() {
         </div>
       </SignedIn>
       <SignedOut>
-        <div className="flex flex-col items-center justify-center min-h-screen">
-          <h2 className="text-xl font-semibold mb-4">{t('adminAccessRequired')}</h2>
+        <div className="flex flex-col items-center justify-center min-h-screen" data-testid="signed-out-container">
+          <h2 className="text-xl font-semibold mb-4" data-testid="admin-access-required-title">{t('adminAccessRequired')}</h2>
           <SignInButton>
-            <button className="px-4 py-2 bg-black text-white rounded hover:bg-primary-700 transition">
+            <button className="px-4 py-2 bg-black text-white rounded hover:bg-primary-700 transition" data-testid="sign-in-button">
               {t('signInToAccess')}
             </button>
           </SignInButton>
         </div>
       </SignedOut>
       {showCalendar && calendarClient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" data-testid="calendar-modal-overlay">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative" data-testid="calendar-modal">
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-black"
               onClick={() => setShowCalendar(false)}
+              data-testid="calendar-modal-close-button"
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold mb-4">{t('scheduleNextSessionFor', { clientName: calendarClient.client_name })}</h2>
+            <h2 className="text-xl font-bold mb-4" data-testid="calendar-modal-title">{t('scheduleNextSessionFor', { clientName: calendarClient.client_name })}</h2>
             <BookingCalendar
+              data-testid="booking-calendar-component"
               event={{
                 id: calendarClient.id,
                 name: calendarClient.event_name,
