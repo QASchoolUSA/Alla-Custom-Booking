@@ -5,11 +5,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
   
   // Add validation and fallback
-  const validLocales = ['en', 'ru', 'ua'];
+  const validLocales = ['ru', 'ua'];
   
   // Ensure that the incoming locale is valid
   if (!locale || !validLocales.includes(locale)) {
-    locale = 'en';
+    locale = 'ru';
   }
   
   const validatedLocale = locale;
@@ -21,10 +21,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
     };
   } catch (error) {
     console.error(`Failed to load messages for locale: ${locale}`, error);
-    // Fallback to English
+    // Fallback to Russian
     return {
-      locale: 'en',
-      messages: (await import(`./messages/en.json`)).default
+      locale: 'ru',
+      messages: (await import(`./messages/ru.json`)).default
     };
   }
 });

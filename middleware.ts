@@ -2,8 +2,8 @@ import createMiddleware from 'next-intl/middleware';
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
 const intlMiddleware = createMiddleware({
-  locales: ['en', 'ru', 'ua'],
-  defaultLocale: 'en',
+  locales: ['ru', 'ua'],
+  defaultLocale: 'ru',
   localePrefix: 'always'
 });
 
