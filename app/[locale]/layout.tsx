@@ -1,15 +1,28 @@
-import type { Metadata } from "next";
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { ClerkProvider } from '@clerk/nextjs'
+import { Metadata, Viewport } from 'next';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "Alla Psychology",
   description: "Alla Psychology - Psychotherapeutic Services",
+  keywords: "psychology, therapy, psychotherapist, mental health, counseling",
+  authors: [{ name: "Alla Sidor" }],
+  robots: "index, follow",
+  openGraph: {
+    title: "Alla Psychology",
+    description: "Alla Psychology - Psychotherapeutic Services",
+    type: "website",
+  },
 };
 
 export default async function RootLayout({
@@ -29,6 +42,10 @@ export default async function RootLayout({
       <html lang={locale}>
         <head>
           <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
+          <link rel="preload" href="/alla-psychology-background.webp" as="image" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rozha+One&display=swap" />
         </head>
         <body>
           <NextIntlClientProvider locale={locale} messages={messages}>

@@ -3,6 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslations, useLocale } from 'next-intl';
 
 const HeroSection: React.FC = () => {
@@ -10,15 +11,21 @@ const HeroSection: React.FC = () => {
   const locale = useLocale();
   
   return (
-    <section
-      className="relative w-full h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white 
-                 bg-cover bg-center bg-[url('/alla-psychology-background.webp')]"
-    >
+    <section className="relative w-full h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white overflow-hidden">
+      {/* Background Image */}
+      <Image
+        src="/alla-psychology-background.webp"
+        alt="Alla Psychology Background"
+        fill
+        priority
+        className="object-cover"
+        sizes="100vw"
+      />
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black opacity-80"></div>
+      <div className="absolute inset-0 bg-black opacity-80 z-10"></div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 text-center">
+      <div className="relative z-20 container mx-auto px-6 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
           {t('title')}
         </h1>

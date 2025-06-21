@@ -4,7 +4,7 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 const intlMiddleware = createMiddleware({
   locales: ['ru', 'ua'],
   defaultLocale: 'ru',
-  localePrefix: 'always'
+  localePrefix: 'as-needed'
 });
 
 const isProtectedRoute = createRouteMatcher([
