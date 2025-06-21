@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -61,19 +61,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         }
     };
 
-    useEffect(() => {
-        if (selectedDate) {
-            const formattedDate = formatDateToYYYYMMDD(selectedDate);
-            fetchAvailability(formattedDate);
-        }
-    }, [selectedDate]);
-
-    // Reset selected time slot when date changes
-    useEffect(() => {
-        setSelectedTimeSlot(null);
-    }, [selectedDate]);
-
-    const fetchAvailability = async (dateString: string): Promise<void> => {
+    const fetchAvailability = useCallback(async (dateString: string): Promise<void> => {
         // Check cache first to reduce API calls
         if (availabilityCache.has(dateString)) {
             const cachedData = availabilityCache.get(dateString) || [];
@@ -116,7 +104,21 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [availabilityCache]);
+
+    useEffect(() => {
+        if (selectedDate) {
+            const formattedDate = formatDateToYYYYMMDD(selectedDate);
+            fetchAvailability(formattedDate);
+        }
+    }, [selectedDate, fetchAvailability]);
+
+    // Reset selected time slot when date changes
+    useEffect(() => {
+        setSelectedTimeSlot(null);
+    }, [selectedDate]);
+
+
 
     useEffect(() => {
         if (!selectedDate) return;

@@ -12,7 +12,7 @@ const HeroSection: React.FC = () => {
   return (
     <section
       className="relative w-full h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white 
-                 bg-cover bg-center bg-[url('/alla-booking-bg.webp')]"
+                 bg-cover bg-center bg-[url('/alla-psychology-background.webp')]"
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-black opacity-80"></div>

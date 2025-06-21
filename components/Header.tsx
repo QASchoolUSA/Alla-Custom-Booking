@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from "next/image";
@@ -12,13 +12,12 @@ export default function Header() {
     const locale = useLocale();
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
-    const [isLangOpen, setIsLangOpen] = useState(false);
+
     const pathname = usePathname();
   
     // Close menu when route changes
     useEffect(() => {
       setIsOpen(false);
-      setIsLangOpen(false);
     }, [pathname]);
 
     const languages = [
@@ -26,12 +25,11 @@ export default function Header() {
       { code: 'ua', name: 'Українська', flag: '🇺🇦' }
     ];
 
-    const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
+    // const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
 
     const switchLanguage = (newLocale: string) => {
       const currentPath = pathname.replace(`/${locale}`, '');
       router.push(`/${newLocale}${currentPath}`);
-      setIsLangOpen(false);
     };
   
     // Navigation links

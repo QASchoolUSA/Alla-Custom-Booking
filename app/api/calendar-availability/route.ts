@@ -5,12 +5,16 @@ import { NextRequest, NextResponse } from 'next/server';
 // Helper function for exponential backoff
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const retryWithBackoff = async (fn: () => Promise<any>, maxRetries = 3) => {
+const retryWithBackoff = async <T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> => {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
-    } catch (error: any) {
-      if (error.code === 403 && (error.message?.includes('usage limits exceeded') || error.message?.includes('quotaExceeded') || error.message?.includes('Calendar usage limits exceeded')) && i < maxRetries - 1) {
+    } catch (error: unknown) {
+      const isGoogleApiError = (err: unknown): err is { code: number; message?: string } => {
+        return typeof err === 'object' && err !== null && 'code' in err;
+      };
+      
+      if (isGoogleApiError(error) && error.code === 403 && (error.message?.includes('usage limits exceeded') || error.message?.includes('quotaExceeded') || error.message?.includes('Calendar usage limits exceeded')) && i < maxRetries - 1) {
         const backoffTime = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 30000);
         console.log(`Rate limited, retrying in ${backoffTime}ms... (attempt ${i + 1}/${maxRetries})`);
         await delay(backoffTime);
@@ -19,6 +23,7 @@ const retryWithBackoff = async (fn: () => Promise<any>, maxRetries = 3) => {
       throw error;
     }
   }
+  throw new Error('All retry attempts failed');
 };
 
 // Define a type for the busy slots we expect from Google Calendar API

@@ -1,8 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import { Facebook, Instagram, Linkedin, Mail, Phone } from 'lucide-react';
+import { Instagram, Mail, Phone, Send } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 
 export default function Footer() {
+  const t = useTranslations('footer');
 
   return (
     <footer className="bg-neutral-900 text-white">
@@ -10,43 +13,37 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Column 1: Logo and About */}
           <div>
-            <Link href="/" className="text-2xl font-semibold text-white mb-4 inline-block">
-              Alla Sidor
+            <Link href="/" className="flex items-center space-x-3 text-2xl font-semibold text-white mb-4">
+              <Image 
+                src="/alla-psychology-logo.webp" 
+                alt="Alla Psychology Logo" 
+                width={96}
+                height={96}
+                className="w-24 h-24 object-contain"
+              />
+              <span className="font-alla-custom">Alla Psychology</span>
             </Link>
-            <p className="text-neutral-400 mt-4">
-              Bio
-            </p>
+            <div className="text-neutral-400 mt-4">
+              <p className="leading-relaxed whitespace-pre-line">
+                {t('bio')}
+              </p>
+            </div>
           </div>
 
           {/* Column 2: Quick Links */}
           <div>
             <h4 className="text-lg font-medium mb-4 border-b border-neutral-700 pb-2">
-              Home
+              {t('quickLinks')}
             </h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  Services
+                  {t('home')}
                 </Link>
               </li>
               <li>
                 <Link href="/booking" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  Booking
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  Contact
+                  {t('booking')}
                 </Link>
               </li>
             </ul>
@@ -55,7 +52,7 @@ export default function Footer() {
           {/* Column 3: Contact Information */}
           <div>
             <h4 className="text-lg font-medium mb-4 border-b border-neutral-700 pb-2">
-              Contact Info
+              {t('contactInfo')}
             </h4>
             <ul className="space-y-4">
               <li className="flex items-center">
@@ -72,20 +69,11 @@ export default function Footer() {
               </li>
               <li>
                 <h5 className="text-sm uppercase tracking-wider text-neutral-500 mb-2">
-                  Social Media
+                  {t('socialMedia')}
                 </h5>
                 <div className="flex space-x-4 mt-2">
                   <a 
-                    href="https://facebook.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-neutral-400 hover:text-primary-400 transition-colors duration-200"
-                    aria-label="Facebook"
-                  >
-                    <Facebook size={20} />
-                  </a>
-                  <a 
-                    href="https://instagram.com" 
+                    href="https://www.instagram.com/alla.psychology_" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-neutral-400 hover:text-primary-400 transition-colors duration-200"
@@ -94,13 +82,13 @@ export default function Footer() {
                     <Instagram size={20} />
                   </a>
                   <a 
-                    href="https://linkedin.com" 
+                    href="https://t.me/alla_psychology" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-neutral-400 hover:text-primary-400 transition-colors duration-200"
-                    aria-label="LinkedIn"
+                    aria-label="Telegram"
                   >
-                    <Linkedin size={20} />
+                    <Send size={20} />
                   </a>
                 </div>
               </li>
@@ -108,20 +96,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="border-t border-neutral-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-neutral-500 text-sm">
-            Copyright
-          </p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-neutral-500 hover:text-white text-sm transition-colors duration-200">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-neutral-500 hover:text-white text-sm transition-colors duration-200">
-              Terms of Service
-            </Link>
-          </div>
-        </div>
+
       </div>
     </footer>
   );

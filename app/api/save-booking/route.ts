@@ -14,7 +14,6 @@ export async function POST(request: Request) {
       start_time, 
       end_time, 
       quantity, 
-      sessions,
       locale, 
       booking_token, 
       is_package_booking 
