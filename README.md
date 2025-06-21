@@ -2,6 +2,11 @@
 
 **PROD ENV** - https://alla-custom-booking.vercel.app/
 
+## PageSpeed Report
+![Screenshot 2025-06-21 at 3 42 58 AM](https://github.com/user-attachments/assets/4a764c71-f099-4575-9cb9-23165b6f478e)
+![Screenshot 2025-06-21 at 3 43 24 AM](https://github.com/user-attachments/assets/9dcf3c21-d517-4cd5-b8ac-eb89f130ffe0)
+
+
 ## Getting Started
 
 First, run the development server:
