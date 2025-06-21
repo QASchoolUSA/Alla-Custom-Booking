@@ -42,6 +42,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
+    const [availabilityCache, setAvailabilityCache] = useState<Map<string, BusySlotData[]>>(new Map());
 
     // Use the event prop to display event information
     useEffect(() => {
@@ -73,6 +74,14 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     }, [selectedDate]);
 
     const fetchAvailability = async (dateString: string): Promise<void> => {
+        // Check cache first to reduce API calls
+        if (availabilityCache.has(dateString)) {
+            const cachedData = availabilityCache.get(dateString) || [];
+            setBusySlots(cachedData);
+            console.log(`Using cached availability data for ${dateString}`);
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
         setAvailableSlots([]);
@@ -83,7 +92,23 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                 throw new Error(errorData.message || `Error: ${response.status}`);
             }
             const data: { busySlots?: BusySlotData[] } = await response.json();
-            setBusySlots(data.busySlots || []);
+            const busySlots = data.busySlots || [];
+            
+            // Cache the result for future use
+            setAvailabilityCache(prev => {
+                const newCache = new Map(prev);
+                newCache.set(dateString, busySlots);
+                // Keep cache size reasonable - remove entries older than 7 days
+                if (newCache.size > 7) {
+                    const oldestKey = newCache.keys().next().value;
+                    if (oldestKey) {
+                        newCache.delete(oldestKey);
+                    }
+                }
+                return newCache;
+            });
+            
+            setBusySlots(busySlots);
         } catch (err: unknown) {
             const error = err as Error;
             console.error("Failed to fetch availability:", error);

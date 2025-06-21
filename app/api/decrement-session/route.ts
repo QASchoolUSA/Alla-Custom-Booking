@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     // Decrement the sessions of the most recent booking with sessions left
     const booking = bookings[0];
-    const newSessions = (booking.sessions || 1) - 1;
+    const newSessions = Math.max(0, (booking.sessions || 1) - 1);
 
     const { error: updateError } = await supabase
       .from('bookings')

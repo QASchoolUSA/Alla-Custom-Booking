@@ -5,6 +5,30 @@ import { useSearchParams } from 'next/navigation';
 import { CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
+// Helper function for exponential backoff
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const retryWithBackoff = async (fn: () => Promise<Response>, maxRetries = 3) => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fn();
+      if (response.status === 429 && i < maxRetries - 1) {
+        const backoffTime = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 30000);
+        console.log(`Rate limited, retrying calendar request in ${backoffTime}ms... (attempt ${i + 1}/${maxRetries})`);
+        await delay(backoffTime);
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      const backoffTime = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 30000);
+      console.log(`Request failed, retrying in ${backoffTime}ms... (attempt ${i + 1}/${maxRetries})`);
+      await delay(backoffTime);
+    }
+  }
+  throw new Error('Max retries exceeded');
+};
+
 // Client component that uses useSearchParams
 export default function SuccessContentClient({ locale }: { locale: string }) {
   const searchParams = useSearchParams();
@@ -34,37 +58,42 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
               const { eventName, startTime, endTime, customerName, customerEmail, customerPhone, sessionsCount } = data.bookingDetails;
 
               // Save booking to Supabase (add this block)
+              // Extract base event name without session numbering for database storage
+              const baseEventName = eventName.split(' - ')[0];
+              
               await fetch('/api/save-booking', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  eventName,
-                  clientName: customerName,
-                  clientEmail: customerEmail,
-                  clientPhone: customerPhone,
+                  event_name: baseEventName, // Use base event name for database
+                  client_name: customerName,
+                  client_email: customerEmail,
+                  client_phone: customerPhone,
                   date: startTime ? startTime.split('T')[0] : undefined,
-                  startTime,
-                  endTime,
+                  start_time: startTime,
+                  end_time: endTime,
                   quantity: sessionsCount || 1, // Use the quantity from bookingDetails
                   locale: locale || 'en'
                 }),
               });
 
-              // Create calendar event
-              const calendarResponse = await fetch('/api/add-to-calendar', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  eventName,
-                  startTime,
-                  endTime,
-                  customerName,
-                  customerEmail,
-                  customerPhone,
-                }),
-              });
+              // Create calendar event with retry logic
+              const calendarResponse = await retryWithBackoff(() => 
+                fetch('/api/add-to-calendar', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    eventName,
+                    startTime,
+                    endTime,
+                    customerName,
+                    customerEmail,
+                    customerPhone,
+                  }),
+                })
+              );
 
               const calendarData = await calendarResponse.json();
               
