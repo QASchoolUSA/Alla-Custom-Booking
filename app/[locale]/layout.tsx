@@ -1,6 +1,5 @@
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
-import { ClerkProvider } from '@clerk/nextjs'
 import { Metadata, Viewport } from 'next';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -38,24 +37,22 @@ export default async function RootLayout({
   const messages = await getMessages({ locale });
 
   return (
-    <ClerkProvider>
-      <html lang={locale}>
-        <head>
-          <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
-          <link rel="preload" href="/alla-psychology-background.webp" as="image" />
-          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rozha+One&display=swap" />
-        </head>
-        <body>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <Header />
-            {children}
-            <Footer />
-            <Toaster />
-          </NextIntlClientProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang={locale}>
+      <head>
+        <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
+        <link rel="preload" href="/alla-psychology-background.webp" as="image" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rozha+One&display=swap" />
+      </head>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Header />
+          {children}
+          <Footer />
+          <Toaster />
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
