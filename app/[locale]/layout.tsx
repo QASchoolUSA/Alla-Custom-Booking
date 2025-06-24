@@ -1,14 +1,25 @@
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { Metadata, Viewport } from 'next';
-import { Comfortaa } from 'next/font/google';
+import { Alegreya } from 'next/font/google';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
 
-const comfortaa = Comfortaa({
-  weight: '600',
+// Good Fonts for my taste
+// Bitter
+// Exo 2
+// Cormorant Garamond
+// Alegreya
+// Jura
+// Commissioner
+// Carlito
+
+// Good for Headers - Rubik Doodle Shadow
+
+const comfortaa = Alegreya({
+  weight: '500',
   subsets: ['cyrillic']
 });
 

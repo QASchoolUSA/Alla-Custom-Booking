@@ -7,12 +7,13 @@ import EventSelection from "@/components/Booking/EventSelection";
 import StripeCheckout from "@/components/Booking/StripeCheckout";
 import ClientInfo from "@/components/Booking/ClientInfo";
 import { SelectedEvent } from "@/types/bookings";
-import { getEventById } from "@/utils/eventTypes";
+import { getEventById, getLocalizedEvents } from "@/utils/eventTypes";
 import { useParams } from "next/navigation";
 import { useTranslations } from 'next-intl';
 
 export default function BookingPage() {
   const t = useTranslations('booking');
+  const tEvents = useTranslations();
   const params = useParams();
   const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "ru";
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
@@ -35,8 +36,12 @@ export default function BookingPage() {
   }, [step]);
 
   const handleSelectEvent = (eventID: string) => {
-    // Find the event object based on ID or create a simple one for now
-    const eventData = getEventById(eventID);
+    // Get localized events and find the selected one
+    const localizedEvents = getLocalizedEvents(tEvents);
+    const localizedEventData = localizedEvents.find(event => event.id === eventID);
+    const fallbackEventData = getEventById(eventID);
+    
+    const eventData = localizedEventData || fallbackEventData;
     if (eventData) {
       const priceInCents = parseInt(eventData.price) * 100;
 

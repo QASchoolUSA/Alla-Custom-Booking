@@ -78,10 +78,6 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-.font-alla-custom {
-  font-family: 'Comfortaa', serif;
-}
-
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -126,7 +122,7 @@
 }
 
 .font-alla-custom {
-  font-family: 'Rozha One', serif;
+  font-family: 'Orelega One';
   font-size: 25px;
 }
 
