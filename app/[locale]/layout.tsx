@@ -9,6 +9,7 @@ import { getMessages } from 'next-intl/server';
 
 const comfortaa = Comfortaa({
   weight: '600',
+  subsets: ['cyrillic']
 });
 
 export const viewport: Viewport = {
