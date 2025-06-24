@@ -14,7 +14,7 @@ import { useTranslations } from 'next-intl';
 export default function BookingPage() {
   const t = useTranslations('booking');
   const params = useParams();
-  const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "en";
+  const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "ru";
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
   const [step, setStep] = useState<"select-event" | "calendar" | "client-info" | "payment">("select-event");
@@ -225,31 +225,31 @@ export default function BookingPage() {
                 <div className="w-full p-6">
                   <ul className="divide-y divide-neutral-200" data-testid="booking-summary-details">
                     <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
-                      <span className="font-medium text-neutral-600">Service</span>
+                      <span className="font-medium text-neutral-600">{t('service')}</span>
                       <span className="text-neutral-900">{selectedEvent.name}</span>
                     </li>
                     <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
-                      <span className="font-medium text-neutral-600">Date/Time</span>
+                      <span className="font-medium text-neutral-600">{t('dateTime')}</span>
                       <span className="text-neutral-900">{selectedDateTime?.toLocaleString()}</span>
                     </li>
                     {clientData && (
                       <>
                         <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
-                          <span className="font-medium text-neutral-600">Name</span>
+                          <span className="font-medium text-neutral-600">{t('name')}</span>
                           <span className="text-neutral-900">{clientData.firstName} {clientData.lastName}</span>
                         </li>
                         <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
-                          <span className="font-medium text-neutral-600">Email</span>
+                          <span className="font-medium text-neutral-600">{t('email')}</span>
                           <span className="text-neutral-900">{clientData.email}</span>
                         </li>
                         <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
-                          <span className="font-medium text-neutral-600">Phone</span>
+                          <span className="font-medium text-neutral-600">{t('phone')}</span>
                           <span className="text-neutral-900">{clientData.phone}</span>
                         </li>
                       </>
                     )}
                     <li className="py-2 flex flex-col sm:flex-row sm:justify-between">
-                      <span className="font-medium text-neutral-600">Price</span>
+                      <span className="font-medium text-neutral-600">{t('price')}</span>
                       <span className="text-neutral-900 font-semibold">${(selectedEvent.price / 100).toFixed(2)}</span>
                     </li>
                   </ul>

@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('-- [Received request body] --', body);
     console.log(body);
-    const { amount, currency, eventName, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'en' } = body;
+    const { amount, currency, eventName, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'ru' } = body;
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const successUrl = `${baseUrl}/${locale}/booking/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${baseUrl}/${locale}/booking?canceled=true`;
@@ -93,6 +93,7 @@ export async function POST(request: Request) {
       mode: 'payment',
       success_url: successUrl,
       cancel_url: cancelUrl,
+      locale: 'ru', // Always use Russian for Stripe as Ukrainian is not supported
       metadata: {
         eventName: finalEventName,
         startTime: finalStartTime,

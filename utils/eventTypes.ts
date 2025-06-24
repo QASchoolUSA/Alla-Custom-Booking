@@ -101,7 +101,7 @@ export const getEventById = (id: string): EventType | undefined => {
 };
 
 // Helper function to generate session-numbered event name for package deals
-export const getSessionEventName = (eventName: string, eventQuantity: number, sessionNumber: number, locale: string = 'en'): string => {
+export const getSessionEventName = (eventName: string, eventQuantity: number, sessionNumber: number, locale: string = 'ru'): string => {
   // Only add session numbers for package deals (quantity > 1)
   if (eventQuantity > 1) {
     const sessionText = getSessionText(sessionNumber, eventQuantity, locale);
@@ -122,8 +122,7 @@ const getSessionText = (sessionNumber: number, totalSessions: number, locale: st
       return `${sessionNumber} из ${totalSessions}`;
     case 'ua':
       return `${sessionNumber} з ${totalSessions}`;
-    case 'en':
     default:
-      return `${sessionNumber} out of ${totalSessions}`;
+      return `${sessionNumber} из ${totalSessions}`;
   }
 };

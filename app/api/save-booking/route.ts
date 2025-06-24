@@ -43,7 +43,7 @@ export async function POST(request: Request) {
         baseEventName, 
         originalBooking.quantity || 1, 
         (originalBooking.quantity - originalBooking.sessions + 1), 
-        locale || 'en'
+        locale || 'ru'
       );
 
       const { error: insertError } = await supabase.from('bookings').insert([
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true });
     } else {
       // Original logic for regular bookings
-      const sessionEventName = getSessionEventName(event_name, quantity || 1, 1, locale || 'en');
+      const sessionEventName = getSessionEventName(event_name, quantity || 1, 1, locale || 'ru');
 
       const { error } = await supabase.from('bookings').insert([
         {

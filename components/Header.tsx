@@ -37,6 +37,17 @@ export default function Header() {
       { path: `/${locale}`, label: t('home') },
       { path: `/${locale}/booking`, label: t('booking') },
     ];
+
+    // Helper function to check if link is active
+    const isLinkActive = (linkPath: string) => {
+      // For default locale (ru), the URL doesn't include /ru prefix
+      if (locale === 'ru') {
+        const pathWithoutLocale = linkPath.replace('/ru', '') || '/';
+        return pathname === pathWithoutLocale;
+      }
+      // For other locales, compare directly
+      return pathname === linkPath;
+    };
   
     const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -79,9 +90,9 @@ export default function Header() {
                 <Link
                   key={link.path}
                   href={link.path}
-                  className={`font-medium transition-colors duration-200 hover:text-primary-400 ${
-                    pathname === link.path
-                      ? 'text-primary-400 font-bold'
+                  className={`font-medium transition-colors duration-200 hover:text-yellow-400 ${
+                    isLinkActive(link.path)
+                      ? 'text-yellow-400 font-bold'
                       : 'text-white'
                   }`}
                 >
@@ -130,9 +141,9 @@ export default function Header() {
                     key={link.path}
                     href={link.path}
                     className={`group relative font-medium py-4 px-6 text-center text-2xl transition-all duration-300 rounded-xl ${
-                      pathname === link.path
+                      isLinkActive(link.path)
                         ? 'text-white bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg shadow-primary-500/25'
-                        : 'text-white hover:text-primary-300 hover:bg-white/5 hover:scale-105'
+                        : 'text-white hover:text-yellow-300 hover:bg-white/5 hover:scale-105'
                     }`}
                     style={{
                       animationDelay: `${index * 100}ms`,
@@ -140,7 +151,7 @@ export default function Header() {
                     }}
                   >
                     <span className="relative z-10">{link.label}</span>
-                    {pathname !== link.path && (
+                    {!isLinkActive(link.path) && (
                       <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     )}
                   </Link>

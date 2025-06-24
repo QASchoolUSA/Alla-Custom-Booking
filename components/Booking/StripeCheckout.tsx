@@ -33,7 +33,7 @@ const StripeCheckout = ({
   appointmentDate,
   startTime,
   endTime,
-  locale = 'en',
+  locale = 'ru',
   onPaymentSuccess, 
   onPaymentError 
 }: StripeCheckoutProps) => {

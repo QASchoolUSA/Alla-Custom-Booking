@@ -48,7 +48,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
     <Card className="w-full max-w-[600px] mx-auto" data-testid="client-info-card">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center" data-testid="client-info-title">
-          Your Information
+          {t('yourInformation')}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -64,9 +64,9 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>{t('firstName')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="John" {...field} data-testid="first-name-input" />
+                      <Input placeholder={t('firstNamePlaceholder')} {...field} data-testid="first-name-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -77,9 +77,9 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>{t('lastName')}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Doe" {...field} data-testid="last-name-input" />
+                      <Input placeholder={t('lastNamePlaceholder')} {...field} data-testid="last-name-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -91,11 +91,11 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t('email')}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="john.doe@example.com"
+                      placeholder={t('emailPlaceholder')}
                       {...field}
                       data-testid="email-input"
                     />
@@ -109,11 +109,11 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
+                    <FormLabel>{t('phoneNumber')}</FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
-                        placeholder="+1 (XXX) XXX-XXXX"
+                        placeholder={t('phonePlaceholder')}
                         ref={inputRef}
                         value={field.value}
                         data-testid="phone-input"

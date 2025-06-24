@@ -365,7 +365,7 @@ export default function AdminDashboard() {
                 const remainingSessions = calendarClient.sessions || 0;
                 const sessionNumber = calculateSessionNumber(originalQuantity, remainingSessions);
                 // Get locale from URL params
-                const locale = window.location.pathname.split('/')[1] || 'en';
+                const locale = window.location.pathname.split('/')[1] || 'ru';
                 const sessionEventName = getSessionEventName(calendarClient.event_name, originalQuantity, sessionNumber, locale);
                 
                 try {
