@@ -1,16 +1,14 @@
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { Metadata, Viewport } from 'next';
-import { Rozha_One } from 'next/font/google';
+import { Comfortaa } from 'next/font/google';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
 
-const rozhaOne = Rozha_One({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: '400',
+const comfortaa = Comfortaa({
+  weight: '600',
 });
 
 export const viewport: Viewport = {
@@ -49,7 +47,7 @@ export default async function RootLayout({
         <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
         <link rel="preload" href="/alla-psychology-background.webp" as="image" />
       </head>
-      <body className={rozhaOne.className}>
+      <body className={comfortaa.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Header />
           {children}
