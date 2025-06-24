@@ -5,29 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
-// Helper function for exponential backoff
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const retryWithBackoff = async (fn: () => Promise<Response>, maxRetries = 3) => {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      const response = await fn();
-      if (response.status === 429 && i < maxRetries - 1) {
-        const backoffTime = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 30000);
-        console.log(`Rate limited, retrying calendar request in ${backoffTime}ms... (attempt ${i + 1}/${maxRetries})`);
-        await delay(backoffTime);
-        continue;
-      }
-      return response;
-    } catch (error) {
-      if (i === maxRetries - 1) throw error;
-      const backoffTime = Math.min(1000 * Math.pow(2, i) + Math.random() * 1000, 30000);
-      console.log(`Request failed, retrying in ${backoffTime}ms... (attempt ${i + 1}/${maxRetries})`);
-      await delay(backoffTime);
-    }
-  }
-  throw new Error('Max retries exceeded');
-};
 
 // Client component that uses useSearchParams
 export default function SuccessContentClient({ locale }: { locale: string }) {
@@ -35,7 +13,7 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
   const sessionId = searchParams.get('session_id');
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
-  const [calendarEventLink, setCalendarEventLink] = useState<string | null>(null);
+  const [calendarEventLink] = useState<string | null>(null);
 
   useEffect(() => {
     if (!sessionId) {
@@ -73,40 +51,13 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
                   start_time: startTime,
                   end_time: endTime,
                   quantity: sessionsCount || 1, // Use the quantity from bookingDetails
-                  locale: locale || 'en'
+                  locale: locale || 'ru'
                 }),
               });
 
-              // Create calendar event with retry logic
-              const calendarResponse = await retryWithBackoff(() => 
-                fetch('/api/add-to-calendar', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    eventName,
-                    startTime,
-                    endTime,
-                    customerName,
-                    customerEmail,
-                    customerPhone,
-                  }),
-                })
-              );
-
-              const calendarData = await calendarResponse.json();
-              
-              if (calendarData.success) {
-                setStatus('success');
-                setMessage(`Your ${eventName} appointment has been confirmed!`);
-                if (calendarData.eventLink) {
-                  setCalendarEventLink(calendarData.eventLink);
-                }
-              } else {
-                setStatus('success');
-                setMessage(`Your ${eventName} appointment has been confirmed! However, we couldn't add it to your calendar automatically.`);
-              }
+              // Calendar event is already created by the save-booking API
+              setStatus('success');
+              setMessage(`Your ${eventName} appointment has been confirmed!`);
             } else {
               setStatus('success');
               setMessage('Your payment has been confirmed!');

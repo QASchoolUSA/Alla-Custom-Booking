@@ -14,14 +14,15 @@ interface BookingClientProps {
 }
 
 const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
-  const t = useTranslations('booking');
+  const tBooking = useTranslations('booking');
+  const tEvents = useTranslations();
   const [booking, setBooking] = useState<Record<string, unknown> | null>(null);
   const [step, setStep] = useState<'calendar' | 'client-info' | 'payment' | 'success'>('calendar');
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
   const [clientInfo, setClientInfo] = useState<Record<string, unknown> | null>(null);
   
   // Get localized events to find the correct event details
-  const localizedEvents = getLocalizedEvents(t);
+  const localizedEvents = getLocalizedEvents(tEvents);
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -148,7 +149,7 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-lg font-medium text-green-900 mb-2">{t('appointmentBooked')}</h2>
+              <h2 className="text-lg font-medium text-green-900 mb-2">{tBooking('appointmentBooked')}</h2>
               <p className="text-sm text-green-700 mb-4">
                 Your appointment has been successfully scheduled for {selectedDateTime?.toLocaleDateString()} at {selectedDateTime?.toLocaleTimeString()}.
               </p>

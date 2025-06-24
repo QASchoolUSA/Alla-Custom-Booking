@@ -19,13 +19,14 @@ const EventSelection: React.FC<EventSelectionProps> = ({
   onSelectEvent,
   onContinue,
 }) => {
-  const t = useTranslations('booking');
-  const events = getLocalizedEvents(t);
+  const tBooking = useTranslations('booking');
+  const tEvents = useTranslations();
+  const events = getLocalizedEvents(tEvents);
   
   return (
     <div className="max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6" data-testid="event-selection-title">
-        {t('selectService')}
+        {tBooking('selectService')}
       </h2>
 
       <div className="space-y-4" data-testid="event-list">
@@ -47,7 +48,7 @@ const EventSelection: React.FC<EventSelectionProps> = ({
                 </h3>
                 <div className="flex items-center text-neutral-600 mt-1">
                   <Clock size={16} className="mr-2" />
-                  <span>{event.duration} {t('minutes')}</span>
+                  <span>{event.duration}</span>
                 </div>
                 <p className="text-neutral-700 mt-2">
                   {event.description}
@@ -76,7 +77,7 @@ const EventSelection: React.FC<EventSelectionProps> = ({
             }`}
           data-testid="event-selection-continue-btn"
         >
-          {t('continue')}
+          {tBooking('continue')}
         </Button>
       </div>
     </div>

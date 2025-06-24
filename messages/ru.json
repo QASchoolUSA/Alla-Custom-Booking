@@ -90,32 +90,40 @@
     "noSlots": "Нет доступных слотов на этот день или вне рабочего времени.",
     "errorFetchingAvailability": "Ошибка при получении доступности.",
     "selectDate": "Выберите дату",
-    "events": {
-      "initialMeeting": {
-        "name": "Первичная встреча",
-        "duration": "1 час",
-        "description": "Первое знакомство и обсуждение ваших потребностей."
-      },
-      "consultation": {
-        "name": "Консультационная сессия",
-        "duration": "2 часа",
-        "description": "Углубленная консультационная сессия."
-      },
-      "therapy": {
-        "name": "Терапевтическая сессия",
-        "duration": "2 часа",
-        "description": "Полная терапевтическая сессия."
-      },
-      "package5": {
-        "name": "Пакет из 5 сессий",
-        "duration": "по 2 часа каждая",
-        "description": "Пакет из 5 терапевтических сессий."
-      },
-      "package10": {
-        "name": "Пакет из 10 сессий",
-        "duration": "по 2 часа каждая",
-        "description": "Пакет из 10 терапевтических сессий."
-      }
+    "yourInformation": "Ваша информация",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "firstNamePlaceholder": "Иван",
+    "lastNamePlaceholder": "Иванов",
+    "emailPlaceholder": "ivan.ivanov@example.com",
+    "phoneNumber": "Номер телефона",
+    "phonePlaceholder": "+1 (XXX) XXX-XXXX"
+  },
+  "events": {
+    "initialMeeting": {
+      "name": "Первичная встреча",
+      "duration": "1 час",
+      "description": "Первое знакомство и обсуждение ваших потребностей."
+    },
+    "consultation": {
+      "name": "Консультационная сессия",
+      "duration": "2 часа",
+      "description": "Углубленная консультационная сессия."
+    },
+    "therapy": {
+      "name": "Терапевтическая сессия",
+      "duration": "2 часа",
+      "description": "Полная терапевтическая сессия."
+    },
+    "package5": {
+      "name": "Пакет из 5 сессий",
+      "duration": "по 2 часа каждая",
+      "description": "Пакет из 5 терапевтических сессий."
+    },
+    "package10": {
+      "name": "Пакет из 10 сессий",
+      "duration": "по 2 часа каждая",
+      "description": "Пакет из 10 терапевтических сессий."
     }
   },
   "admin": {
@@ -142,28 +150,6 @@
     "bookingLinkCopied": "Ссылка для бронирования скопирована в буфер обмена!",
     "failedToGenerateLink": "Не удалось создать ссылку для бронирования",
     "packageCompleted": "Пакет завершен"
-  },
-  "events": {
-    "initialMeeting": {
-      "name": "Первая встреча",
-      "description": "Первое знакомство и обсуждение ваших потребностей."
-    },
-    "consultationSession": {
-      "name": "Консультационная сессия",
-      "description": "Глубокая консультационная сессия."
-    },
-    "therapySession": {
-      "name": "Терапевтическая сессия",
-      "description": "Полноценная терапевтическая сессия."
-    },
-    "package5": {
-      "name": "Пакет из 5 сессий",
-      "description": "Пакет из 5 терапевтических сессий."
-    },
-    "package10": {
-      "name": "Пакет из 10 сессий",
-      "description": "Пакет из 10 терапевтических сессий."
-    }
   },
   "api": {
     "missingClientEmail": "Отсутствует client_email",

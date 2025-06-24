@@ -1,10 +1,16 @@
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { Metadata, Viewport } from 'next';
+import { Comfortaa } from 'next/font/google';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
+
+const comfortaa = Comfortaa({
+  weight: '600',
+  subsets: ['cyrillic']
+});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -41,11 +47,8 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
         <link rel="preload" href="/alla-psychology-background.webp" as="image" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rozha+One&display=swap" />
       </head>
-      <body>
+      <body className={comfortaa.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Header />
           {children}
