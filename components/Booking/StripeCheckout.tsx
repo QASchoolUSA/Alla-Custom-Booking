@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { useTranslations } from 'next-intl';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -37,6 +38,7 @@ const StripeCheckout = ({
   onPaymentSuccess, 
   onPaymentError 
 }: StripeCheckoutProps) => {
+  const t = useTranslations('booking');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -173,7 +175,7 @@ const StripeCheckout = ({
             Processing...
           </>
         ) : (
-          `Pay $${(amount / 100).toFixed(2)} with Stripe`
+        <>{t('payWithStripe')}</>
         )}
       </button>
     </div>

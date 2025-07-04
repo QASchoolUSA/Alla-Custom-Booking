@@ -18,6 +18,7 @@ export default function BookingPage() {
   const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "ru";
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
+  const [clientTimezone, setClientTimezone] = useState<string>('Europe/Kiev'); // Store client timezone
   const [step, setStep] = useState<"select-event" | "calendar" | "client-info" | "payment">("select-event");
 
   const [clientData, setClientData] = useState<{
@@ -35,34 +36,18 @@ export default function BookingPage() {
     window.scrollTo(0, 0);
   }, [step]);
 
-  const handleSelectEvent = (eventID: string) => {
-    // Get localized events and find the selected one
-    const localizedEvents = getLocalizedEvents(tEvents);
-    const localizedEventData = localizedEvents.find(event => event.id === eventID);
-    const fallbackEventData = getEventById(eventID);
-    
-    const eventData = localizedEventData || fallbackEventData;
-    if (eventData) {
-      const priceInCents = parseInt(eventData.price) * 100;
-
-      const event: SelectedEvent = {
-        id: eventID,
-        name: eventData.name,
-        price: priceInCents,
-        duration: eventData.duration,
-        quantity: eventData.quantity,
-      };
-      setSelectedEvent(event);
-    }
+  const handleSelectEvent = (event: SelectedEvent) => {
+    setSelectedEvent(event);
   };
 
   const handleContinue = () => {
     setStep("calendar");
   };
 
-  const handleDateTimeSelected = (dateTime: Date) => {
+  const handleDateTimeSelected = (dateTime: Date, timezone: string) => {
     console.log("Selected date and time:", dateTime);
     setSelectedDateTime(dateTime);
+    setClientTimezone(timezone);
     setStep("client-info");
   };
 
@@ -105,7 +90,8 @@ export default function BookingPage() {
             // Now we can add customer details
             customerName: `${clientData.firstName} ${clientData.lastName}`,
             customerEmail: clientData.email,
-            customerPhone: clientData.phone
+            customerPhone: clientData.phone,
+            clientTimezone: clientTimezone // Add client timezone
           }),
         });
 
@@ -149,7 +135,7 @@ export default function BookingPage() {
         {/* Removed the top Pay button */}
 
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 text-primary-700" data-testid="booking-title">
-          Book Your Appointment
+          {t('title')}
         </h1>
 
         {/* Progress indicator */}
@@ -176,7 +162,7 @@ export default function BookingPage() {
         {step === "select-event" && (
           <div className="transition-all duration-300" data-testid="step-select-event">
             <EventSelection
-              selectedEvent={selectedEvent ? selectedEvent.id : null}
+              selectedEvent={selectedEvent}
               onSelectEvent={handleSelectEvent}
               onContinue={handleContinue}
             />

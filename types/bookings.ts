@@ -7,6 +7,8 @@ export interface SelectedEvent {
   price: number; // Assuming price is a number
   duration?: string;
   quantity?: number;
+  type: string;
+  sessions: number;
 }
 // Props for EventSelection
 export interface EventSelectionProps {
@@ -18,7 +20,7 @@ export interface EventSelectionProps {
 // Props for BookingCalendar
 export interface BookingCalendarProps {
   event: SelectedEvent; // Assuming event is mandatory for calendar view
-  onDateTimeSelected: (dateTime: Date) => void; // Or string if you use ISO strings
+  onDateTimeSelected: (dateTime: Date, timezone: string) => void; // Include timezone data
 }
 
 // Props for StripePayment (wrapper component)

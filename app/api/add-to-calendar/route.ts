@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     const requestData = await request.json();
     console.log('Calendar event request data:', requestData);
     
-    const { eventName, startTime, endTime, customerName, customerEmail, customerPhone } = requestData;
+    const { eventName, startTime, endTime, customerName, customerEmail, customerPhone, clientTimezone } = requestData;
     
     // More detailed validation with specific error messages
     const missingFields = [];
@@ -61,6 +61,9 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    // Use client timezone if provided, otherwise fallback to Europe/Kiev
+    const timezone = clientTimezone || 'Europe/Kiev';
 
     // Validate date formats
     try {
@@ -78,28 +81,45 @@ export async function POST(request: Request) {
     const startDateTime = new Date(startTime).toISOString();
     const endDateTime = new Date(endTime).toISOString();
 
+    // Debug logging for attendee information
+    console.log('Customer email for invite:', customerEmail);
+    console.log('Customer name for invite:', customerName);
+    console.log('Will add attendee:', !!customerEmail);
+
     // Create event object for Google Calendar
     const event = {
       summary: `${eventName} - ${customerName || 'Customer'}`,
       description: `Booking for ${eventName}\nCustomer: ${customerName || 'N/A'}\nEmail: ${customerEmail || 'N/A'}\nPhone: ${customerPhone || 'N/A'}`,
       start: {
         dateTime: startDateTime,
-        timeZone: 'Europe/Kiev', // Adjust to your timezone
+        timeZone: timezone,
       },
       end: {
         dateTime: endDateTime,
-        timeZone: 'Europe/Kiev', // Adjust to your timezone
+        timeZone: timezone,
       },
+      visibility: 'default', // Ensure event is visible to attendees
+      transparency: 'opaque', // Show as busy time
+      guestsCanInviteOthers: false,
+      guestsCanModify: false,
+      guestsCanSeeOtherGuests: false,
       reminders: {
         useDefault: true,
       },
       // Add customer as an attendee with Domain-Wide Delegation
       ...(customerEmail ? {
         attendees: [
-          { email: customerEmail, displayName: customerName }
+          { 
+            email: customerEmail, 
+            displayName: customerName,
+            responseStatus: 'needsAction' // Explicitly set response status
+          }
         ]
       } : {})
     };
+
+    // Log the final event object
+    console.log('Final event object:', JSON.stringify(event, null, 2));
 
     // Log the event being created
     console.log('Creating calendar event:', {
@@ -115,13 +135,22 @@ export async function POST(request: Request) {
         calendarId: process.env.GOOGLE_CALENDAR_ID!,
         requestBody: event,
         sendUpdates: 'all', // Send email notifications to attendees
+        supportsAttachments: true // Better compatibility
       });
     });
+
+    // Log the response to see if attendees were properly added
+    console.log('Calendar event created successfully!');
+    console.log('Event ID:', response.data.id);
+    console.log('Event attendees in response:', response.data.attendees);
+    console.log('Send updates setting:', 'all');
+    console.log('HTML Link:', response.data.htmlLink);
 
     return NextResponse.json({ 
       success: true, 
       eventId: response.data.id,
-      htmlLink: response.data.htmlLink // Link to view the event in Google Calendar
+      htmlLink: response.data.htmlLink, // Link to view the event in Google Calendar
+      attendees: response.data.attendees // Include attendees in response for debugging
     });
   } catch (error: unknown) {
     console.error('Error adding event to Google Calendar:', error);

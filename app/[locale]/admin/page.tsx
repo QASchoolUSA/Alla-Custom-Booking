@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,10 +26,14 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { MoreHorizontal, Calendar, Link, CheckCircle, User, Mail, DollarSign } from 'lucide-react';
-import BookingCalendar from '@/components/Booking/BookingCalendar';
+import { MoreHorizontal, Calendar, Link, CheckCircle, User, Mail, DollarSign, Plus } from 'lucide-react';
+import CreateSessionModal from '@/components/CreateSessionModal';
+import { getLocalizedEvents } from '@/utils/eventTypes';
 import { calculateSessionNumber, getSessionEventName } from '@/utils/eventTypes';
 import { useTranslations } from 'next-intl';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { SelectedEvent } from '@/types/bookings';
 
 
 interface Booking {
@@ -47,10 +51,12 @@ interface Booking {
 
 export default function AdminDashboard() {
   const t = useTranslations('admin');
+  const tEvents = useTranslations();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarClient, setCalendarClient] = useState<Booking | null>(null);
+  const [showCreateSession, setShowCreateSession] = useState(false);
 
   useEffect(() => {
     fetch('/api/get-bookings')
@@ -62,34 +68,46 @@ export default function AdminDashboard() {
   }, []);
 
   // Group bookings by client and prioritize bookings with sessions > 0, then by latest date
-  const clientSessions = bookings.reduce((acc, booking) => {
-    const currentBooking = acc[booking.client_email];
-    // Use the actual sessions value from database, fallback to quantity only if sessions is undefined
-    const bookingSessions = booking.sessions !== undefined ? booking.sessions : (booking.quantity || 1);
+  const clientSessions = useMemo(() => {
+    const clientMap = new Map<string, Booking & { sessions: number }>();
     
-    if (!currentBooking) {
-      // First booking for this client
-      acc[booking.client_email] = { ...booking, sessions: bookingSessions };
-    } else {
-      const currentSessions = currentBooking.sessions || 0;
-      const bookingDate = new Date(booking.date);
-      const currentDate = new Date(currentBooking.date);
+    bookings.forEach(booking => {
+      const key = booking.client_email;
+      const existing = clientMap.get(key);
+      const bookingSessions = booking.sessions !== undefined ? booking.sessions : (booking.quantity || 1);
       
-      // Prioritize bookings with sessions > 0, then by latest date
-      if ((bookingSessions > 0 && currentSessions === 0) || 
-          (bookingSessions > 0 && currentSessions > 0 && bookingDate > currentDate) ||
-          (bookingSessions === 0 && currentSessions === 0 && bookingDate > currentDate)) {
-        acc[booking.client_email] = { ...booking, sessions: bookingSessions };
+      if (!existing) {
+        clientMap.set(key, { ...booking, sessions: bookingSessions });
+      } else {
+        // Prioritize bookings with sessions > 0, then by latest date
+        const shouldReplace = 
+          (bookingSessions > 0 && existing.sessions === 0) ||
+          (bookingSessions === existing.sessions && new Date(booking.date) > new Date(existing.date));
+        
+        if (shouldReplace) {
+          clientMap.set(key, { ...booking, sessions: bookingSessions });
+        }
       }
-    }
-    return acc;
-  }, {} as Record<string, Booking & { sessions: number }>);
+    });
+    
+    return Array.from(clientMap.values()).sort((a, b) => {
+      // Sort by sessions (descending), then by date (descending)
+      if (a.sessions !== b.sessions) {
+        return b.sessions - a.sessions;
+      }
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    }).reduce((acc, booking) => {
+      acc[booking.client_email] = booking;
+      return acc;
+    }, {} as Record<string, Booking & { sessions: number }>);
+  }, [bookings]);
 
-  const handleScheduleNextSession = (client: Booking) => {
+  const handleScheduleNextSession = useCallback((client: Booking) => {
     setCalendarClient(client);
     setShowCalendar(true);
-  };
-  const handleGenerateBookingLink = async (client: Booking) => {
+  }, []);
+  
+  const handleGenerateBookingLink = useCallback(async (client: Booking) => {
     const res = await fetch('/api/generate-booking-link', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -102,13 +120,37 @@ export default function AdminDashboard() {
     } else {
       alert('Failed to generate booking link: ' + (data.error || 'Unknown error'));
     }
-  };
+  }, []);
+
+  // Memoize localized events to prevent recalculation on every render
+  const localizedEvents = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
+
+  const handleCreateSession = useCallback(() => {
+    setShowCreateSession(true);
+  }, []);
+
+  const handleSessionCreated = useCallback(async () => {
+    // Refresh bookings when a session is created
+    const bookingsResponse = await fetch('/api/get-bookings');
+    const bookingsData = await bookingsResponse.json();
+    setBookings(bookingsData.bookings || []);
+  }, []);
   return (
     <div className="min-h-screen bg-neutral-50 pt-24 md:pt-32 pb-16 flex flex-col items-center px-2 sm:px-4 md:px-8">
       <SignedIn>
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-primary-700 text-center">
-          {t('dashboard')}
-        </h1>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 md:mb-8 gap-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary-700 text-center sm:text-left">
+            {t('dashboard')}
+          </h1>
+          <Button 
+            onClick={handleCreateSession}
+            className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+            data-testid="create-session-button"
+          >
+            <Plus className="h-4 w-4" />
+            {t('createSession')}
+          </Button>
+        </div>
         <div className="w-full max-w-6xl" data-testid="admin-dashboard-container">
           <Card data-testid="admin-dashboard-card">
             <CardHeader data-testid="admin-dashboard-header">
@@ -411,6 +453,16 @@ export default function AdminDashboard() {
             />
           </div>
         </div>
+      )}
+      
+      {/* Create Session Modal */}
+      {showCreateSession && (
+        <CreateSessionModal
+           isOpen={showCreateSession}
+           onClose={() => setShowCreateSession(false)}
+           onSessionCreated={handleSessionCreated}
+           clientSessions={clientSessions}
+         />
       )}
     </div>
   );
