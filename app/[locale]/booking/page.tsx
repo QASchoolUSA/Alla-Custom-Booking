@@ -8,7 +8,7 @@ import StripeCheckout from "@/components/Booking/StripeCheckout";
 import ClientInfo from "@/components/Booking/ClientInfo";
 import { SelectedEvent } from "@/types/bookings";
 import { getEventById, getLocalizedEvents } from "@/utils/eventTypes";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
 
 export default function BookingPage() {
@@ -16,8 +16,10 @@ export default function BookingPage() {
   const tEvents = useTranslations();
   const params = useParams();
   const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "ru";
+  const router = useRouter();
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
+  const [clientTimezone, setClientTimezone] = useState<string>('Europe/Kiev'); // Store client timezone
   const [step, setStep] = useState<"select-event" | "calendar" | "client-info" | "payment">("select-event");
 
   const [clientData, setClientData] = useState<{
@@ -33,27 +35,46 @@ export default function BookingPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [step]);
+    // Listen for Zelle payment completion
+    const handleZellePayment = async () => {
+      // For Zelle payment, create Google Calendar event and navigate to success page, no verification
+      if (selectedEvent && selectedDateTime && clientData) {
+        try {
+          const durationMatch = selectedEvent.duration?.match(/(\d+)\s*hour/i);
+          const durationHours = durationMatch ? parseInt(durationMatch[1]) : 1;
+          const endDateTime = new Date(selectedDateTime);
+          endDateTime.setHours(endDateTime.getHours() + durationHours);
+          const response = await fetch('/api/add-to-calendar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              eventName: selectedEvent.name,
+              startTime: selectedDateTime.toISOString(),
+              endTime: endDateTime.toISOString(),
+              customerName: `${clientData.firstName} ${clientData.lastName}`,
+              customerEmail: clientData.email,
+              customerPhone: clientData.phone,
+              clientTimezone: clientTimezone
+            }),
+          });
+          const data = await response.json();
+          if (data.success && data.htmlLink) {
+            setCalendarEventLink(data.htmlLink);
+          } else {
+            console.error('Failed to add event to calendar:', data.error);
+          }
+        } catch (error) {
+          console.error('Error adding event to calendar:', error);
+        }
+      }
+      router.push(`/${locale}/booking/success`);
+    };
+    window.addEventListener('zellePaymentCompleted', handleZellePayment);
+    return () => window.removeEventListener('zellePaymentCompleted', handleZellePayment);
+  }, [selectedEvent, selectedDateTime, clientData, clientTimezone, router, locale]);
 
-  const handleSelectEvent = (eventID: string) => {
-    // Get localized events and find the selected one
-    const localizedEvents = getLocalizedEvents(tEvents);
-    const localizedEventData = localizedEvents.find(event => event.id === eventID);
-    const fallbackEventData = getEventById(eventID);
-    
-    const eventData = localizedEventData || fallbackEventData;
-    if (eventData) {
-      const priceInCents = parseInt(eventData.price) * 100;
-
-      const event: SelectedEvent = {
-        id: eventID,
-        name: eventData.name,
-        price: priceInCents,
-        duration: eventData.duration,
-        quantity: eventData.quantity,
-      };
-      setSelectedEvent(event);
-    }
+  const handleSelectEvent = (event: SelectedEvent) => {
+    setSelectedEvent(event);
   };
 
   const handleContinue = () => {
@@ -63,6 +84,7 @@ export default function BookingPage() {
   const handleDateTimeSelected = (dateTime: Date) => {
     console.log("Selected date and time:", dateTime);
     setSelectedDateTime(dateTime);
+    // Set timezone separately if needed
     setStep("client-info");
   };
 
@@ -105,7 +127,8 @@ export default function BookingPage() {
             // Now we can add customer details
             customerName: `${clientData.firstName} ${clientData.lastName}`,
             customerEmail: clientData.email,
-            customerPhone: clientData.phone
+            customerPhone: clientData.phone,
+            clientTimezone: clientTimezone // Add client timezone
           }),
         });
 
@@ -149,7 +172,7 @@ export default function BookingPage() {
         {/* Removed the top Pay button */}
 
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 text-primary-700" data-testid="booking-title">
-          Book Your Appointment
+          {t('title')}
         </h1>
 
         {/* Progress indicator */}
@@ -176,7 +199,7 @@ export default function BookingPage() {
         {step === "select-event" && (
           <div className="transition-all duration-300" data-testid="step-select-event">
             <EventSelection
-              selectedEvent={selectedEvent ? selectedEvent.id : null}
+              selectedEvent={selectedEvent}
               onSelectEvent={handleSelectEvent}
               onContinue={handleContinue}
             />

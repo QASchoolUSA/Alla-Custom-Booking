@@ -16,7 +16,8 @@ export async function POST(request: Request) {
       quantity, 
       locale, 
       booking_token, 
-      is_package_booking 
+      is_package_booking,
+      clientTimezone 
     } = data;
 
     if (is_package_booking && booking_token) {
@@ -86,7 +87,8 @@ export async function POST(request: Request) {
             endTime: end_time,
             customerName: client_name,
             customerEmail: client_email,
-            customerPhone: client_phone
+            customerPhone: client_phone,
+            clientTimezone: clientTimezone
           })
         });
 
@@ -140,7 +142,8 @@ export async function POST(request: Request) {
             endTime: end_time,
             customerName: client_name,
             customerEmail: client_email,
-            customerPhone: client_phone
+            customerPhone: client_phone,
+            clientTimezone: clientTimezone
           })
         });
 

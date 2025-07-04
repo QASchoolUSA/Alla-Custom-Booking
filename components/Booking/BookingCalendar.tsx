@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -34,7 +34,7 @@ const formatDateToYYYYMMDD = (date: Date | undefined): string => {
     return `${year}-${month}-${day}`;
 };
 
-const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSelected }) => {
+const BookingCalendar: React.FC<BookingCalendarProps> = React.memo(({ event, onDateTimeSelected }) => {
     const t = useTranslations('booking');
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
     const [busySlots, setBusySlots] = useState<BusySlotData[]>([]);
@@ -43,6 +43,19 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     const [error, setError] = useState<string | null>(null);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
     const [availabilityCache, setAvailabilityCache] = useState<Map<string, BusySlotData[]>>(new Map());
+    const [clientTimezone, setClientTimezone] = useState<string>('Europe/Kiev'); // Default fallback
+
+    // Detect client timezone on component mount
+    useEffect(() => {
+        try {
+            const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            setClientTimezone(detectedTimezone);
+            console.log('Detected client timezone:', detectedTimezone);
+        } catch (error) {
+            console.warn('Failed to detect timezone, using fallback:', error);
+            setClientTimezone('Europe/Kiev');
+        }
+    }, []);
 
     // Use the event prop to display event information
     useEffect(() => {
@@ -57,7 +70,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     
     const handleContinue = (): void => {
         if (selectedTimeSlot) {
-            onDateTimeSelected(selectedTimeSlot);
+            onDateTimeSelected(selectedTimeSlot, clientTimezone);
         }
     };
 
@@ -133,13 +146,29 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         const dayEndHour = process.env.END_TIME? parseInt(process.env.END_TIME, 10) : 18;
         const slotDurationMinutes = process.env.SLOT_DURATION? parseInt(process.env.SLOT_DURATION, 10) : 60;
         const generatedSlots: AvailableSlot[] = [];
+        const adminTimezone = 'America/New_York'; // Admin's timezone
 
-        // Create date objects in the user's local timezone for display logic
-        const startOfDay = new Date(date);
-        startOfDay.setHours(dayStartHour, 0, 0, 0);
+        // Helper function to convert admin's working hours to client's timezone
+        const convertAdminTimeToClientTime = (hour: number, minute: number = 0): Date => {
+            // Create a date in admin's timezone for the selected date
+            const adminDateTime = new Date();
+            adminDateTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+            adminDateTime.setHours(hour, minute, 0, 0);
+            
+            // Convert to admin's timezone using toLocaleString
+            const adminTimeStr = adminDateTime.toLocaleString('sv-SE', { timeZone: adminTimezone });
+            const adminTimeInAdminTz = new Date(adminTimeStr);
+            
+            // Calculate the difference between admin's timezone and UTC
+            const adminOffsetMs = adminDateTime.getTime() - adminTimeInAdminTz.getTime();
+            
+            // Apply the offset to get the correct UTC time
+            return new Date(adminDateTime.getTime() - adminOffsetMs);
+        };
 
-        const endOfDay = new Date(date);
-        endOfDay.setHours(dayEndHour, 0, 0, 0);
+        // Create start and end times by converting admin's working hours
+        const startOfDay = convertAdminTimeToClientTime(dayStartHour, 0);
+        const endOfDay = convertAdminTimeToClientTime(dayEndHour, 0);
 
         let currentSlotTime = new Date(startOfDay);
 
@@ -159,7 +188,6 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                 if (!busy.start || !busy.end) return false; // Skip if start or end is missing
                 // Busy slots from Google are ISO strings (likely UTC or with timezone offset)
                 // Convert them to Date objects for comparison.
-                // Date constructor with ISO string correctly parses to local timezone representation of that UTC time.
                 const busyStart = new Date(busy.start);
                 const busyEnd = new Date(busy.end);
 
@@ -168,9 +196,17 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
             });
 
             if (!isBusy) {
+                // Display time in client's timezone
+                const displayTime = slotStart.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    hour12: true,
+                    timeZone: clientTimezone
+                });
+                
                 generatedSlots.push({
-                    start: slotStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
-                    value: slotStart,
+                    start: displayTime,
+                    value: slotStart, // Keep original UTC time for booking
                 });
             }
             currentSlotTime = slotEnd;
@@ -255,6 +291,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
             </div>
         </div>
     );
-}
+});
+
+BookingCalendar.displayName = 'BookingCalendar';
 
 export default BookingCalendar;

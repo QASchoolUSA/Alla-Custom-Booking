@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { useTranslations } from 'next-intl';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '../ui/dialog';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -37,8 +39,11 @@ const StripeCheckout = ({
   onPaymentSuccess, 
   onPaymentError 
 }: StripeCheckoutProps) => {
+  const t = useTranslations('booking');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showZelleModal, setShowZelleModal] = useState(false);
+  const [zellePaymentCompleted, setZellePaymentCompleted] = useState(false);
 
   // Check for successful payment return from Stripe
   useEffect(() => {
@@ -153,7 +158,6 @@ const StripeCheckout = ({
   return (
     <div className="max-w-md mx-auto p-4" data-testid="stripe-checkout">
       {error && <div className="text-red-500 mb-4" data-testid="stripe-error-message">{error}</div>}
-      
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -161,7 +165,7 @@ const StripeCheckout = ({
           handleCheckout();
         }}
         disabled={isLoading}
-        className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center pointer"
+        className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center pointer mb-4"
         data-testid="stripe-pay-button"
       >
         {isLoading ? (
@@ -173,9 +177,49 @@ const StripeCheckout = ({
             Processing...
           </>
         ) : (
-          `Pay $${(amount / 100).toFixed(2)} with Stripe`
+        <>{t('payWithStripe')}</>
         )}
       </button>
+      <button
+        onClick={() => setShowZelleModal(true)}
+        className="w-full bg-purple-700 text-white py-3 px-4 rounded-md hover:bg-purple-800 flex items-center justify-center pointer"
+        data-testid="zelle-pay-button"
+      >
+        Pay with Zelle
+      </button>
+      {showZelleModal && (
+        <Dialog open={showZelleModal} onOpenChange={setShowZelleModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Pay with Zelle</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>
+              Please send your payment to:<br />
+              <strong>Email:</strong> example@email.com<br />
+              <strong>Phone:</strong> +1-234-567-8901
+            </DialogDescription>
+            <div className="mt-4">
+              <button
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
+                onClick={() => {
+                  setZellePaymentCompleted(true);
+                  setShowZelleModal(false);
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('zellePaymentCompleted'));
+                  }
+                }}
+              >
+                Payment Completed
+              </button>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <button className="mt-2 w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

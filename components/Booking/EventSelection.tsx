@@ -1,27 +1,24 @@
-import { Clock } from 'lucide-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { getLocalizedEvents } from '../../utils/eventTypes'; // Import localized events function
 import type { EventType } from '../../utils/eventTypes';
+import type { SelectedEvent, EventSelectionProps } from '@/types/bookings';
 import { useTranslations } from 'next-intl';
+import { Clock } from 'lucide-react';
 
 // Remove the local 'events' array definition that was here:
 // const events = [ ... ];
 
-interface EventSelectionProps {
-  selectedEvent: string | null;
-  onSelectEvent: (eventID: string) => void;
-  onContinue: () => void;
-}
-
-const EventSelection: React.FC<EventSelectionProps> = ({
+const EventSelection: React.FC<EventSelectionProps> = React.memo(({
   selectedEvent,
   onSelectEvent,
   onContinue,
 }) => {
   const tBooking = useTranslations('booking');
   const tEvents = useTranslations();
-  const events = getLocalizedEvents(tEvents);
+  
+  // Memoize events to prevent recalculation on every render
+  const events = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
   
   return (
     <div className="max-w-3xl mx-auto">
@@ -34,11 +31,18 @@ const EventSelection: React.FC<EventSelectionProps> = ({
           <div
             key={event.id}
             className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-300 ease-in-out ${
-              selectedEvent === event.id
+              selectedEvent?.id === event.id
                 ? 'border-primary-600 bg-primary-100 shadow-xl ring-2 ring-primary-500 ring-offset-2 ring-offset-white'
                 : 'border-neutral-300 hover:border-primary-400 hover:shadow-lg bg-white'
             }`}
-            onClick={() => onSelectEvent(event.id)}
+            onClick={() => onSelectEvent({
+              id: event.id,
+              name: event.name,
+              price: parseFloat(event.price) * 100, // Convert to cents
+              duration: event.duration,
+              type: 'consultation',
+              sessions: event.quantity || 1
+            })}
             data-testid={`event-card-${event.id}`}
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between">
@@ -82,6 +86,8 @@ const EventSelection: React.FC<EventSelectionProps> = ({
       </div>
     </div>
   );
-};
+});
+
+EventSelection.displayName = 'EventSelection';
 
 export default EventSelection;
