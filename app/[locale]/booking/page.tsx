@@ -8,7 +8,7 @@ import StripeCheckout from "@/components/Booking/StripeCheckout";
 import ClientInfo from "@/components/Booking/ClientInfo";
 import { SelectedEvent } from "@/types/bookings";
 import { getEventById, getLocalizedEvents } from "@/utils/eventTypes";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
 
 export default function BookingPage() {
@@ -16,6 +16,7 @@ export default function BookingPage() {
   const tEvents = useTranslations();
   const params = useParams();
   const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "ru";
+  const router = useRouter();
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
   const [clientTimezone, setClientTimezone] = useState<string>('Europe/Kiev'); // Store client timezone
@@ -34,7 +35,43 @@ export default function BookingPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [step]);
+    // Listen for Zelle payment completion
+    const handleZellePayment = async () => {
+      // For Zelle payment, create Google Calendar event and navigate to success page, no verification
+      if (selectedEvent && selectedDateTime && clientData) {
+        try {
+          const durationMatch = selectedEvent.duration?.match(/(\d+)\s*hour/i);
+          const durationHours = durationMatch ? parseInt(durationMatch[1]) : 1;
+          const endDateTime = new Date(selectedDateTime);
+          endDateTime.setHours(endDateTime.getHours() + durationHours);
+          const response = await fetch('/api/add-to-calendar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              eventName: selectedEvent.name,
+              startTime: selectedDateTime.toISOString(),
+              endTime: endDateTime.toISOString(),
+              customerName: `${clientData.firstName} ${clientData.lastName}`,
+              customerEmail: clientData.email,
+              customerPhone: clientData.phone,
+              clientTimezone: clientTimezone
+            }),
+          });
+          const data = await response.json();
+          if (data.success && data.htmlLink) {
+            setCalendarEventLink(data.htmlLink);
+          } else {
+            console.error('Failed to add event to calendar:', data.error);
+          }
+        } catch (error) {
+          console.error('Error adding event to calendar:', error);
+        }
+      }
+      router.push(`/${locale}/booking/success`);
+    };
+    window.addEventListener('zellePaymentCompleted', handleZellePayment);
+    return () => window.removeEventListener('zellePaymentCompleted', handleZellePayment);
+  }, [selectedEvent, selectedDateTime, clientData, clientTimezone, router, locale]);
 
   const handleSelectEvent = (event: SelectedEvent) => {
     setSelectedEvent(event);
@@ -44,10 +81,10 @@ export default function BookingPage() {
     setStep("calendar");
   };
 
-  const handleDateTimeSelected = (dateTime: Date, timezone: string) => {
+  const handleDateTimeSelected = (dateTime: Date) => {
     console.log("Selected date and time:", dateTime);
     setSelectedDateTime(dateTime);
-    setClientTimezone(timezone);
+    // Set timezone separately if needed
     setStep("client-info");
   };
 

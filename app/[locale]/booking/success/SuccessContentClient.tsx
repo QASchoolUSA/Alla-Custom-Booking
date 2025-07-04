@@ -17,8 +17,8 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
 
   useEffect(() => {
     if (!sessionId) {
-      setStatus('error');
-      setMessage('Invalid session ID');
+      setStatus('success');
+      setMessage('Your appointment has been scheduled!');
       return;
     }
 
