@@ -75,7 +75,13 @@
     "email": "Електронна пошта",
     "phone": "Телефон",
     "price": "Ціна",
-    "paymentSuccessful": "Оплату успішно здійснено!",
+    "cancellationPolicy": "Бронювання можна скасувати за 24 години до часу зустрічі.",
+    "successPage": {
+      "title": "Оплату успішно здійснено!",
+      "emailConfirmation": "Підтвердження надіслано на вашу електронну пошту.",
+      "mainMessage": "Вашу зустріч підтверджено! Дякуємо за бронювання.",
+      "returnHome": "Повернутися на головну"
+    },
     "appointmentBooked": "Вашу зустріч заброньовано.",
     "paymentFailed": "Оплата не пройшла",
     "paymentError": "Сталася помилка під час обробки оплати.",
@@ -99,7 +105,9 @@
     "lastNamePlaceholder": "Іванов",
     "emailPlaceholder": "ivan.ivanov@example.com",
     "phoneNumber": "Номер телефону",
-    "phonePlaceholder": "+1 (XXX) XXX-XXXX"
+    "phonePlaceholder": "+1 (XXX) XXX-XXXX",
+    "workRequest": "Ваш запит або з чим хотіли б попрацювати",
+    "workRequestPlaceholder": "Опишіть, з чим ви хотіли б попрацювати або який у вас запит (наприклад: тривога, стрес, стосунки тощо)"
   },
   "events": {
       "initialMeeting": {

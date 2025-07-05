@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { getLocalizedEvents } from '../../utils/eventTypes'; // Import localized events function
 import type { EventType } from '../../utils/eventTypes';
-import type { SelectedEvent, EventSelectionProps } from '@/types/bookings';
+import type { EventSelectionProps } from '@/types/bookings';
 import { useTranslations } from 'next-intl';
 import { Clock } from 'lucide-react';
 

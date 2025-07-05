@@ -23,6 +23,7 @@ const clientInfoSchema = z.object({
   phone: z
     .string()
     .regex(/^\+1 \(\d{3}\) \d{3}-\d{4}$/, "Please enter a valid US phone number."),
+  workRequest: z.string().min(5, "Please briefly describe what you'd like to work on."),
 });
 
 type ClientInfoFormValues = z.infer<typeof clientInfoSchema>;
@@ -145,7 +146,24 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                       inputMode="tel"
                       autoComplete="tel"
                     />
-
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="workRequest"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('workRequest')}</FormLabel>
+                  <FormControl>
+                    <textarea
+                      className="w-full min-h-[80px] rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+                      placeholder={t('workRequestPlaceholder')}
+                      {...field}
+                      data-testid="work-request-input"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

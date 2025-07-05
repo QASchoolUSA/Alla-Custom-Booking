@@ -137,6 +137,9 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
             onPaymentSuccess={handlePaymentSuccess}
             onPaymentError={() => {}}
           />
+          <div className="mt-4 text-sm text-muted-foreground text-center" data-testid="cancellation-policy">
+            {tBooking('cancellationPolicy')}
+          </div>
         </div>
       );
     case 'success':
@@ -156,6 +159,9 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
               <p className="text-xs text-green-600">
                 You will receive a confirmation email shortly.
               </p>
+            </div>
+            <div className="mt-4 text-sm text-muted-foreground text-center" data-testid="cancellation-policy">
+              {tBooking('cancellationPolicy')}
             </div>
           </div>
         </div>

@@ -67,10 +67,11 @@
     "minutes": "минут",
     "cancel": "Отменить",
     "continue": "Продолжить",
-    "selectClient":"Выберите клиента",
-    "createNewSession":"Создать новую сессию",
+    "selectClient": "Выберите клиента",
+    "createNewSession": "Создать новую сессию",
     "back": "Назад",
     "newClient": "Добавить клиента",
+    "cancellationPolicy": "Бронирование можно отменить за 24 часа до времени встречи.",
     "pickDateTime": "Выберите дату и время",
     "clientDetails": "Данные клиента",
     "payment": "Оплата",
@@ -80,7 +81,12 @@
     "email": "Электронная почта",
     "phone": "Телефон",
     "price": "Цена",
-    "paymentSuccessful": "Оплата прошла успешно!",
+    "successPage": {
+      "title": "Оплата прошла успешно!",
+      "emailConfirmation": "Подтверждение отправлено на вашу электронную почту.",
+      "mainMessage": "Ваша встреча подтверждена! Спасибо за бронирование.",
+      "returnHome": "Вернуться на главную"
+    },
     "appointmentBooked": "Ваша встреча забронирована.",
     "paymentFailed": "Оплата не прошла",
     "paymentError": "Произошла ошибка при обработке оплаты.",
@@ -104,7 +110,9 @@
     "lastNamePlaceholder": "Иванов",
     "emailPlaceholder": "ivan.ivanov@example.com",
     "phoneNumber": "Номер телефона",
-    "phonePlaceholder": "+1 (XXX) XXX-XXXX"
+    "phonePlaceholder": "+1 (XXX) XXX-XXXX",
+    "workRequest": "Ваш запрос или с чем хотели бы поработать",
+    "workRequestPlaceholder": "Опишите, с чем вы хотели бы поработать или какой у вас запрос (например: тревога, стресс, отношения и т.д.)"
   },
   "events": {
     "initialMeeting": {
