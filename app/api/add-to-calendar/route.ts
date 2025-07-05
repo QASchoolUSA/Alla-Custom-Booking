@@ -115,7 +115,13 @@ export async function POST(request: Request) {
             responseStatus: 'needsAction' // Explicitly set response status
           }
         ]
-      } : {})
+      } : {}),
+      conferenceData: {
+        createRequest: {
+          requestId: `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`,
+          conferenceSolutionKey: { type: 'hangoutsMeet' }
+        }
+      }
     };
 
     // Log the final event object
@@ -135,7 +141,8 @@ export async function POST(request: Request) {
         calendarId: process.env.GOOGLE_CALENDAR_ID!,
         requestBody: event,
         sendUpdates: 'all', // Send email notifications to attendees
-        supportsAttachments: true // Better compatibility
+        supportsAttachments: true, // Better compatibility
+        conferenceDataVersion: 1 // Enable Google Meet link creation
       });
     });
 
