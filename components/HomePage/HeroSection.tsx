@@ -10,15 +10,10 @@ const HeroSection: React.FC = () => {
   const t = useTranslations('hero');
   const locale = useLocale();
   
-  // Handle 'as-needed' locale prefix correctly
+  // Handle 'always' locale prefix correctly
   const getLocalizedPath = (path: string) => {
-    if (locale === 'ru') {
-      // Default locale, no prefix needed
-      return path;
-    } else {
-      // Non-default locale, add prefix
-      return `/${locale}${path}`;
-    }
+    // With localePrefix: 'always', all locales need prefixes
+    return `/${locale}${path}`;
   };
   
   return (

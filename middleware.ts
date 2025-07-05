@@ -15,10 +15,7 @@ const isProtectedRoute = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
-    const session = await auth();
-    if (!session.userId) {
-      throw new Error('Unauthorized');
-    }
+    await auth.protect();
   }
   
   return intlMiddleware(req);
