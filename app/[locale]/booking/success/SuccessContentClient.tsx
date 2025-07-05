@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
+import ruMessages from "@/messages/ru.json";
+import uaMessages from "@/messages/ua.json";
 
 
 
@@ -15,6 +17,8 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
   const [message, setMessage] = useState('');
   const [calendarEventLink] = useState<string | null>(null);
 
+  // Select messages based on locale
+  const messages = locale === "ru" ? ruMessages : locale === "ua" ? uaMessages : ruMessages;
   useEffect(() => {
     if (!sessionId) {
       setStatus('success');
@@ -96,26 +100,12 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
             <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="mt-6 text-2xl font-bold text-gray-900" data-testid="success-title">Payment Successful!</h2>
-            <p className="mt-2 text-gray-600" data-testid="success-message">{message}</p>
-            
-            {calendarEventLink && (
-              <div className="mt-6 mb-4">
-                <a 
-                  href={calendarEventLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                  data-testid="success-calendar-link"
-                >
-                  View in Google Calendar
-                </a>
-              </div>
-            )}
-            
+            <h2 className="mt-6 text-2xl font-bold text-gray-900" data-testid="success-title">{messages.booking.successPage.title}</h2>
+            <p className="mt-2 text-gray-600" data-testid="success-message">{messages.booking.successPage.mainMessage}</p>
+            <p className="mt-2 text-gray-600" data-testid="success-email-confirmation">{messages.booking.successPage.emailConfirmation}</p>
             <div className="mt-6">
               <Link href="/" className="text-primary-600 hover:text-primary-800 font-medium" data-testid="success-home-link">
-                Return to Home
+                {messages.booking.successPage.returnHome}
               </Link>
             </div>
           </div>

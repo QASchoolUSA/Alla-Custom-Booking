@@ -195,6 +195,9 @@ export default function BookingPage() {
             <span className={`transition-colors duration-300 ${step === "payment" ? "text-primary-600 font-medium" : ""}`}>{t('payment')}</span>
           </div>
         </div>
+        <div className="mt-4 text-sm text-muted-foreground text-center" data-testid="cancellation-policy">
+          {t('cancellationPolicy')}
+        </div>
 
         {step === "select-event" && (
           <div className="transition-all duration-300" data-testid="step-select-event">
