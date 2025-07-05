@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -70,7 +70,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = React.memo(({ event, onD
     
     const handleContinue = (): void => {
         if (selectedTimeSlot) {
-            onDateTimeSelected(selectedTimeSlot, clientTimezone);
+            onDateTimeSelected(selectedTimeSlot);
         }
     };
 
@@ -131,88 +131,62 @@ const BookingCalendar: React.FC<BookingCalendarProps> = React.memo(({ event, onD
         setSelectedTimeSlot(null);
     }, [selectedDate]);
 
-
-
-    useEffect(() => {
-        if (!selectedDate) return;
-
-        if (!isLoading && busySlots) { // Check if busySlots is defined
-            generateAvailableTimeSlots(selectedDate, busySlots);
-        }
-    }, [busySlots, isLoading, selectedDate]);
-
-    const generateAvailableTimeSlots = (date: Date, currentBusySlots: BusySlotData[]): void => {
+    const generateAvailableTimeSlots = useCallback((date: Date, currentBusySlots: BusySlotData[]): void => {
         const dayStartHour = process.env.START_TIME ? parseInt(process.env.START_TIME, 10) : 9;
         const dayEndHour = process.env.END_TIME? parseInt(process.env.END_TIME, 10) : 18;
         const slotDurationMinutes = process.env.SLOT_DURATION? parseInt(process.env.SLOT_DURATION, 10) : 60;
         const generatedSlots: AvailableSlot[] = [];
         const adminTimezone = 'America/New_York'; // Admin's timezone
-
-        // Helper function to convert admin's working hours to client's timezone
         const convertAdminTimeToClientTime = (hour: number, minute: number = 0): Date => {
-            // Create a date in admin's timezone for the selected date
             const adminDateTime = new Date();
             adminDateTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
             adminDateTime.setHours(hour, minute, 0, 0);
-            
-            // Convert to admin's timezone using toLocaleString
             const adminTimeStr = adminDateTime.toLocaleString('sv-SE', { timeZone: adminTimezone });
             const adminTimeInAdminTz = new Date(adminTimeStr);
-            
-            // Calculate the difference between admin's timezone and UTC
             const adminOffsetMs = adminDateTime.getTime() - adminTimeInAdminTz.getTime();
-            
-            // Apply the offset to get the correct UTC time
             return new Date(adminDateTime.getTime() - adminOffsetMs);
         };
-
-        // Create start and end times by converting admin's working hours
         const startOfDay = convertAdminTimeToClientTime(dayStartHour, 0);
         const endOfDay = convertAdminTimeToClientTime(dayEndHour, 0);
-
         let currentSlotTime = new Date(startOfDay);
-
         while (currentSlotTime < endOfDay) {
             const slotStart = new Date(currentSlotTime);
             const slotEnd = new Date(currentSlotTime.getTime() + slotDurationMinutes * 60000);
-
-            // Only show future slots if booking for today
             const now = new Date();
             const isToday = date.toDateString() === now.toDateString();
             if (isToday && slotStart <= now) {
                 currentSlotTime = slotEnd;
                 continue;
             }
-
             const isBusy = currentBusySlots.some(busy => {
-                if (!busy.start || !busy.end) return false; // Skip if start or end is missing
-                // Busy slots from Google are ISO strings (likely UTC or with timezone offset)
-                // Convert them to Date objects for comparison.
+                if (!busy.start || !busy.end) return false;
                 const busyStart = new Date(busy.start);
                 const busyEnd = new Date(busy.end);
-
-                // Overlap check: (StartA < EndB) and (EndA > StartB)
                 return slotStart < busyEnd && slotEnd > busyStart;
             });
-
             if (!isBusy) {
-                // Display time in client's timezone
                 const displayTime = slotStart.toLocaleTimeString([], { 
                     hour: '2-digit', 
                     minute: '2-digit', 
                     hour12: true,
                     timeZone: clientTimezone
                 });
-                
                 generatedSlots.push({
                     start: displayTime,
-                    value: slotStart, // Keep original UTC time for booking
+                    value: slotStart,
                 });
             }
             currentSlotTime = slotEnd;
         }
         setAvailableSlots(generatedSlots);
-    };
+    }, [clientTimezone]);
+
+    useEffect(() => {
+        if (!selectedDate) return;
+        if (!isLoading && busySlots) {
+            generateAvailableTimeSlots(selectedDate, busySlots);
+        }
+    }, [busySlots, isLoading, selectedDate, generateAvailableTimeSlots]);
 
     return (
         <div className="flex flex-col items-center p-4 sm:p-6 md:p-8 w-full">

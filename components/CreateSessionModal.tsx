@@ -3,7 +3,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
@@ -35,6 +34,8 @@ interface BusySlotData {
 interface AvailableSlot {
   start: string;
   value: Date;
+  display?: string;
+  utc?: Date;
 }
 
 interface NewClientData {
@@ -57,7 +58,6 @@ export default function CreateSessionModal({
   onSessionCreated,
   clientSessions
 }: CreateSessionModalProps) {
-  const t = useTranslations('admin');
   const tEvents = useTranslations();
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [selectedEvent, setSelectedEvent] = useState<string>('');
@@ -153,59 +153,42 @@ export default function CreateSessionModal({
     setSelectedTimeSlot(null);
   }, [selectedDate]);
 
-  // Generate available time slots
-  useEffect(() => {
-    if (!selectedDate) return;
-    if (!isLoadingSlots && busySlots) {
-      generateAvailableTimeSlots(selectedDate, busySlots);
-    }
-  }, [busySlots, isLoadingSlots, selectedDate]);
-
-  const generateAvailableTimeSlots = (date: Date, currentBusySlots: BusySlotData[]): void => {
+  const generateAvailableTimeSlots = useCallback((date: Date, currentBusySlots: BusySlotData[]): void => {
     const dayStartHour = process.env.START_TIME ? parseInt(process.env.START_TIME, 10) : 9;
     const dayEndHour = process.env.END_TIME ? parseInt(process.env.END_TIME, 10) : 18;
     const slotDurationMinutes = process.env.SLOT_DURATION ? parseInt(process.env.SLOT_DURATION, 10) : 60;
     const generatedSlots: AvailableSlot[] = [];
     const adminTimezone = 'America/New_York';
-
-    // Helper function to convert admin's working hours to client's timezone
+  
     const convertAdminTimeToClientTime = (hour: number, minute: number = 0): Date => {
       const adminDateTime = new Date();
       adminDateTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
       adminDateTime.setHours(hour, minute, 0, 0);
-      
       const adminTimeStr = adminDateTime.toLocaleString('sv-SE', { timeZone: adminTimezone });
       const adminTimeInAdminTz = new Date(adminTimeStr);
-      
       const adminOffsetMs = adminDateTime.getTime() - adminTimeInAdminTz.getTime();
-      
       return new Date(adminDateTime.getTime() - adminOffsetMs);
     };
-
+  
     const startOfDay = convertAdminTimeToClientTime(dayStartHour, 0);
     const endOfDay = convertAdminTimeToClientTime(dayEndHour, 0);
-
     let currentSlotTime = new Date(startOfDay);
-
+  
     while (currentSlotTime < endOfDay) {
       const slotStart = new Date(currentSlotTime);
       const slotEnd = new Date(currentSlotTime.getTime() + slotDurationMinutes * 60000);
-
-      // Only show future slots if booking for today
       const now = new Date();
       const isToday = date.toDateString() === now.toDateString();
       if (isToday && slotStart <= now) {
         currentSlotTime = slotEnd;
         continue;
       }
-
       const isBusy = currentBusySlots.some(busy => {
         if (!busy.start || !busy.end) return false;
         const busyStart = new Date(busy.start);
         const busyEnd = new Date(busy.end);
         return slotStart < busyEnd && slotEnd > busyStart;
       });
-
       if (!isBusy) {
         const displayTime = slotStart.toLocaleTimeString([], { 
           hour: '2-digit', 
@@ -217,12 +200,22 @@ export default function CreateSessionModal({
         generatedSlots.push({
           start: displayTime,
           value: slotStart,
+          display: displayTime,
+          utc: slotStart,
         });
       }
       currentSlotTime = slotEnd;
     }
     setAvailableSlots(generatedSlots);
-  };
+  }, [clientTimezone]);
+
+  // Generate available time slots
+  useEffect(() => {
+    if (!selectedDate) return;
+    if (!isLoadingSlots && busySlots) {
+      generateAvailableTimeSlots(selectedDate, busySlots);
+    }
+  }, [busySlots, isLoadingSlots, selectedDate, generateAvailableTimeSlots]);
 
   const handleNewClientAdded = (client: NewClientData) => {
     setNewClientData(client);
@@ -307,7 +300,7 @@ export default function CreateSessionModal({
         // Reset form
         setSelectedClient('');
         setSelectedEvent('');
-        setSelectedDate(null);
+        setSelectedDate(undefined);
         setSelectedTimeSlot(null);
         setBusySlots([]);
         setAvailableSlots([]);
@@ -332,9 +325,8 @@ export default function CreateSessionModal({
       // Reset form when closing
       setSelectedClient('');
       setSelectedEvent('');
-      setSessionDate('');
-      setStartTime('');
-      setEndTime('');
+      setSelectedDate(undefined);
+      setSelectedTimeSlot(null);
     }
   };
 
@@ -469,9 +461,9 @@ export default function CreateSessionModal({
                          <Button
                            key={index}
                            type="button"
-                           variant={selectedTimeSlot && selectedTimeSlot.getTime() === slot.utc.getTime() ? "default" : "outline"}
+                           variant={selectedTimeSlot && slot.utc && selectedTimeSlot.getTime() === slot.utc.getTime() ? "default" : "outline"}
                            size="sm"
-                           onClick={() => handleTimeSlotSelect(slot.utc)}
+                           onClick={() => slot.utc && handleTimeSlotSelect(slot.utc)}
                            className="text-sm"
                          >
                            {slot.display}

@@ -7,19 +7,17 @@ import EventSelection from "@/components/Booking/EventSelection";
 import StripeCheckout from "@/components/Booking/StripeCheckout";
 import ClientInfo from "@/components/Booking/ClientInfo";
 import { SelectedEvent } from "@/types/bookings";
-import { getEventById, getLocalizedEvents } from "@/utils/eventTypes";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from 'next-intl';
 
 export default function BookingPage() {
   const t = useTranslations('booking');
-  const tEvents = useTranslations();
   const params = useParams();
   const locale = typeof params.locale === "string" ? params.locale : Array.isArray(params.locale) ? params.locale[0] : "ru";
   const router = useRouter();
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
-  const [clientTimezone, setClientTimezone] = useState<string>('Europe/Kiev'); // Store client timezone
+  const [clientTimezone] = useState<string>('Europe/Kiev'); // Store client timezone
   const [step, setStep] = useState<"select-event" | "calendar" | "client-info" | "payment">("select-event");
 
   const [clientData, setClientData] = useState<{
@@ -82,9 +80,7 @@ export default function BookingPage() {
   };
 
   const handleDateTimeSelected = (dateTime: Date) => {
-    console.log("Selected date and time:", dateTime);
     setSelectedDateTime(dateTime);
-    // Set timezone separately if needed
     setStep("client-info");
   };
 
@@ -94,27 +90,18 @@ export default function BookingPage() {
     email: string;
     phone: string;
   }) => {
-    console.log("Client info submitted:", data);
     setClientData(data);
     setStep("payment");
   };
 
-  const handlePaymentSuccess = async (paymentIntentId: string) => {
-    console.log("Payment successful with ID:", paymentIntentId);
+  const handlePaymentSuccess = async () => {
     setPaymentStatus("success");
-    // Here you would typically save the booking to your database
-    // and maybe redirect to a confirmation page
-    // Only proceed if we have all the necessary data
     if (selectedEvent && selectedDateTime && clientData) {
       try {
-        // Calculate end time based on duration (assuming duration is in format like "2 hours")
         const durationMatch = selectedEvent.duration?.match(/(\d+)\s*hour/i);
-        const durationHours = durationMatch ? parseInt(durationMatch[1]) : 1; // Default to 1 hour
-
+        const durationHours = durationMatch ? parseInt(durationMatch[1]) : 1;
         const endDateTime = new Date(selectedDateTime);
         endDateTime.setHours(endDateTime.getHours() + durationHours);
-
-        // Add event to Google Calendar
         const response = await fetch('/api/add-to-calendar', {
           method: 'POST',
           headers: {
@@ -124,22 +111,18 @@ export default function BookingPage() {
             eventName: selectedEvent.name,
             startTime: selectedDateTime.toISOString(),
             endTime: endDateTime.toISOString(),
-            // Now we can add customer details
             customerName: `${clientData.firstName} ${clientData.lastName}`,
             customerEmail: clientData.email,
             customerPhone: clientData.phone,
-            clientTimezone: clientTimezone // Add client timezone
+            clientTimezone: clientTimezone
           }),
         });
-
         const data = await response.json();
-
         if (data.success && data.htmlLink) {
           setCalendarEventLink(data.htmlLink);
         } else {
           console.error('Failed to add event to calendar:', data.error);
         }
-
       } catch (error) {
         console.error('Error adding event to calendar:', error);
       }
@@ -147,7 +130,6 @@ export default function BookingPage() {
   };
 
   const handlePaymentError = (errorMessage: string) => {
-    console.error("Payment error:", errorMessage);
     setPaymentStatus("error");
     setPaymentError(errorMessage);
   };
@@ -168,13 +150,9 @@ export default function BookingPage() {
               </button>
             </div>
         )}
-        
-        {/* Removed the top Pay button */}
-
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8 text-primary-700" data-testid="booking-title">
           {t('title')}
         </h1>
-
         {/* Progress indicator */}
         <div className="mb-8 px-2" data-testid="progress-indicator">
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">

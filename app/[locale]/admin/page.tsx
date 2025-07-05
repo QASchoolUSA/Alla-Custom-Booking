@@ -27,14 +27,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { MoreHorizontal, Calendar, Link, CheckCircle, User, Mail, DollarSign, Plus } from 'lucide-react';
-import CreateSessionModal from '@/components/CreateSessionModal';
-import { getLocalizedEvents } from '@/utils/eventTypes';
 import { calculateSessionNumber, getSessionEventName } from '@/utils/eventTypes';
 import { useTranslations } from 'next-intl';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { SelectedEvent } from '@/types/bookings';
-
+import CreateSessionModal from '@/components/CreateSessionModal';
+import BookingCalendar from '@/components/Booking/BookingCalendar';
 
 interface Booking {
   id: string;
@@ -51,7 +47,7 @@ interface Booking {
 
 export default function AdminDashboard() {
   const t = useTranslations('admin');
-  const tEvents = useTranslations();
+  // const tEvents = useTranslations();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -123,7 +119,7 @@ export default function AdminDashboard() {
   }, []);
 
   // Memoize localized events to prevent recalculation on every render
-  const localizedEvents = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
+  // const localizedEvents = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
 
   const handleCreateSession = useCallback(() => {
     setShowCreateSession(true);
@@ -396,7 +392,9 @@ export default function AdminDashboard() {
               event={{
                 id: calendarClient.id,
                 name: calendarClient.event_name,
-                price: 0
+                price: 0,
+                type: "admin-session",
+                sessions: calendarClient.sessions || 1
               }}
               onDateTimeSelected={async (dateTime) => {
                 // Calculate end time (1 hour after start time)

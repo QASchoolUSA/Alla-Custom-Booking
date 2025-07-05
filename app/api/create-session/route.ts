@@ -11,10 +11,10 @@ export async function POST(request: Request) {
       clientPhone, 
       eventType, 
       dateTime, 
-      sessionNumber, 
-      totalSessions, 
-      amount, 
-      status,
+      /* sessionNumber,  // Removed unused variable */
+      /* totalSessions,  // Removed unused variable */
+      /* amount,         // Removed unused variable */
+      /* status,         // Removed unused variable */
       clientTimezone 
     } = data;
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const date = startDateTime.toISOString().split('T')[0];
     const start_time = startDateTime.toISOString();
     const end_time = endDateTime.toISOString();
-    const event_name = getSessionEventName(eventType);
+    const event_name = getSessionEventName(eventType, 1, 1, 'ru');
 
     // Create the session booking directly in the database
     const { error: insertError } = await supabase.from('bookings').insert([

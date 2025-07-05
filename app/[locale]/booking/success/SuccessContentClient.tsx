@@ -15,7 +15,7 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
   const sessionId = searchParams.get('session_id');
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
-  const [calendarEventLink] = useState<string | null>(null);
+  // const [calendarEventLink] = useState<string | null>(null); // Removed unused variable
 
   // Select messages based on locale
   const messages = locale === "ru" ? ruMessages : locale === "ua" ? uaMessages : ruMessages;

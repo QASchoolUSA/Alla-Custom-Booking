@@ -43,7 +43,6 @@ const StripeCheckout = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showZelleModal, setShowZelleModal] = useState(false);
-  const [zellePaymentCompleted, setZellePaymentCompleted] = useState(false);
 
   // Check for successful payment return from Stripe
   useEffect(() => {
@@ -202,7 +201,6 @@ const StripeCheckout = ({
               <button
                 className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
                 onClick={() => {
-                  setZellePaymentCompleted(true);
                   setShowZelleModal(false);
                   if (typeof window !== 'undefined') {
                     window.dispatchEvent(new CustomEvent('zellePaymentCompleted'));
