@@ -62,7 +62,12 @@ export async function POST(request: Request) {
     try {
       const sessionEventName = getSessionEventName(event_name, 1, 1, 'ru');
       
-      const calendarResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/add-to-calendar`, {
+      // Dynamically determine the base URL from request headers
+      const host = request.headers.get('host');
+      const protocol = request.headers.get('x-forwarded-proto') || 'http';
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
+      
+      const calendarResponse = await fetch(`${baseUrl}/api/add-to-calendar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

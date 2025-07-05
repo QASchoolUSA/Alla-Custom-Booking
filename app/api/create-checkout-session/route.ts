@@ -12,7 +12,10 @@ export async function POST(request: Request) {
     console.log('-- [Received request body] --', body);
     console.log(body);
     const { amount, currency, eventName, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'ru' } = body;
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    // Get the base URL from the request headers to support dynamic domains
+    const host = request.headers.get('host');
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
     const successUrl = `${baseUrl}/${locale}/booking/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${baseUrl}/${locale}/booking?canceled=true`;
 

@@ -42,7 +42,10 @@ export async function POST(req: NextRequest) {
       }
     }
     // Construct the booking link
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    // Dynamically determine the base URL from request headers
+    const host = req.headers.get('host');
+    const protocol = req.headers.get('x-forwarded-proto') || 'http';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
     const link = `${baseUrl}/booking/package/${booking_token}`;
     return NextResponse.json({ success: true, link });
   } catch (err) {
