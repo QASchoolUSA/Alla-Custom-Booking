@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
-import { ClerkProvider } from '@clerk/nextjs';
 
 const comfortaa = Alegreya({
   weight: '500',
@@ -50,14 +49,12 @@ export default async function RootLayout({
         <link rel="preload" href="/alla-psychology-background.webp" as="image" />
       </head>
       <body className={comfortaa.className}>
-        <ClerkProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <Header />
-            {children}
-            <Footer />
-            <Toaster />
-          </NextIntlClientProvider>
-        </ClerkProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Header />
+          {children}
+          <Footer />
+          <Toaster />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

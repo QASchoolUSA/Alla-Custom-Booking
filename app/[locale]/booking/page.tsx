@@ -35,34 +35,38 @@ export default function BookingPage() {
     window.scrollTo(0, 0);
     // Listen for Zelle payment completion
     const handleZellePayment = async () => {
-      // For Zelle payment, create Google Calendar event and navigate to success page, no verification
+      // For Zelle payment, save booking to database (which also creates Google Calendar event)
       if (selectedEvent && selectedDateTime && clientData) {
         try {
           const durationMatch = selectedEvent.duration?.match(/(\d+)\s*hour/i);
           const durationHours = durationMatch ? parseInt(durationMatch[1]) : 1;
           const endDateTime = new Date(selectedDateTime);
           endDateTime.setHours(endDateTime.getHours() + durationHours);
-          const response = await fetch('/api/add-to-calendar', {
+          
+          // Save booking to database (this also creates the Google Calendar event)
+          const saveResponse = await fetch('/api/save-booking', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              eventName: selectedEvent.name,
-              startTime: selectedDateTime.toISOString(),
-              endTime: endDateTime.toISOString(),
-              customerName: `${clientData.firstName} ${clientData.lastName}`,
-              customerEmail: clientData.email,
-              customerPhone: clientData.phone,
+              event_name: selectedEvent.name,
+              client_name: `${clientData.firstName} ${clientData.lastName}`,
+              client_email: clientData.email,
+              client_phone: clientData.phone,
+              date: selectedDateTime.toISOString().split('T')[0],
+              start_time: selectedDateTime.toISOString(),
+              end_time: endDateTime.toISOString(),
+              quantity: selectedEvent.quantity || 1,
+              locale: locale,
               clientTimezone: clientTimezone
             }),
           });
-          const data = await response.json();
-          if (data.success && data.htmlLink) {
-            setCalendarEventLink(data.htmlLink);
-          } else {
-            console.error('Failed to add event to calendar:', data.error);
+          
+          const saveData = await saveResponse.json();
+          if (!saveData.success) {
+            console.error('Failed to save booking:', saveData.error);
           }
         } catch (error) {
-          console.error('Error adding event to calendar:', error);
+          console.error('Error processing Zelle payment:', error);
         }
       }
       // Handle 'as-needed' locale prefix correctly
