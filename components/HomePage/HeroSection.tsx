@@ -10,6 +10,17 @@ const HeroSection: React.FC = () => {
   const t = useTranslations('hero');
   const locale = useLocale();
   
+  // Handle 'as-needed' locale prefix correctly
+  const getLocalizedPath = (path: string) => {
+    if (locale === 'ru') {
+      // Default locale, no prefix needed
+      return path;
+    } else {
+      // Non-default locale, add prefix
+      return `/${locale}${path}`;
+    }
+  };
+  
   return (
     <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white overflow-hidden">
       {/* Background Image - Mobile */}
@@ -48,7 +59,7 @@ const HeroSection: React.FC = () => {
           {t('subtitle')}
         </p>
         <Link
-          href={`/${locale}/booking`}
+          href={getLocalizedPath('/booking')}
           className="bg-white text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300 text-lg transform hover:scale-105"
         >
           {t('cta')}

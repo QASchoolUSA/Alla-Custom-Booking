@@ -27,25 +27,50 @@ export default function Header() {
 
     // const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
 
-    const switchLanguage = (newLocale: string) => {
-      const currentPath = pathname.replace(`/${locale}`, '');
-      router.push(`/${newLocale}${currentPath}`);
+    const getLanguageSwitchUrl = (newLocale: string) => {
+      // Get the current path segments
+      const segments = pathname.split('/').filter(Boolean);
+      
+      // Remove the current locale if it exists in the path
+      let pathWithoutLocale = '/';
+      if (segments.length > 0) {
+        // If first segment is a locale, remove it
+        if (segments[0] === 'ua' || segments[0] === 'ru') {
+          pathWithoutLocale = '/' + segments.slice(1).join('/');
+        } else {
+          pathWithoutLocale = '/' + segments.join('/');
+        }
+      }
+      
+      // Ensure path starts with /
+      if (!pathWithoutLocale.startsWith('/')) {
+        pathWithoutLocale = '/' + pathWithoutLocale;
+      }
+      
+      // Construct the new URL
+      // With localePrefix: 'always', both locales need prefixes
+      const newPath = `/${newLocale}${pathWithoutLocale}`;
+      
+      // Ensure we don't have double slashes
+      return newPath.replace(/\/+/g, '/');
     };
+
+
   
-    // Navigation links
+    // Navigation links - handle 'always' locale prefix
+    const getLocalizedPath = (path: string) => {
+      // With localePrefix: 'always', both locales need prefixes
+      return `/${locale}${path}`;
+    };
+    
     const navigationLinks = [
-      { path: `/${locale}`, label: t('home') },
-      { path: `/${locale}/booking`, label: t('booking') },
+      { path: getLocalizedPath('/'), label: t('home') },
+      { path: getLocalizedPath('/booking'), label: t('booking') },
     ];
 
     // Helper function to check if link is active
     const isLinkActive = (linkPath: string) => {
-      // For default locale (ru), the URL doesn't include /ru prefix
-      if (locale === 'ru') {
-        const pathWithoutLocale = linkPath.replace('/ru', '') || '/';
-        return pathname === pathWithoutLocale;
-      }
-      // For other locales, compare directly
+      // With localePrefix: 'always', compare paths directly
       return pathname === linkPath;
     };
   
@@ -62,7 +87,7 @@ export default function Header() {
                <div className="w-10"></div>
                
                {/* Centered Logo on Mobile */}
-                <Link href={`/${locale}`} className="flex items-center">
+                <Link href={getLocalizedPath('/')} className="flex items-center">
                   <Image src="/alla-psychology-logo.webp" alt="Alla Psychology Logo" width={90} height={90} priority />
                 </Link>
                
@@ -79,7 +104,7 @@ export default function Header() {
             {/* Desktop Layout */}
             <div className="hidden md:flex justify-between items-center">
               {/* Logo */}
-              <Link href={`/${locale}`} className="flex items-center space-x-3">
+              <Link href={getLocalizedPath('/')} className="flex items-center space-x-3">
                 <Image src="/alla-psychology-logo.webp" alt="Alla Psychology Logo" width={90} height={90} priority />
                 <span className="text-white font-semibold text-lg font-alla-custom">Alla Psychology</span>
               </Link>
@@ -105,7 +130,13 @@ export default function Header() {
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
-                    onClick={() => switchLanguage(lang.code)}
+                    onClick={() => {
+                        if (locale === lang.code) {
+                          return;
+                        }
+                        const targetUrl = getLanguageSwitchUrl(lang.code);
+                        router.push(targetUrl);
+                      }}
                     className={`flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                       locale === lang.code 
                         ? 'bg-white text-gray-900 shadow-sm' 
@@ -164,7 +195,13 @@ export default function Header() {
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
-                        onClick={() => switchLanguage(lang.code)}
+                        onClick={() => {
+                          if (locale === lang.code) {
+                            return;
+                          }
+                          const targetUrl = getLanguageSwitchUrl(lang.code);
+                          router.push(targetUrl);
+                        }}
                         className={`flex flex-col items-center space-y-2 py-4 px-6 rounded-2xl transition-all duration-300 min-w-[100px] ${
                           locale === lang.code 
                             ? 'bg-gradient-to-b from-white to-gray-100 text-gray-900 shadow-lg transform scale-105' 
