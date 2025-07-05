@@ -65,7 +65,9 @@ export default function BookingPage() {
           console.error('Error adding event to calendar:', error);
         }
       }
-      router.push(`/${locale}/booking/success`);
+      // Handle 'as-needed' locale prefix correctly
+      const successPath = locale === 'ru' ? '/booking/success' : `/${locale}/booking/success`;
+      router.push(successPath);
     };
     window.addEventListener('zellePaymentCompleted', handleZellePayment);
     return () => window.removeEventListener('zellePaymentCompleted', handleZellePayment);

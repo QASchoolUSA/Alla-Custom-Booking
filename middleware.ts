@@ -4,11 +4,13 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 const intlMiddleware = createMiddleware({
   locales: ['ru', 'ua'],
   defaultLocale: 'ru',
-  localePrefix: 'as-needed'
+  localePrefix: 'always'
 });
 
 const isProtectedRoute = createRouteMatcher([
   '/admin(.*)',
+  '/ru/admin(.*)',
+  '/ua/admin(.*)'
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
