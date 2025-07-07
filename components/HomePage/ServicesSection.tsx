@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { getLocalizedEvents } from "@/utils/eventTypes";
-import { Clock, Users, Heart, Boxes, HeartHandshake } from "lucide-react";
+import { Clock, Users, Boxes, HeartHandshake } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from 'next-intl';
 

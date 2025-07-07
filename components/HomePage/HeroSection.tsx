@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Silk from '../../lib/backgroundSilk';
 import SplitText from '@/lib/splitText';
 import { useTranslations, useLocale } from 'next-intl';
 

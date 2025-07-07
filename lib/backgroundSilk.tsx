@@ -1,7 +1,7 @@
 "use client";
 
 import React, { forwardRef, useMemo, useRef, useLayoutEffect, useCallback, useEffect } from "react";
-import { Canvas, useFrame, useThree, RootState } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Color, Mesh, ShaderMaterial } from "three";
 
 type NormalizedRGB = [number, number, number];
@@ -93,7 +93,6 @@ const SilkPlane = forwardRef<Mesh, SilkPlaneProps>(function SilkPlane(
   { uniforms },
   ref
 ) {
-  const { viewport } = useThree();
   const isMobileDevice = useCallback(() => {
     return typeof window !== 'undefined' && window.innerWidth <= 768;
   }, []);
