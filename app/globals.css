@@ -8,6 +8,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-calm-blue: #dad4ef;
+  --color-midnight-blue: #191970;
+  --color-custom-black: #051014;
+  --color-brand-primary: #FF6347;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -116,8 +120,47 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    background-color: #dad4fe;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #dad4fe;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+  /* iOS Safe Area Support */
+  @supports (padding: max(0px)) {
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+
+  /* Ensure status bar area matches background */
+  @media screen and (max-width: 768px) {
+    html {
+      background-color: #dad4fe !important;
+    }
+    body {
+      background-color: #dad4fe !important;
+    }
+  }
+
+  /* Prevent layout shifts and improve mobile performance */
+  * {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Prevent text jumping during font loading */
+  .font-loading {
+    font-display: swap;
   }
 }
 

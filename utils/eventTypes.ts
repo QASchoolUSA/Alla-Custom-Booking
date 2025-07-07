@@ -48,7 +48,15 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     price: '1250',
     quantity: 10,
     description: t('events.package10.description')
-  }
+  },
+  {
+    id: 'group-therapy',
+    name: t('events.groupTherapy.name'),
+    duration: t('events.groupTherapy.duration'),
+    price: '299',
+    quantity: 8,
+    description: t('events.groupTherapy.description'),
+  },
 ];
 
 // Keep the original events for backward compatibility
@@ -92,6 +100,14 @@ export const events: EventType[] = [
     price: '1250',
     quantity: 10,
     description: 'A package of 10 therapy sessions.'
+  },
+  {
+    id: 'group-therapy',
+    name: 'Group Therapy',
+    duration: '3 hours',
+    price: '299',
+    quantity: 8,
+    description: 'A therapy session in a group setting.'
   }
 ];
 

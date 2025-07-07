@@ -2,12 +2,17 @@
 "use client";
 
 import React from 'react';
-import { Clock, Smartphone, CheckCircle } from 'lucide-react';
+import { Book, HandHeart, BookHeart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import ProfileCard from '@/lib/profileCard';
 
 const AboutSection: React.FC = () => {
   const t = useTranslations('about');
+  
+  const handleContactClick = () => {
+    window.open('https://t.me/alla_psychology', '_blank');
+  };
   
   // Animation variants for container
   const containerVariants = {
@@ -75,6 +80,19 @@ const AboutSection: React.FC = () => {
             {t('description')}
           </p>
         </motion.div>
+
+        <div className="flex justify-center mb-12">
+          <ProfileCard
+            name="Alla Sidor"
+            title="Психиатр|Релив Терапевт"
+            handle="allasidor"
+            contactText="Contact Me"
+            avatarUrl="/alla-psychology-background.webp"
+            onContactClick={handleContactClick}
+            showUserInfo={true}
+            enableTilt={true}
+          />
+        </div>
         
         <motion.div 
           className="grid md:grid-cols-3 gap-8 text-center"
@@ -89,15 +107,20 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-calm-blue text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
-              <Clock className="w-6 h-6" />
+              <Book className="w-6 h-6" />
             </motion.div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('saveTime.title')}</h3>
-            <p className="text-neutral-600">
-              {t('saveTime.description')}
-            </p>
+            <div className="text-neutral-600">
+              {t('saveTime.description').split('\n').map((line, index, arr) => (
+                <React.Fragment key={index}>
+                  {line}
+                  {index < arr.length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </div>
           </motion.div>
           
           <motion.div 
@@ -106,15 +129,20 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-calm-blue text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
-              <Smartphone className="w-6 h-6" />
+              <HandHeart className="w-6 h-6" />
             </motion.div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('accessible.title')}</h3>
-            <p className="text-neutral-600">
-              {t('accessible.description')}
-            </p>
+            <div className="text-neutral-600">
+              {t('accessible.description').split('\n').map((line, index, arr) => (
+                <React.Fragment key={index}>
+                  {line}
+                  {index < arr.length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </div>
           </motion.div>
           
           <motion.div 
@@ -123,15 +151,20 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-calm-blue text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
-              <CheckCircle className="w-6 h-6" />
+              <BookHeart className="w-6 h-6" />
             </motion.div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('confirmation.title')}</h3>
-            <p className="text-neutral-600">
-              {t('confirmation.description')}
-            </p>
+            <div className="text-neutral-600">
+              {t('confirmation.description').split('\n').map((line, index, arr) => (
+                <React.Fragment key={index}>
+                  {line}
+                  {index < arr.length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
       </div>
