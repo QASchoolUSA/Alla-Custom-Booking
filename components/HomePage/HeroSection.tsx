@@ -34,7 +34,7 @@ const HeroSection: React.FC = () => {
       }}
     >
       {/* Content */}
-      <div className="relative z-20 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center h-full">
+      <div className="relative z-20 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center h-full pt-16 md:pt-0">
         <SplitText
           text={t('title')}
           className="text-4xl md:text-6xl font-bold mb-6"
