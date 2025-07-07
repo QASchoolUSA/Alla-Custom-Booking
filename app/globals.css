@@ -132,6 +132,7 @@
     text-rendering: optimizeLegibility;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: none;
+    padding-top: 80px; /* Account for fixed header */
   }
 
   /* iOS Safe Area Support */

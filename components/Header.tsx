@@ -20,6 +20,25 @@ export default function Header() {
       setIsOpen(false);
     }, [pathname]);
 
+    // Prevent body scroll when menu is open
+    useEffect(() => {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+      } else {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+      }
+
+      return () => {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+      };
+    }, [isOpen]);
+
     const languages = [
       { code: 'ru', name: 'Русский', flag: '🇷🇺' },
       { code: 'ua', name: 'Українська', flag: '🇺🇦' }
@@ -78,11 +97,11 @@ export default function Header() {
 
     return (
         <header 
-          className="w-full z-50 transition-all duration-300 bg-transparent"
+          className="w-full z-50 transition-all duration-300 bg-transparent h-20 relative"
         >
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 h-20">
             {/* Mobile Layout */}
-             <div className="md:hidden flex justify-between items-center">
+             <div className="md:hidden flex justify-between items-center h-full">
                {/* Placeholder for balance */}
                <div className="w-10"></div>
                
@@ -94,15 +113,16 @@ export default function Header() {
                {/* Mobile Menu Button */}
                <button
                  onClick={toggleMenu}
-                 className="text-white p-2 hover:bg-white/10 rounded-lg transition-colors duration-200"
+                 className="text-white p-3 hover:bg-white/10 rounded-lg transition-colors duration-200 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
                  aria-label="Toggle menu"
+                 type="button"
                >
-                 {isOpen ? <X size={24} /> : <Menu size={24} />}
+                 {isOpen ? <X size={28} /> : <Menu size={28} />}
                </button>
              </div>
             
             {/* Desktop Layout */}
-            <div className="hidden md:flex justify-between items-center">
+            <div className="hidden md:flex justify-between items-center h-full">
               {/* Logo */}
               <Link href={getLocalizedPath('/')} className="flex items-center space-x-3">
                 <Image src="/alla-psychology-logo.webp" alt="Alla Psychology Logo" width={90} height={90} priority />
@@ -153,12 +173,12 @@ export default function Header() {
             </div>
           </div>
     
-          {/* Mobile Navigation - Fixed Design */}
+          {/* Mobile Navigation - Liquid Glass Design */}
           {isOpen && (
-            <div className="md:hidden fixed inset-0 z-50 bg-black/95">
+            <div className="md:hidden fixed inset-0 z-[60] bg-white/10 backdrop-blur-xl" style={{top: 0, left: 0, right: 0, bottom: 0, position: 'fixed'}}>
               <div className="flex flex-col h-full">
                 {/* Header with close button */}
-                <div className="flex justify-between items-center p-4 border-b border-white/20">
+                <div className="flex justify-between items-center p-6 border-b border-white/30 bg-white/5">
                   <h2 className="text-white text-xl font-bold">Alla Psychology</h2>
                   <button
                     onClick={toggleMenu}
@@ -169,16 +189,16 @@ export default function Header() {
                 </div>
                 
                 {/* Navigation Links */}
-                <nav className="flex-1 flex flex-col justify-center px-6 space-y-6">
+                <nav className="flex-1 flex flex-col justify-center px-8 space-y-4">
                   {navigationLinks.map((link) => (
                     <Link
                       key={link.path}
                       href={link.path}
                       onClick={() => setIsOpen(false)}
-                      className={`text-center py-4 px-6 text-xl font-medium rounded-lg transition-colors ${
+                      className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border border-white/20 backdrop-blur-sm ${
                         isLinkActive(link.path)
-                          ? 'text-yellow-400 bg-white/10'
-                          : 'text-white hover:text-yellow-300 hover:bg-white/5'
+                          ? 'text-yellow-400 bg-white/20 border-yellow-400/30 shadow-lg'
+                          : 'text-white hover:text-yellow-300 hover:bg-white/15 hover:border-white/40 hover:shadow-md'
                       }`}
                     >
                       {link.label}
@@ -186,7 +206,7 @@ export default function Header() {
                   ))}
                   
                   {/* Language Switcher */}
-                  <div className="border-t border-white/20 pt-6 mt-6">
+                  <div className="border-t border-white/30 pt-8 mt-8 bg-white/5 rounded-t-3xl">
                     <h3 className="text-white text-lg font-semibold mb-4 text-center">Language</h3>
                     <div className="flex justify-center space-x-4">
                       {languages.map((lang) => (
@@ -199,10 +219,10 @@ export default function Header() {
                             const targetUrl = getLanguageSwitchUrl(lang.code);
                             router.push(targetUrl);
                           }}
-                          className={`flex flex-col items-center space-y-2 py-3 px-4 rounded-lg transition-all ${
+                          className={`flex flex-col items-center space-y-3 py-4 px-6 rounded-2xl transition-all duration-300 border backdrop-blur-sm ${
                             locale === lang.code 
-                              ? 'bg-white text-gray-900' 
-                              : 'text-white hover:bg-white/10 border border-white/20'
+                              ? 'bg-white/25 text-white border-white/40 shadow-lg' 
+                              : 'text-white hover:bg-white/15 border-white/25 hover:border-white/40 hover:shadow-md'
                           }`}
                         >
                           <span className="text-2xl">{lang.flag}</span>
