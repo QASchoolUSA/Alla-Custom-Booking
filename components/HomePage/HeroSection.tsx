@@ -1,14 +1,22 @@
 // components/HomePage/HeroSection.tsx
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import SplitText from '@/lib/splitText';
 import { useTranslations, useLocale } from 'next-intl';
 
 const HeroSection: React.FC = () => {
   const t = useTranslations('hero');
   const locale = useLocale();
+  const [fixedHeight, setFixedHeight] = useState<number | null>(null);
+  
+  // Set fixed height on initial load to prevent resizing during scroll
+  useEffect(() => {
+    if (typeof window !== 'undefined' && fixedHeight === null) {
+      setFixedHeight(window.innerHeight);
+    }
+  }, [fixedHeight]);
   
   // Handle 'always' locale prefix correctly
   const getLocalizedPath = (path: string) => {
@@ -17,40 +25,30 @@ const HeroSection: React.FC = () => {
   };
   
   return (
-    <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-screen min-h-[400px] md:min-h-[600px] flex items-center justify-center text-white overflow-hidden">
-      {/* Background Image - Mobile */}
-      <Image
-        src="/alla-psychology-background.webp"
-        alt="Alla Psychology Background"
-        fill
-        priority
-        className="object-cover md:hidden"
-        sizes="100vw"
-        style={{
-          objectPosition: 'center 30%',
-        }}
-      />
-      {/* Background Image - Desktop */}
-      <Image
-        src="/alla-booking-bg.webp"
-        alt="Alla Psychology Background"
-        fill
-        priority
-        className="object-cover hidden md:block"
-        sizes="100vw"
-        style={{
-          objectPosition: 'center center',
-        }}
-      />
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black opacity-80 z-10"></div>
-
+    <section 
+      className="relative w-full flex items-center justify-center text-white overflow-hidden min-h-screen"
+      style={{ 
+        height: fixedHeight ? `${fixedHeight}px` : '100vh',
+        marginTop: '-80px', // Offset header height
+        paddingTop: '80px'   // Add padding to maintain content position
+      }}
+    >
       {/* Content */}
-      <div className="relative z-20 container mx-auto px-6 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          {t('title')}
-        </h1>
-        <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+      <div className="relative z-20 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center h-full">
+        <SplitText
+          text={t('title')}
+          className="text-4xl md:text-6xl font-bold mb-6"
+          delay={100}
+          duration={0.6}
+          ease="power3.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 40 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.1}
+          rootMargin="-100px"
+          textAlign="center"
+        />
+        <p className="text-lg md:text-xl mb-8 max-w-2xl">
           {t('subtitle')}
         </p>
         <Link

@@ -78,7 +78,7 @@ export default function Header() {
 
     return (
         <header 
-          className="fixed w-full z-50 transition-all duration-300 bg-black/70"
+          className="w-full z-50 transition-all duration-300 bg-transparent"
         >
           <div className="container mx-auto px-4">
             {/* Mobile Layout */}
@@ -153,73 +153,68 @@ export default function Header() {
             </div>
           </div>
     
-          {/* Mobile Navigation - Improved Design */}
-          <div 
-            className={`md:hidden fixed left-0 right-0 bottom-0 bg-gradient-to-b from-black/95 to-black/90 backdrop-blur-md z-30 transition-all duration-300 ${
-              isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-            }`}
-            style={{ top: '90px' }}
-          >
-            <div className="container mx-auto px-6 py-8 h-full flex flex-col">
-              {/* Brand Title */}
-              <div className="text-center mb-8">
-                <h2 className="text-white text-3xl font-bold font-alla-custom">Alla Psychology</h2>
-              </div>
-              
-              <nav className="flex-1 flex flex-col justify-center space-y-8">
-                {navigationLinks.map((link, index) => (
-                  <Link
-                    key={link.path}
-                    href={link.path}
-                    className={`group relative font-medium py-4 px-6 text-center text-2xl transition-all duration-300 rounded-xl ${
-                      isLinkActive(link.path)
-                        ? 'text-white bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg shadow-primary-500/25'
-                        : 'text-white hover:text-yellow-300 hover:bg-white/5 hover:scale-105'
-                    }`}
-                    style={{
-                      animationDelay: `${index * 100}ms`,
-                      animation: isOpen ? 'slideInFromRight 0.5s ease-out forwards' : 'none'
-                    }}
+          {/* Mobile Navigation - Fixed Design */}
+          {isOpen && (
+            <div className="md:hidden fixed inset-0 z-50 bg-black/95">
+              <div className="flex flex-col h-full">
+                {/* Header with close button */}
+                <div className="flex justify-between items-center p-4 border-b border-white/20">
+                  <h2 className="text-white text-xl font-bold">Alla Psychology</h2>
+                  <button
+                    onClick={toggleMenu}
+                    className="text-white p-2 hover:bg-white/10 rounded-lg"
                   >
-                    <span className="relative z-10">{link.label}</span>
-                    {!isLinkActive(link.path) && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    )}
-                  </Link>
-                ))}
-                
-                {/* Mobile Language Options - Enhanced Design */}
-                <div className="border-t border-white/20 pt-8 mt-8">
-                  <h3 className="text-white text-xl font-semibold mb-6 text-center opacity-90">Язык / Мова</h3>
-                  <div className="flex justify-center space-x-4">
-                    {languages.map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => {
-                          if (locale === lang.code) {
-                            return;
-                          }
-                          const targetUrl = getLanguageSwitchUrl(lang.code);
-                          router.push(targetUrl);
-                        }}
-                        className={`flex flex-col items-center space-y-2 py-4 px-6 rounded-2xl transition-all duration-300 min-w-[100px] ${
-                          locale === lang.code 
-                            ? 'bg-gradient-to-b from-white to-gray-100 text-gray-900 shadow-lg transform scale-105' 
-                            : 'text-white hover:bg-white/10 hover:scale-105 border border-white/20'
-                        }`}
-                      >
-                        <span className="text-3xl">{lang.flag}</span>
-                        <span className="font-medium text-sm">{lang.name}</span>
-                        {locale === lang.code && (
-                          <div className="w-2 h-2 bg-primary-500 rounded-full" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
+                    <X size={24} />
+                  </button>
                 </div>
-              </nav>
+                
+                {/* Navigation Links */}
+                <nav className="flex-1 flex flex-col justify-center px-6 space-y-6">
+                  {navigationLinks.map((link) => (
+                    <Link
+                      key={link.path}
+                      href={link.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`text-center py-4 px-6 text-xl font-medium rounded-lg transition-colors ${
+                        isLinkActive(link.path)
+                          ? 'text-yellow-400 bg-white/10'
+                          : 'text-white hover:text-yellow-300 hover:bg-white/5'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                  
+                  {/* Language Switcher */}
+                  <div className="border-t border-white/20 pt-6 mt-6">
+                    <h3 className="text-white text-lg font-semibold mb-4 text-center">Language</h3>
+                    <div className="flex justify-center space-x-4">
+                      {languages.map((lang) => (
+                        <button
+                          key={lang.code}
+                          onClick={() => {
+                            if (locale === lang.code) {
+                              return;
+                            }
+                            const targetUrl = getLanguageSwitchUrl(lang.code);
+                            router.push(targetUrl);
+                          }}
+                          className={`flex flex-col items-center space-y-2 py-3 px-4 rounded-lg transition-all ${
+                            locale === lang.code 
+                              ? 'bg-white text-gray-900' 
+                              : 'text-white hover:bg-white/10 border border-white/20'
+                          }`}
+                        >
+                          <span className="text-2xl">{lang.flag}</span>
+                          <span className="text-sm font-medium">{lang.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </nav>
+              </div>
             </div>
-          </div>
+          )}
           
           <style jsx>{`
             @keyframes slideInFromRight {

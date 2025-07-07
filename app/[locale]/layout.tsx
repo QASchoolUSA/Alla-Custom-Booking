@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
+import Silk from "@/lib/backgroundSilk";
 
 const comfortaa = Alegreya({
   weight: '500',
@@ -15,6 +16,7 @@ const comfortaa = Alegreya({
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#dad4fe',
 };
 
 export const metadata: Metadata = {
@@ -47,12 +49,28 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
         <link rel="preload" href="/alla-psychology-background.webp" as="image" />
+        <meta name="theme-color" content="#dad4fe" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
       <body className={comfortaa.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Header />
-          {children}
-          <Footer />
+          {/* Global Silk Background */}
+          <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
+            <Silk
+              speed={5}
+              color="#dad4fe"
+            />
+          </div>
+          
+          {/* Content */}
+          <div className="relative z-10">
+            <Header />
+            <main>
+              {children}
+            </main>
+            <Footer />
+          </div>
           <Toaster />
         </NextIntlClientProvider>
       </body>

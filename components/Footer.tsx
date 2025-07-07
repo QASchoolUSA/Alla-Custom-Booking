@@ -8,7 +8,15 @@ export default function Footer() {
   const t = useTranslations('footer');
 
   return (
-    <footer className="bg-neutral-900 text-white">
+    <footer 
+      className="text-white border-t border-white/10"
+      style={{
+        background: 'linear-gradient(135deg, rgba(218, 212, 254, 0.08) 0%, rgba(218, 212, 254, 0.03) 100%)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.1)'
+      }}
+    >
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Column 1: Logo and About */}
@@ -23,7 +31,7 @@ export default function Footer() {
               />
               <span className="font-alla-custom">Alla Psychology</span>
             </Link>
-            <div className="text-neutral-400 mt-4">
+            <div className="text-white/70 mt-4">
               <p className="leading-relaxed whitespace-pre-line">
                 {t('bio')}
               </p>
@@ -32,17 +40,17 @@ export default function Footer() {
 
           {/* Column 2: Quick Links */}
           <div>
-            <h4 className="text-lg font-medium mb-4 border-b border-neutral-700 pb-2">
+            <h4 className="text-lg font-medium mb-4 pb-2 border-b border-white/20">
               {t('quickLinks')}
             </h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-neutral-400 hover:text-white transition-colors duration-200">
+                <Link href="/" className="text-white/70 hover:text-white transition-colors duration-200">
                   {t('home')}
                 </Link>
               </li>
               <li>
-                <Link href="/booking" className="text-neutral-400 hover:text-white transition-colors duration-200">
+                <Link href="/booking" className="text-white/70 hover:text-white transition-colors duration-200">
                   {t('booking')}
                 </Link>
               </li>
@@ -51,24 +59,24 @@ export default function Footer() {
 
           {/* Column 3: Contact Information */}
           <div>
-            <h4 className="text-lg font-medium mb-4 border-b border-neutral-700 pb-2">
+            <h4 className="text-lg font-medium mb-4 pb-2 border-b border-white/20">
               {t('contactInfo')}
             </h4>
             <ul className="space-y-4">
               <li className="flex items-center">
-                <Mail size={18} className="mr-2 text-primary-400" />
-                <a href="mailto:contact@allapsychology.com" className="text-neutral-400 hover:text-white transition-colors duration-200">
+                <Mail size={18} className="mr-2 text-white/80" />
+                <a href="mailto:contact@allapsychology.com" className="text-white/70 hover:text-white transition-colors duration-200">
                 contact@allapsychology.com
                 </a>
               </li>
               <li className="flex items-center">
-                <Phone size={18} className="mr-2 text-primary-400" />
-                <a href="tel:+38050123456" className="text-neutral-400 hover:text-white transition-colors duration-200">
-                  +380 50 123 4567
+                <Phone size={18} className="mr-2 text-white/80" />
+                <a href="tel:+14078680405" className="text-white/70 hover:text-white transition-colors duration-200">
+                  +1 407 868 0405
                 </a>
               </li>
               <li>
-                <h5 className="text-sm uppercase tracking-wider text-neutral-500 mb-2">
+                <h5 className="text-sm uppercase tracking-wider text-white/60 mb-2">
                   {t('socialMedia')}
                 </h5>
                 <div className="flex space-x-4 mt-2">
@@ -76,7 +84,12 @@ export default function Footer() {
                     href="https://www.instagram.com/alla.psychology_" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-neutral-400 hover:text-primary-400 transition-colors duration-200"
+                    className="p-2 rounded-lg border border-white/20 text-white/70 hover:text-white transition-all duration-200"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)'
+                    }}
                     aria-label="Instagram"
                   >
                     <Instagram size={20} />
@@ -85,7 +98,12 @@ export default function Footer() {
                     href="https://t.me/alla_psychology" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-neutral-400 hover:text-primary-400 transition-colors duration-200"
+                    className="p-2 rounded-lg border border-white/20 text-white/70 hover:text-white transition-all duration-200"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)'
+                    }}
                     aria-label="Telegram"
                   >
                     <Send size={20} />
