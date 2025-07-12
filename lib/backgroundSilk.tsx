@@ -145,11 +145,11 @@ export interface SilkProps {
 }
 
 const Silk: React.FC<SilkProps> = ({
-  speed = 5,
-  scale = 1,
-  color = "#dad4fe",
+  speed = 3,
+  scale = 1.3,
+  color = "#4B3F72",
   noiseIntensity = 1,
-  rotation = 0,
+  rotation = 0.5,
 }) => {
   const meshRef = useRef<Mesh>(null);
   const containerRef = useRef<HTMLDivElement>(null);

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ReceiptText, ChevronLeft, Check, X } from "lucide-react";
-import BookingCalendar from "@/components/Booking/BookingCalendar";
+import BookingCalendar from "../../../components/Booking/BookingCalendar";
 import EventSelection from "@/components/Booking/EventSelection";
 import StripeCheckout from "@/components/Booking/StripeCheckout";
 import ClientInfo from "@/components/Booking/ClientInfo";
@@ -49,6 +49,7 @@ export default function BookingPage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               event_name: selectedEvent.name,
+              event_id: selectedEvent.id,
               client_name: `${clientData.firstName} ${clientData.lastName}`,
               client_email: clientData.email,
               client_phone: clientData.phone,
@@ -279,6 +280,7 @@ export default function BookingPage() {
                   <StripeCheckout
                     amount={selectedEvent.price}
                     eventName={selectedEvent.name}
+                    eventId={selectedEvent.id}
                     quantity={1}
                     sessionsCount={selectedEvent.quantity}
                     customerName={clientData ? `${clientData.firstName} ${clientData.lastName}` : undefined}

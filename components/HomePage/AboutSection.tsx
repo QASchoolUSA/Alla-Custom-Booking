@@ -84,7 +84,7 @@ const AboutSection: React.FC = () => {
         <div className="flex justify-center mb-12">
           <ProfileCard
             name="Alla Sidor"
-            title="Психиатр|Релив Терапевт"
+            title="Психолог|Релив Терапевт"
             handle="allasidor"
             contactText="Contact Me"
             avatarUrl="/alla-psychology-background.webp"

@@ -94,8 +94,9 @@ export async function GET(request: NextRequest): Promise<NextResponse<Availabili
         const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
         const busySlotsResult = response.data.calendars?.[calendarId]?.busy;
 
-
-        return NextResponse.json({ busySlots: busySlotsResult as BusySlot[] || [] });
+        return NextResponse.json({ 
+            busySlots: busySlotsResult as BusySlot[] || []
+        });
 
     } catch (error: unknown) {
         // Type guard to safely access error properties

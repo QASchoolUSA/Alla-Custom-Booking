@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('-- [Received request body] --', body);
     console.log(body);
-    const { amount, currency, eventName, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'ru' } = body;
+    const { amount, currency, eventName, eventId, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'ru' } = body;
     // Get the base URL from the request headers to support dynamic domains
     const host = request.headers.get('host');
     const protocol = request.headers.get('x-forwarded-proto') || 'https';
@@ -99,6 +99,7 @@ export async function POST(request: Request) {
       locale: 'ru', // Always use Russian for Stripe as Ukrainian is not supported
       metadata: {
         eventName: finalEventName,
+        eventId: eventId,
         startTime: finalStartTime,
         endTime: finalEndTime,
         customerName,

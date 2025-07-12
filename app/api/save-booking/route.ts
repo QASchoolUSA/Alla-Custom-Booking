@@ -20,6 +20,8 @@ export async function POST(request: Request) {
       clientTimezone 
     } = data;
 
+
+
     if (is_package_booking && booking_token) {
       // For package bookings with tokens, create a new appointment and decrement sessions
       // First, find the original booking to get the current sessions count
@@ -120,7 +122,7 @@ export async function POST(request: Request) {
 
       const { error } = await supabase.from('bookings').insert([
         {
-          event_name: event_name, // Store base event name for admin display
+          event_name: event_name, // Store event name
           client_name,
           client_email,
           client_phone,
