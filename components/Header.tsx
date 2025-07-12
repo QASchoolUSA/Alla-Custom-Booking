@@ -14,6 +14,7 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
     const pathname = usePathname();
+    const isBookingPage = pathname.includes('/booking');
   
     // Close menu when route changes
     useEffect(() => {
@@ -175,14 +176,47 @@ export default function Header() {
     
           {/* Mobile Navigation - Liquid Glass Design */}
           {isOpen && (
-            <div className="md:hidden fixed inset-0 z-[60] bg-white/10 backdrop-blur-xl" style={{top: 0, left: 0, right: 0, bottom: 0, position: 'fixed'}}>
+            <div className={`md:hidden fixed inset-0 z-[60] backdrop-blur-xl ${
+              isBookingPage 
+                ? '' 
+                : 'bg-white/10'
+            }`} style={{
+              top: 0, 
+              left: 0, 
+              right: 0, 
+              bottom: 0, 
+              position: 'fixed',
+              backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.95)' : undefined
+            }}>
               <div className="flex flex-col h-full">
                 {/* Header with close button */}
-                <div className="flex justify-between items-center p-6 border-b border-white/30 bg-white/5">
+                <div className={`flex justify-between items-center p-6 border-b ${
+                  isBookingPage 
+                    ? 'border-opacity-70' 
+                    : 'border-white/30 bg-white/5'
+                }`} style={{
+                  borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.7)' : undefined,
+                  backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined
+                }}>
                   <h2 className="text-white text-xl font-bold">Alla Psychology</h2>
                   <button
-                    onClick={toggleMenu}
-                    className="text-white p-2 hover:bg-white/10 rounded-lg"
+                     onClick={toggleMenu}
+                      className={`text-white p-2 rounded-lg transition-colors ${
+                        isBookingPage 
+                          ? '' 
+                          : 'hover:bg-white/10'
+                      }`}
+                      style={{}}
+                      onMouseEnter={(e) => {
+                        if (isBookingPage) {
+                          e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.5)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (isBookingPage) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
                   >
                     <X size={24} />
                   </button>
@@ -195,18 +229,110 @@ export default function Header() {
                       key={link.path}
                       href={link.path}
                       onClick={() => setIsOpen(false)}
-                      className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border border-white/20 backdrop-blur-sm ${
+                      className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border backdrop-blur-sm ${
                         isLinkActive(link.path)
-                          ? 'text-yellow-400 bg-white/20 border-yellow-400/30 shadow-lg'
-                          : 'text-white hover:text-yellow-300 hover:bg-white/15 hover:border-white/40 hover:shadow-md'
+                          ? isBookingPage
+                            ? 'text-yellow-400 shadow-lg'
+                            : 'text-yellow-400 bg-white/20 border-yellow-400/30 shadow-lg'
+                          : isBookingPage
+                            ? 'text-white hover:text-yellow-300 hover:shadow-md'
+                            : 'text-white hover:text-yellow-300 hover:bg-white/15 border-white/20 hover:border-white/40 hover:shadow-md'
                       }`}
+                      style={{
+                        backgroundColor: isLinkActive(link.path) && isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined,
+                        borderColor: isLinkActive(link.path) && isBookingPage ? 'rgba(255, 193, 7, 0.5)' : isBookingPage && !isLinkActive(link.path) ? 'rgba(75, 63, 114, 0.6)' : undefined
+                      }}
+                      onMouseEnter={(e) => {
+                        if (isBookingPage && !isLinkActive(link.path)) {
+                          e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
+                          e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (isBookingPage && !isLinkActive(link.path)) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
+                        }
+                      }}
                     >
                       {link.label}
                     </Link>
                   ))}
                   
+                  {/* Section Navigation Buttons */}
+                  <button
+                    onClick={() => {
+                      const aboutSection = document.getElementById('about-section');
+                      if (aboutSection) {
+                        aboutSection.scrollIntoView({ behavior: 'smooth' });
+                        setIsOpen(false);
+                      }
+                    }}
+                    className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border backdrop-blur-sm ${
+                      isBookingPage
+                        ? 'text-white hover:text-yellow-300 hover:shadow-md'
+                        : 'text-white hover:text-yellow-300 hover:bg-white/15 border-white/20 hover:border-white/40 hover:shadow-md'
+                    }`}
+                    style={{
+                      borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.6)' : undefined
+                    }}
+                    onMouseEnter={(e) => {
+                      if (isBookingPage) {
+                        e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
+                        e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (isBookingPage) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
+                      }
+                    }}
+                  >
+                    About
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      const servicesSection = document.getElementById('services-section');
+                      if (servicesSection) {
+                        servicesSection.scrollIntoView({ behavior: 'smooth' });
+                        setIsOpen(false);
+                      }
+                    }}
+                    className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border backdrop-blur-sm ${
+                      isBookingPage
+                        ? 'text-white hover:text-yellow-300 hover:shadow-md'
+                        : 'text-white hover:text-yellow-300 hover:bg-white/15 border-white/20 hover:border-white/40 hover:shadow-md'
+                    }`}
+                    style={{
+                      borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.6)' : undefined
+                    }}
+                    onMouseEnter={(e) => {
+                      if (isBookingPage) {
+                        e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
+                        e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (isBookingPage) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
+                      }
+                    }}
+                  >
+                    Services
+                  </button>
+                  
                   {/* Language Switcher */}
-                  <div className="border-t border-white/30 pt-8 mt-8 bg-white/5 rounded-t-3xl">
+                  <div className={`border-t pt-8 mt-8 pb-6 rounded-3xl ${
+                    isBookingPage 
+                      ? '' 
+                      : 'border-white/30 bg-white/5'
+                  }`} style={{
+                    borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.7)' : undefined,
+                    backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.3)' : undefined
+                  }}>
                     <h3 className="text-white text-lg font-semibold mb-4 text-center">Language</h3>
                     <div className="flex justify-center space-x-4">
                       {languages.map((lang) => (
@@ -221,9 +347,29 @@ export default function Header() {
                           }}
                           className={`flex flex-col items-center space-y-3 py-4 px-6 rounded-2xl transition-all duration-300 border backdrop-blur-sm ${
                             locale === lang.code 
-                              ? 'bg-white/25 text-white border-white/40 shadow-lg' 
-                              : 'text-white hover:bg-white/15 border-white/25 hover:border-white/40 hover:shadow-md'
+                              ? isBookingPage
+                                ? 'text-white shadow-lg'
+                                : 'bg-white/25 text-white border-white/40 shadow-lg'
+                              : isBookingPage
+                                ? 'text-white hover:shadow-md'
+                                : 'text-white hover:bg-white/15 border-white/25 hover:border-white/40 hover:shadow-md'
                           }`}
+                          style={{
+                            backgroundColor: locale === lang.code && isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined,
+                            borderColor: locale === lang.code && isBookingPage ? 'rgba(75, 63, 114, 0.6)' : isBookingPage && locale !== lang.code ? 'rgba(75, 63, 114, 0.6)' : undefined
+                          }}
+                          onMouseEnter={(e) => {
+                            if (isBookingPage && locale !== lang.code) {
+                              e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
+                              e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (isBookingPage && locale !== lang.code) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                              e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
+                            }
+                          }}
                         >
                           <span className="text-2xl">{lang.flag}</span>
                           <span className="text-sm font-medium">{lang.name}</span>

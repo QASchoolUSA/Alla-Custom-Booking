@@ -1,22 +1,22 @@
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { Metadata, Viewport } from 'next';
-import { Alegreya } from 'next/font/google';
+import { Charis_SIL } from 'next/font/google';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
 import Silk from "@/lib/backgroundSilk";
 
-const comfortaa = Alegreya({
-  weight: '500',
+const comfortaa = Charis_SIL({
+  weight: '400',
   subsets: ['cyrillic']
 });
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#dad4fe',
+  themeColor: '#4B3F72',
 };
 
 export const metadata: Metadata = {
@@ -49,7 +49,7 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href="/alla-psychology.ico" type="image/x-icon" />
         <link rel="preload" href="/alla-psychology-background.webp" as="image" />
-        <meta name="theme-color" content="#dad4fe" />
+        <meta name="theme-color" content="#4B3F72" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>

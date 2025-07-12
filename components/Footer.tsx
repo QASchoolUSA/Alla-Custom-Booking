@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Instagram, Mail, Phone, Send } from 'lucide-react';
@@ -48,6 +50,32 @@ export default function Footer() {
                 <Link href="/" className="text-white/70 hover:text-white transition-colors duration-200">
                   {t('home')}
                 </Link>
+              </li>
+              <li>
+                <button 
+                  onClick={() => {
+                    const aboutSection = document.getElementById('about-section');
+                    if (aboutSection) {
+                      aboutSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="text-white/70 hover:text-white transition-colors duration-200 text-left"
+                >
+                  {t('about')}
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => {
+                    const servicesSection = document.getElementById('services-section');
+                    if (servicesSection) {
+                      servicesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="text-white/70 hover:text-white transition-colors duration-200 text-left"
+                >
+                  {t('services')}
+                </button>
               </li>
               <li>
                 <Link href="/booking" className="text-white/70 hover:text-white transition-colors duration-200">

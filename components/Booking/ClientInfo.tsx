@@ -35,6 +35,7 @@ interface ClientInfoProps {
 export default function ClientInfo({ onSubmit }: ClientInfoProps) {
   const t = useTranslations('booking');
   const inputRef = useRef<HTMLInputElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const form = useForm<ClientInfoFormValues>({
     resolver: zodResolver(clientInfoSchema),
     defaultValues: {
@@ -44,6 +45,8 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
       phone: "",
     },
   });
+
+  // No scrolling behavior needed - desktop doesn't scroll, mobile uses sticky buttons
 
   return (
     <Card className="w-full max-w-[600px] mx-auto" data-testid="client-info-card">
@@ -55,6 +58,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
       <CardContent>
         <Form {...form}>
           <form
+            id="client-info-form"
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6"
             data-testid="client-info-form"
@@ -169,9 +173,12 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
                 </FormItem>
               )}
             />
+            {/* Desktop Submit Button */}
             <button
+              ref={submitButtonRef}
               type="submit"
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-lg transition-colors"
+              className="hidden md:block w-full text-white hover:opacity-90 py-2 px-4 rounded-lg transition-colors"
+              style={{ backgroundColor: '#4B3F72' }}
               data-testid="client-info-submit-btn"
             >
               {t('continue')}
@@ -179,6 +186,22 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
           </form>
         </Form>
       </CardContent>
+      
+      {/* Mobile Sticky Submit Button */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
+        <button
+          type="submit"
+          form="client-info-form"
+          className="w-full text-white hover:opacity-90 py-4 px-4 rounded-lg transition-colors text-lg font-medium"
+          style={{ backgroundColor: '#4B3F72' }}
+          data-testid="client-info-submit-btn-mobile"
+        >
+          {t('continue')}
+        </button>
+      </div>
+      
+      {/* Mobile spacer to prevent content from being hidden behind sticky button */}
+      <div className="md:hidden h-20"></div>
     </Card>
   );
 }

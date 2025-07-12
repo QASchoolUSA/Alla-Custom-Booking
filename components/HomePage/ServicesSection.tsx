@@ -9,7 +9,7 @@ export default function ServicesSection() {
   const t = useTranslations();
   const events = getLocalizedEvents(t);
   return (
-    <section className="py-16 px-4 md:px-8 lg:px-16 bg-neutral-50">
+    <section id="services-section" className="py-16 px-4 md:px-8 lg:px-16 bg-neutral-50">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           {t('services.title')}
@@ -27,12 +27,12 @@ export default function ServicesSection() {
               <div className="flex items-center mb-4">
                 <div className="p-3 bg-calm-blue rounded-full mr-4">
                   {/* Choose an appropriate icon based on the event type or index */}
-                  {event.id === 'initial-meeting' && <Clock className="w-6 h-6 text-midnight-blue" />}
-                  {event.id === 'consultation-session' && <Users className="w-6 h-6 text-midnight-blue" />}
-                  {event.id === 'therapy-session' && <HeartHandshake className="w-6 h-6 text-midnight-blue" />}
-                  {event.id === 'package-5' && <Boxes className="w-6 h-6 text-midnight-blue" />}
-                  {event.id === 'package-10' && <Boxes className="w-6 h-6 text-midnight-blue" />}
-                  {event.id === 'group-therapy' && <Users className="w-6 h-6 text-midnight-blue" />}
+                  {event.id === 'initial-meeting' && <Clock className="w-6 h-6 text-white" />}
+                  {event.id === 'consultation-session' && <Users className="w-6 h-6 text-white" />}
+                  {event.id === 'therapy-session' && <HeartHandshake className="w-6 h-6 text-white" />}
+                  {event.id === 'package-5' && <Boxes className="w-6 h-6 text-white" />}
+                  {event.id === 'package-10' && <Boxes className="w-6 h-6 text-white" />}
+                  {event.id === 'group-therapy' && <Users className="w-6 h-6 text-white" />}
                 </div>
                 <h3 className="text-xl font-semibold">{event.name}</h3>
               </div>
@@ -49,9 +49,22 @@ export default function ServicesSection() {
               {/* Removed the features section and replaced with nothing for now */}
               
               <div className="mt-6 flex justify-between items-center">
-                <span className="text-lg font-semibold text-primary">
-                  ${event.price}
-                </span>
+                <div className="flex flex-col">
+                  {event.salePrice ? (
+                    <>
+                      <span className="text-sm text-gray-500 line-through">
+                        ${event.price}
+                      </span>
+                      <span className="text-lg font-semibold text-red-600">
+                        ${event.salePrice}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-semibold text-primary">
+                      ${event.price}
+                    </span>
+                  )}
+                </div>
                 <span className="text-sm text-gray-500">
                   <Clock className="w-4 h-4 inline mr-1" />
                   {event.duration}

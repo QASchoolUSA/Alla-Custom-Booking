@@ -8,7 +8,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-calm-blue: #dad4ef;
+  --color-calm-blue: #4B3F72;
   --color-midnight-blue: #191970;
   --color-custom-black: #051014;
   --color-brand-primary: #FF6347;
@@ -121,11 +121,11 @@
     @apply border-border outline-ring/50;
   }
   html {
-    background-color: #dad4fe;
+    background-color: #4B3F72;
   }
   body {
     @apply text-foreground;
-    background-color: #dad4fe;
+    background-color: #4B3F72;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -146,10 +146,10 @@
   /* Ensure status bar area matches background */
   @media screen and (max-width: 768px) {
     html {
-      background-color: #dad4fe !important;
+      background-color: #4B3F72 !important;
     }
     body {
-      background-color: #dad4fe !important;
+      background-color: #4B3F72 !important;
     }
   }
 
@@ -173,5 +173,93 @@
 @media (min-width: 768px) {
   .font-alla-custom {
     font-size: 32px;
+  }
+}
+
+/* Calendar custom styling */
+.calendar-selected-date {
+  background-color: #4B3F72 !important;
+  color: white !important;
+}
+
+.calendar-selected-date:hover {
+  background-color: #4B3F72 !important;
+  opacity: 0.9;
+}
+
+/* Available times text bold styling */
+.available-times-title {
+  font-weight: bold !important;
+}
+
+/* Time slot buttons bold styling */
+.time-slot-button {
+  font-weight: bold !important;
+}
+
+/* Make calendar bigger */
+.calendar-large {
+  transform: scale(1.0);
+  transform-origin: center;
+}
+
+@media screen and (max-width: 768px) {
+  .calendar-large {
+    transform: scale(1.4);
+  }
+}
+
+/* Step isolation - ensure complete visual separation */
+[data-testid="step-select-event"] {
+  position: relative;
+  z-index: 1;
+}
+
+[data-testid="step-calendar"] {
+  position: relative;
+  z-index: 2;
+  background: white;
+}
+
+[data-testid="step-client-info"] {
+  position: relative;
+  z-index: 3;
+  background: white;
+}
+
+[data-testid="step-payment"] {
+  position: relative;
+  z-index: 4;
+  background: white;
+}
+
+/* Mobile-specific fixes for border persistence */
+@media (max-width: 768px) {
+  /* Hide event selection completely when not active */
+  [data-testid="step-select-event"]:not(.active-step) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+  
+  [data-testid="step-calendar"] * {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  
+  [data-testid="step-calendar"] *:focus {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  
+  /* Ensure calendar step has full coverage */
+  [data-testid="step-calendar"] {
+    min-height: 100vh;
+    width: 100%;
+    background: white !important;
+    margin: 0;
+    padding: 0;
   }
 }

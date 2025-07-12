@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { useTranslations } from 'next-intl';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '../ui/dialog';
@@ -45,6 +45,7 @@ const StripeCheckout = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showZelleModal, setShowZelleModal] = useState(false);
+  const paymentButtonsRef = useRef<HTMLDivElement>(null);
 
   // Check for successful payment return from Stripe
   useEffect(() => {
@@ -58,6 +59,8 @@ const StripeCheckout = ({
       onPaymentSuccess(sessionId);
     }
   }, [onPaymentSuccess]);
+
+  // No scrolling behavior needed - desktop doesn't scroll, mobile uses sticky buttons
 
   // Ensure amount is valid before proceeding
   if (amount <= 0 || !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
@@ -160,14 +163,18 @@ const StripeCheckout = ({
   return (
     <div className="max-w-md mx-auto p-4" data-testid="stripe-checkout">
       {error && <div className="text-red-500 mb-4" data-testid="stripe-error-message">{error}</div>}
-      <button
+      
+      {/* Desktop Payment Buttons */}
+      <div ref={paymentButtonsRef} className="hidden md:block">
+        <button
         onClick={(e) => {
           e.preventDefault();
           console.log('Button clicked');
           handleCheckout();
         }}
         disabled={isLoading}
-        className="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center pointer mb-4"
+        className="w-full text-white py-3 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center pointer mb-4"
+        style={{ backgroundColor: '#4B3F72' }}
         data-testid="stripe-pay-button"
       >
         {isLoading ? (
@@ -181,14 +188,56 @@ const StripeCheckout = ({
         ) : (
         <>{t('payWithStripe')}</>
         )}
-      </button>
-      <button
-        onClick={() => setShowZelleModal(true)}
-        className="w-full bg-purple-700 text-white py-3 px-4 rounded-md hover:bg-purple-800 flex items-center justify-center pointer"
-        data-testid="zelle-pay-button"
-      >
-        Pay with Zelle
-      </button>
+        </button>
+        <button
+          onClick={() => setShowZelleModal(true)}
+          className="w-full text-white py-3 px-4 rounded-md hover:opacity-90 flex items-center justify-center pointer"
+          style={{ backgroundColor: '#4B3F72' }}
+          data-testid="zelle-pay-button"
+        >
+          Pay with Zelle
+        </button>
+      </div>
+      
+      {/* Mobile Sticky Payment Buttons */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="space-y-3">
+          <button
+          onClick={(e) => {
+            e.preventDefault();
+            console.log('Button clicked');
+            handleCheckout();
+          }}
+          disabled={isLoading}
+          className="w-full text-white py-4 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center pointer text-lg font-medium"
+          style={{ backgroundColor: '#4B3F72' }}
+          data-testid="stripe-pay-button-mobile"
+        >
+          {isLoading ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Processing...
+            </>
+          ) : (
+          <>{t('payWithStripe')}</>
+          )}
+          </button>
+          <button
+            onClick={() => setShowZelleModal(true)}
+            className="w-full text-white py-4 px-4 rounded-md hover:opacity-90 flex items-center justify-center pointer text-lg font-medium"
+            style={{ backgroundColor: '#4B3F72' }}
+            data-testid="zelle-pay-button-mobile"
+          >
+            Pay with Zelle
+          </button>
+        </div>
+      </div>
+      
+      {/* Mobile spacer to prevent content from being hidden behind sticky buttons */}
+      <div className="md:hidden h-32"></div>
       {showZelleModal && (
         <Dialog open={showZelleModal} onOpenChange={setShowZelleModal}>
           <DialogContent>
@@ -220,8 +269,7 @@ const StripeCheckout = ({
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
-    </div>
+      )}</div>
   );
 };
 
