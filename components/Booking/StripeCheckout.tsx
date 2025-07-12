@@ -10,6 +10,7 @@ interface StripeCheckoutProps {
   amount: number;
   currency?: string;
   eventName?: string;
+  eventId?: string;
   quantity?: number;
   sessionsCount?: number;
   customerName?: string;
@@ -27,6 +28,7 @@ const StripeCheckout = ({
   amount, 
   currency = 'usd', 
   eventName = 'Booking Service',
+  eventId,
   quantity = 1,
   sessionsCount,
   customerName,
@@ -103,14 +105,15 @@ const StripeCheckout = ({
           amount,
           currency,
           eventName,
+          eventId,
           quantity,
           sessionsCount,
           customerName,
           customerEmail,
           customerPhone,
           appointmentDate,
-          startTime: startTimeValue,
-          endTime: endTimeValue,
+          startTime,
+          endTime,
           locale
         }),
       });

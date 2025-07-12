@@ -58,8 +58,8 @@ export default async function RootLayout({
           {/* Global Silk Background */}
           <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">
             <Silk
-              speed={5}
-              color="#dad4fe"
+              speed={3}
+              color="#4B3F72"
             />
           </div>
           

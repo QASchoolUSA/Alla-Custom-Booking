@@ -37,7 +37,7 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
           try {
             // The verify-payment endpoint should return booking details
             if (data.bookingDetails) {
-              const { eventName, startTime, endTime, customerName, customerEmail, customerPhone, sessionsCount } = data.bookingDetails;
+              const { eventName, eventId, startTime, endTime, customerName, customerEmail, customerPhone, sessionsCount } = data.bookingDetails;
 
               // Save booking to Supabase (add this block)
               // Extract base event name without session numbering for database storage
@@ -48,6 +48,7 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   event_name: baseEventName, // Use base event name for database
+                  event_id: eventId,
                   client_name: customerName,
                   client_email: customerEmail,
                   client_phone: customerPhone,

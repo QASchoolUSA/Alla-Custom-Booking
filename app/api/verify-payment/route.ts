@@ -26,6 +26,7 @@ export async function GET(request: Request) {
       // This assumes you stored these details in the session metadata when creating the checkout session
       const bookingDetails = {
         eventName: session.metadata?.eventName || 'Booking',
+        eventId: session.metadata?.eventId,
         sessionsCount: session.metadata?.sessionsCount || 1,
         startTime: session.metadata?.startTime,
         endTime: session.metadata?.endTime,
