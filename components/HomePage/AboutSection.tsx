@@ -64,7 +64,7 @@ const AboutSection: React.FC = () => {
   };
 
   return (
-    <section id="about" className="w-full bg-neutral-50 py-16 md:py-24 overflow-hidden">
+    <section id="about-section" className="w-full bg-neutral-50 py-16 md:py-24 overflow-hidden">
       <div className="container mx-auto px-6">
         <motion.div 
           className="text-center mb-12"
@@ -83,10 +83,10 @@ const AboutSection: React.FC = () => {
 
         <div className="flex justify-center mb-12">
           <ProfileCard
-            name="Alla Sidor"
-            title="Психолог|Релив Терапевт"
-            handle="allasidor"
-            contactText="Contact Me"
+            name="Алла Сидор"
+            title="Психолог | Релив Терапевт"
+            handle="alla_psychology"
+            contactText="Telegram Me"
             avatarUrl="/alla-psychology-background.webp"
             onContactClick={handleContactClick}
             showUserInfo={true}
@@ -107,7 +107,7 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-calm-blue text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-calm-blue text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
               <Book className="w-6 h-6" />
@@ -129,7 +129,7 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-calm-blue text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-calm-blue text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
               <HandHeart className="w-6 h-6" />
@@ -151,7 +151,7 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-calm-blue text-primary-600 rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-calm-blue text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
               <BookHeart className="w-6 h-6" />

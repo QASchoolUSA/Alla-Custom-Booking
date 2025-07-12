@@ -24,6 +24,14 @@ const HeroSection: React.FC = () => {
     return `/${locale}${path}`;
   };
   
+  // Scroll to about section
+  const scrollToAbout = () => {
+    const aboutSection = document.getElementById('about-section');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
   return (
     <section 
       className="relative w-full flex items-center justify-center text-white overflow-hidden min-h-screen"
@@ -34,7 +42,7 @@ const HeroSection: React.FC = () => {
       }}
     >
       {/* Content */}
-      <div className="relative z-20 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center h-full pt-16 md:pt-0">
+      <div className="relative z-20 w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center h-full pt-0 md:pt-0">
         <SplitText
           text={t('title')}
           className="text-4xl md:text-6xl font-bold mb-6"
@@ -57,6 +65,28 @@ const HeroSection: React.FC = () => {
         >
           {t('cta')}
         </Link>
+        
+        {/* Animated down arrow */}
+        <button
+          onClick={scrollToAbout}
+          className="mt-12 text-white hover:text-gray-300 transition-colors duration-300 animate-bounce"
+          aria-label="Scroll to about section"
+        >
+          <svg
+            className="w-8 h-8 mx-auto"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </button>
       </div>
     </section>
   );

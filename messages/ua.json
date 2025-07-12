@@ -49,6 +49,8 @@
     "contactInfo": "Контактна інформація",
     "socialMedia": "Соціальні мережі",
     "home": "Головна",
+    "about": "Про нас",
+    "services": "Послуги",
     "booking": "Запис"
   },
   "contact": {
@@ -97,7 +99,7 @@
     "loadingAvailability": "Завантаження доступності...",
     "noSlots": "Немає доступних слотів на цей день або поза робочим часом.",
     "errorFetchingAvailability": "Помилка при отриманні доступності.",
-    "selectDate": "Оберіть дату",
+    "selectTime": "Оберіть дату",
     "yourInformation": "Ваша інформація",
     "firstName": "Ім'я",
     "lastName": "Прізвище",

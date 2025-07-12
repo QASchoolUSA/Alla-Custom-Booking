@@ -3,6 +3,7 @@ export interface EventType {
   name: string;
   duration: string;
   price: string;
+  salePrice?: string; // Optional sale price
   quantity: number;
   description: string;
 }
@@ -13,7 +14,8 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     id: 'initial-meeting',
     name: t('events.initialMeeting.name'),
     duration: t('events.initialMeeting.duration'),
-    price: '50',
+    price: '70',
+    salePrice: '50',
     quantity: 1,
     description: t('events.initialMeeting.description')
   },
@@ -29,7 +31,8 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     id: 'therapy-session',
     name: t('events.therapy.name'),
     duration: t('events.therapy.duration'),
-    price: '150',
+    price: '180',
+    salePrice: '150',
     quantity: 1,
     description: t('events.therapy.description')
   },
@@ -37,7 +40,8 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     id: 'package-5',
     name: t('events.package5.name'),
     duration: t('events.package5.duration'),
-    price: '650',
+    price: '750',
+    salePrice: '650',
     quantity: 5,
     description: t('events.package5.description')
   },
@@ -45,7 +49,8 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     id: 'package-10',
     name: t('events.package10.name'),
     duration: t('events.package10.duration'),
-    price: '1250',
+    price: '1400',
+    salePrice: '1250',
     quantity: 10,
     description: t('events.package10.description')
   },
@@ -53,7 +58,8 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     id: 'group-therapy',
     name: t('events.groupTherapy.name'),
     duration: t('events.groupTherapy.duration'),
-    price: '299',
+    price: '350',
+    salePrice: '299',
     quantity: 8,
     description: t('events.groupTherapy.description'),
   },

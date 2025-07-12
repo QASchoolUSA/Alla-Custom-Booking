@@ -30,7 +30,7 @@ import { MoreHorizontal, Calendar, Link, CheckCircle, User, Mail, DollarSign, Pl
 import { calculateSessionNumber, getSessionEventName } from '@/utils/eventTypes';
 import { useTranslations } from 'next-intl';
 import CreateSessionModal from '@/components/CreateSessionModal';
-import BookingCalendar from '@/components/Booking/BookingCalendar';
+import BookingCalendar from '../../../components/Booking/BookingCalendar';
 
 interface Booking {
   id: string;
@@ -396,6 +396,7 @@ export default function AdminDashboard() {
                 type: "admin-session",
                 sessions: calendarClient.sessions || 1
               }}
+              onBack={() => setShowCalendar(false)}
               onDateTimeSelected={async (dateTime) => {
                 // Calculate end time (1 hour after start time)
                 const endTime = new Date(dateTime.getTime() + 60 * 60 * 1000);

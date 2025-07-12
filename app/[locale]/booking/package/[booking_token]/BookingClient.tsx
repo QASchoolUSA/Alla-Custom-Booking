@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { supabase } from '@/lib/supabase';
-import BookingCalendar from '@/components/Booking/BookingCalendar';
+import BookingCalendar from '../../../../../components/Booking/BookingCalendar';
 import ClientInfo from '@/components/Booking/ClientInfo';
 import StripeCheckout from '@/components/Booking/StripeCheckout';
 import { SelectedEvent } from '@/types/bookings';
@@ -107,6 +107,7 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
                 (booking.event_name as string)?.includes(e.id)
               )?.duration || '1 hour'
             } as SelectedEvent}
+            onBack={() => window.history.back()}
             onDateTimeSelected={handleDateTimeSelect}
           />
         </div>

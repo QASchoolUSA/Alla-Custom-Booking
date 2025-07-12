@@ -32,7 +32,10 @@ export default function BookingPage() {
   const [calendarEventLink, setCalendarEventLink] = useState<string | null>(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Only scroll to top on initial page load, not on state changes
+    if (step === "select-event" && !selectedEvent) {
+      window.scrollTo(0, 0);
+    }
     // Listen for Zelle payment completion
     const handleZellePayment = async () => {
       // For Zelle payment, save booking to database (which also creates Google Calendar event)
@@ -76,7 +79,7 @@ export default function BookingPage() {
     };
     window.addEventListener('zellePaymentCompleted', handleZellePayment);
     return () => window.removeEventListener('zellePaymentCompleted', handleZellePayment);
-  }, [selectedEvent, selectedDateTime, clientData, clientTimezone, router, locale]);
+  }, [selectedEvent, selectedDateTime, clientData, clientTimezone, router, locale, step]);
 
   const handleSelectEvent = (event: SelectedEvent) => {
     setSelectedEvent(event);
@@ -84,11 +87,19 @@ export default function BookingPage() {
 
   const handleContinue = () => {
     setStep("calendar");
+    // Scroll to top when moving to calendar step
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const handleDateTimeSelected = (dateTime: Date) => {
     setSelectedDateTime(dateTime);
     setStep("client-info");
+    // Scroll to top when moving to client-info step
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const handleClientInfoSubmit = (data: {
@@ -99,6 +110,10 @@ export default function BookingPage() {
   }) => {
     setClientData(data);
     setStep("payment");
+    // Scroll to top when moving to payment step
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const handlePaymentSuccess = async () => {
@@ -142,14 +157,19 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 pt-24 md:pt-32 pb-16 flex flex-col items-center px-4 md:px-6" data-testid="booking-page">
+    <div className="min-h-screen bg-neutral-50 pt-8 md:pt-12 pb-16 flex flex-col items-center px-4 md:px-6" data-testid="booking-page">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 md:p-8" data-testid="booking-container">
         {/* Move 'Back to your information' button to the very top for payment step */}
         {step === "payment" && selectedEvent && paymentStatus === "pending" && (
           <div className="mb-6 flex justify-center">
               <button
                 className="text-primary-600 hover:underline text-sm flex items-center"
-                onClick={() => setStep("client-info")}
+                onClick={() => {
+                  setStep("client-info");
+                  setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }, 100);
+                }}
                 data-testid="back-to-info-btn"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
@@ -164,8 +184,9 @@ export default function BookingPage() {
         <div className="mb-8 px-2" data-testid="progress-indicator">
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
             <div
-              className="bg-lime-600 h-2 rounded-full transition-all duration-500 ease-in-out"
+              className="h-2 rounded-full transition-all duration-500 ease-in-out"
               style={{
+                backgroundColor: '#4B3F72',
                 width: step === "select-event" ? "25%" :
                   step === "calendar" ? "50%" :
                     step === "client-info" ? "75%" : "100%"
@@ -184,55 +205,53 @@ export default function BookingPage() {
           {t('cancellationPolicy')}
         </div>
 
-        {step === "select-event" && (
-          <div className="transition-all duration-300" data-testid="step-select-event">
-            <EventSelection
-              selectedEvent={selectedEvent}
-              onSelectEvent={handleSelectEvent}
-              onContinue={handleContinue}
-            />
-          </div>
-        )}
+        <div className={`transition-all duration-300 ${step === "select-event" ? "active-step" : ""}`} data-testid="step-select-event" style={{ display: step === "select-event" ? "block" : "none" }}>
+          <EventSelection
+            selectedEvent={selectedEvent}
+            onSelectEvent={handleSelectEvent}
+            onContinue={handleContinue}
+          />
+        </div>
 
-        {step === "calendar" && (
-          <div className="transition-all duration-300" data-testid="step-calendar">
+        <div className="transition-all duration-300" data-testid="step-calendar" style={{ display: step === "calendar" ? "block" : "none" }}>
+          {selectedEvent && (
             <BookingCalendar
-              event={selectedEvent!}
+              event={selectedEvent}
               onDateTimeSelected={handleDateTimeSelected}
+              onBack={() => {
+                setStep("select-event");
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 100);
+              }}
             />
-            <div className="mt-6 flex justify-start">
-              <button
-                onClick={() => setStep("select-event")}
-                className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
-                data-testid="back-to-service-btn"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                {t('backToService')}
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
-        {step === "client-info" && (
-          <div className="transition-all duration-300" data-testid="step-client-info">
-            <ClientInfo onSubmit={handleClientInfoSubmit} />
-            <div className="mt-6 flex justify-start">
-              <button
-                onClick={() => setStep("calendar")}
-                className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
-                data-testid="back-to-calendar-btn"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                {t('backToCalendar')}
-              </button>
-            </div>
+        <div className="transition-all duration-300" data-testid="step-client-info" style={{ display: step === "client-info" ? "block" : "none" }}>
+          <ClientInfo onSubmit={handleClientInfoSubmit} />
+          <div className="mt-6 flex justify-start">
+            <button
+              onClick={() => {
+                setStep("calendar");
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 100);
+              }}
+              className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
+              data-testid="back-to-calendar-btn"
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              {t('backToCalendar')}
+            </button>
           </div>
-        )}
+        </div>
 
-        {step === "payment" && selectedEvent && (
-          <div className="space-y-6 transition-all duration-300" data-testid="step-payment">
-            {/* Booking Summary at the very top */}
-            <div className="w-full" data-testid="booking-summary-section">
+        <div className="space-y-6 transition-all duration-300" data-testid="step-payment" style={{ display: step === "payment" ? "block" : "none" }}>
+          {selectedEvent && (
+            <>
+              {/* Booking Summary at the very top */}
+              <div className="w-full" data-testid="booking-summary-section">
               <div className="rounded-xl shadow-md border border-neutral-200 bg-white/90 backdrop-blur-md p-0 sm:p-0">
                 <div className="flex flex-col items-center gap-4 py-6">
                   <ReceiptText className="w-10 h-10 text-primary-600 mb-2" />
@@ -355,8 +374,26 @@ export default function BookingPage() {
                 </button>
               </div>
             )}
-          </div>
-        )}
+
+            {/* Back button for payment step */}
+            <div className="mt-6 flex justify-start">
+              <button
+                onClick={() => {
+                  setStep("client-info");
+                  setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }, 100);
+                }}
+                className="flex items-center text-primary-600 hover:text-primary-800 transition-colors"
+                data-testid="back-to-info-btn"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                {t('backToInfo')}
+              </button>
+            </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

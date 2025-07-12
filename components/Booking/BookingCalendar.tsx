@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,7 +20,7 @@ interface AvailableSlot {
   utc?: Date;
 }
 
-const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSelected }) => {
+const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSelected, onBack }) => {
   const t = useTranslations('booking');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<Date | null>(null);
@@ -30,6 +30,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
   const [slotsError, setSlotsError] = useState<string | null>(null);
   const [availabilityCache, setAvailabilityCache] = useState<Map<string, BusySlotData[]>>(new Map());
   const [clientTimezone, setClientTimezone] = useState<string>('Europe/Kiev');
+  const continueButtonRef = useRef<HTMLDivElement>(null);
 
   // Helper to format Date to YYYY-MM-DD string
   const formatDateToYYYYMMDD = (date: Date | undefined): string => {
@@ -178,6 +179,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
     setSelectedTimeSlot(timeSlot);
   };
 
+  // No scrolling behavior needed - desktop doesn't scroll, mobile uses sticky buttons
+
   const handleContinue = () => {
     if (selectedTimeSlot) {
       onDateTimeSelected(selectedTimeSlot, clientTimezone);
@@ -200,8 +203,14 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
             mode="single"
             selected={selectedDate}
             onSelect={setSelectedDate}
-            disabled={(date) => date < new Date()}
-            className="rounded-md border"
+            disabled={(date) => {
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              const dayOfWeek = date.getDay();
+              // Disable past dates and weekends (Saturday=6, Sunday=0)
+              return date < today || dayOfWeek === 0 || dayOfWeek === 6;
+            }}
+            className="rounded-md border calendar-large"
             data-testid="calendar"
           />
         </div>
@@ -209,8 +218,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         {/* Time Slots */}
         {selectedDate && (
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-3 text-center">
-              {t('selectDate')}
+            <h4 className="text-sm font-bold text-gray-700 mb-3 text-center available-times-title">
+              {t('selectTime')}
             </h4>
             {isLoadingSlots ? (
               <div className="grid grid-cols-3 gap-2">
@@ -232,6 +241,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
                     size="sm"
                     onClick={() => slot.utc && handleTimeSlotSelect(slot.utc)}
                     className="text-sm"
+                    style={selectedTimeSlot && slot.utc && selectedTimeSlot.getTime() === slot.utc.getTime() ? { backgroundColor: '#4B3F72', color: 'white' } : {}}
                     data-testid={`time-slot-${index}`}
                   >
                     {slot.display}
@@ -243,12 +253,12 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         )}
       </div>
 
-      {/* Navigation */}
-      <div className="flex justify-between pt-4">
+      {/* Desktop Navigation */}
+      <div ref={continueButtonRef} className="hidden md:flex gap-2 pt-4">
         <Button
           variant="outline"
-          onClick={() => window.history.back()}
-          className="flex items-center"
+          onClick={onBack}
+          className="flex items-center w-1/2"
           data-testid="back-btn"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
@@ -258,11 +268,41 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         <Button
           onClick={handleContinue}
           disabled={!selectedTimeSlot}
+          className="w-1/2 text-white hover:opacity-90"
+          style={{ backgroundColor: '#4B3F72' }}
           data-testid="continue-btn"
         >
           {t('continue')}
         </Button>
       </div>
+      
+      {/* Mobile Sticky Navigation */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={onBack}
+            className="flex items-center w-1/2 py-4"
+            data-testid="back-btn-mobile"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            {t('back')}
+          </Button>
+          
+          <Button
+            onClick={handleContinue}
+            disabled={!selectedTimeSlot}
+            className="w-1/2 py-4 text-white hover:opacity-90"
+            style={{ backgroundColor: '#4B3F72' }}
+            data-testid="continue-btn-mobile"
+          >
+            {t('continue')}
+          </Button>
+        </div>
+      </div>
+      
+      {/* Mobile spacer to prevent content from being hidden behind sticky buttons */}
+      <div className="md:hidden h-20"></div>
     </div>
   );
 };

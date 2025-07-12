@@ -37,7 +37,9 @@
     "contactInfo": "Контактная информация",
     "socialMedia": "Социальные сети",
     "home": "Главная",
-    "booking": "Запись"
+    "booking": "Запись",
+    "about": "Почему Я?",
+    "services": "Услуги"
   },
   "contact": {
     "title": "Есть вопрос?",
@@ -90,7 +92,7 @@
     "loadingAvailability": "Загрузка доступности...",
     "noSlots": "Нет доступных слотов на этот день или вне рабочего времени.",
     "errorFetchingAvailability": "Ошибка при получении доступности.",
-    "selectDate": "Выберите дату",
+    "selectTime": "Выберите время",
     "yourInformation": "Ваша информация",
     "firstName": "Имя",
     "lastName": "Фамилия",
