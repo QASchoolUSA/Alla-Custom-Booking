@@ -177,8 +177,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
             <button
               ref={submitButtonRef}
               type="submit"
-              className="hidden md:block w-full text-white hover:opacity-90 py-2 px-4 rounded-lg transition-colors"
-              style={{ backgroundColor: '#4B3F72' }}
+              className="hidden md:block w-full text-white hover:opacity-90 py-2 px-4 rounded-lg transition-colors bg-alla-purple"
               data-testid="client-info-submit-btn"
             >
               {t('continue')}
@@ -192,8 +191,7 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
         <button
           type="submit"
           form="client-info-form"
-          className="w-full text-white hover:opacity-90 py-4 px-4 rounded-lg transition-colors text-lg font-medium"
-          style={{ backgroundColor: '#4B3F72' }}
+          className="w-full text-white hover:opacity-90 py-4 px-4 rounded-lg transition-colors text-lg font-medium bg-alla-purple"
           data-testid="client-info-submit-btn-mobile"
         >
           {t('continue')}

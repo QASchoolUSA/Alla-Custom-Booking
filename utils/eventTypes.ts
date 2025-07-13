@@ -31,8 +31,7 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     id: 'therapy-session',
     name: t('events.therapy.name'),
     duration: t('events.therapy.duration'),
-    price: '180',
-    salePrice: '150',
+    price: '150',
     quantity: 1,
     description: t('events.therapy.description')
   },
@@ -49,7 +48,7 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     id: 'package-10',
     name: t('events.package10.name'),
     duration: t('events.package10.duration'),
-    price: '1400',
+    price: '1500',
     salePrice: '1250',
     quantity: 10,
     description: t('events.package10.description')

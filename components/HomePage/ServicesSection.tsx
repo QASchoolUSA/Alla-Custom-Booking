@@ -25,7 +25,7 @@ export default function ServicesSection() {
               className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center mb-4">
-                <div className="p-3 bg-calm-blue rounded-full mr-4">
+                <div className="p-3 bg-alla-purple rounded-full mr-4">
                   {/* Choose an appropriate icon based on the event type or index */}
                   {event.id === 'initial-meeting' && <Clock className="w-6 h-6 text-white" />}
                   {event.id === 'consultation-session' && <Users className="w-6 h-6 text-white" />}

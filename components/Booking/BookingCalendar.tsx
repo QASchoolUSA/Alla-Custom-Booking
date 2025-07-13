@@ -268,8 +268,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         <Button
           onClick={handleContinue}
           disabled={!selectedTimeSlot}
-          className="w-1/2 text-white hover:opacity-90"
-          style={{ backgroundColor: '#4B3F72' }}
+          className="w-1/2 text-white hover:opacity-90 bg-alla-purple"
           data-testid="continue-btn"
         >
           {t('continue')}
@@ -292,8 +291,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
           <Button
             onClick={handleContinue}
             disabled={!selectedTimeSlot}
-            className="w-1/2 py-4 text-white hover:opacity-90"
-            style={{ backgroundColor: '#4B3F72' }}
+            className="w-1/2 py-4 text-white hover:opacity-90 bg-alla-purple"
             data-testid="continue-btn-mobile"
           >
             {t('continue')}

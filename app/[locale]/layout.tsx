@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from 'next-intl/server';
 import Silk from "@/lib/backgroundSilk";
 
-const comfortaa = Charis_SIL({
+const charis = Charis_SIL({
   weight: '400',
   subsets: ['cyrillic']
 });
@@ -53,7 +53,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
-      <body className={comfortaa.className}>
+      <body className={charis.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {/* Global Silk Background */}
           <div className="fixed inset-0 w-full h-full z-0 overflow-hidden">

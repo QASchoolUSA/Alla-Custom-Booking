@@ -107,7 +107,7 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-calm-blue text-white rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-alla-purple text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
               <Book className="w-6 h-6" />
@@ -129,7 +129,7 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-calm-blue text-white rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-alla-purple text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
               <HandHeart className="w-6 h-6" />
@@ -151,7 +151,7 @@ const AboutSection: React.FC = () => {
             whileHover="hover"
           >
             <motion.div 
-              className="w-12 h-12 bg-calm-blue text-white rounded-full flex items-center justify-center mx-auto mb-4"
+              className="w-12 h-12 bg-alla-purple text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
               <BookHeart className="w-6 h-6" />
