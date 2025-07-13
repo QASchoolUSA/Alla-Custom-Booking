@@ -59,7 +59,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
                   <Clock size={16} className="mr-2" />
                   <span>{event.duration}</span>
                 </div>
-                <p className="text-neutral-700 mt-2">
+                <p className="text-neutral-700 mt-2 whitespace-pre-line">
                   {event.description}
                 </p>
               </div>

@@ -94,7 +94,7 @@ const ContactForm = () => {
                 />
               </div>
               <div className="flex justify-center">
-                <Button type="submit" className="w-full md:w-auto px-8 py-3">{t('submit')}</Button>
+                <Button type="submit" style={{ backgroundColor: '#4B3F72' }} className="w-full md:w-auto px-8 py-3">{t('submit')}</Button>
               </div>
             </form>
           </CardContent>
