@@ -184,9 +184,8 @@ export default function BookingPage() {
         <div className="mb-8 px-2" data-testid="progress-indicator">
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
             <div
-              className="h-2 rounded-full transition-all duration-500 ease-in-out"
+              className="h-2 rounded-full transition-all duration-500 ease-in-out bg-alla-purple"
               style={{
-                backgroundColor: '#4B3F72',
                 width: step === "select-event" ? "25%" :
                   step === "calendar" ? "50%" :
                     step === "client-info" ? "75%" : "100%"

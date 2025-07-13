@@ -18,7 +18,7 @@ const config: Config = {
         'custom-black': '#051014',
         'brand-primary': '#FF6347',
         'midnight-blue': '#191970',
-        'calm-blue': '#dad4ef',
+        'alla-purple': '#4b3f72',
         // Example of using a default color shade
         'cool-gray': colors.slate, // Make sure 'coolGray' is available or use another like 'slate', 'zinc' etc.
                                    // Note: some color names in `tailwindcss/colors` might have changed or been updated.

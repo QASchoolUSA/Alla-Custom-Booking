@@ -136,9 +136,9 @@ export default function Header() {
                 <Link
                   key={link.path}
                   href={link.path}
-                  className={`font-medium transition-colors duration-200 hover:text-yellow-400 ${
-                    isLinkActive(link.path)
-                      ? 'text-yellow-400 font-bold'
+                  className={`font-medium transition-colors duration-200 hover:underline decoration-double ${
+                  isLinkActive(link.path)
+                      ? 'underline decoration-double text-white font-bold'
                       : 'text-white'
                   }`}
                 >

@@ -173,8 +173,7 @@ const StripeCheckout = ({
           handleCheckout();
         }}
         disabled={isLoading}
-        className="w-full text-white py-3 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center pointer mb-4"
-        style={{ backgroundColor: '#4B3F72' }}
+        className="w-full text-white py-3 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center pointer mb-4 bg-alla-purple"
         data-testid="stripe-pay-button"
       >
         {isLoading ? (
@@ -191,8 +190,7 @@ const StripeCheckout = ({
         </button>
         <button
           onClick={() => setShowZelleModal(true)}
-          className="w-full text-white py-3 px-4 rounded-md hover:opacity-90 flex items-center justify-center pointer"
-          style={{ backgroundColor: '#4B3F72' }}
+          className="w-full text-white py-3 px-4 rounded-md hover:opacity-90 flex items-center justify-center pointer bg-alla-purple"
           data-testid="zelle-pay-button"
         >
           Pay with Zelle
@@ -209,8 +207,7 @@ const StripeCheckout = ({
             handleCheckout();
           }}
           disabled={isLoading}
-          className="w-full text-white py-4 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center pointer text-lg font-medium"
-          style={{ backgroundColor: '#4B3F72' }}
+          className="w-full text-white py-4 px-4 rounded-md hover:opacity-90 disabled:opacity-50 flex items-center justify-center pointer text-lg font-medium bg-alla-purple"
           data-testid="stripe-pay-button-mobile"
         >
           {isLoading ? (
@@ -227,8 +224,7 @@ const StripeCheckout = ({
           </button>
           <button
             onClick={() => setShowZelleModal(true)}
-            className="w-full text-white py-4 px-4 rounded-md hover:opacity-90 flex items-center justify-center pointer text-lg font-medium"
-            style={{ backgroundColor: '#4B3F72' }}
+            className="w-full text-white py-4 px-4 rounded-md hover:opacity-90 flex items-center justify-center pointer text-lg font-medium bg-alla-purple"
             data-testid="zelle-pay-button-mobile"
           >
             Pay with Zelle

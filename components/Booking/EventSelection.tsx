@@ -35,7 +35,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
             key={event.id}
             className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-300 ease-in-out ${
               selectedEvent?.id === event.id
-                ? 'border-primary-600 bg-primary-100 shadow-xl ring-2 ring-primary-500 ring-offset-2 ring-offset-white'
+                ? 'border-alla-purple bg-primary-100 shadow-xl'
                 : 'border-neutral-300 hover:border-primary-400 hover:shadow-lg bg-white'
             }`}
             onClick={() => onSelectEvent({
@@ -94,8 +94,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
             <Button
               type="button"
               onClick={onContinue}
-              className="w-full font-semibold px-6 py-2 rounded transition-colors duration-200 text-white hover:opacity-90"
-              style={{ backgroundColor: '#4B3F72' }}
+              className="w-full font-semibold px-6 py-2 rounded transition-colors duration-200 text-white hover:opacity-90 bg-alla-purple"
               data-testid="event-selection-continue-btn"
             >
               {tBooking('continue')}
@@ -107,8 +106,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
             <Button
               type="button"
               onClick={onContinue}
-              className="w-full font-semibold px-6 py-4 rounded transition-colors duration-200 text-white hover:opacity-90 text-lg"
-              style={{ backgroundColor: '#4B3F72' }}
+              className="w-full font-semibold px-6 py-4 rounded transition-colors duration-200 text-white hover:opacity-90 text-lg bg-alla-purple"
               data-testid="event-selection-continue-btn-mobile"
             >
               {tBooking('continue')}
