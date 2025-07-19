@@ -177,10 +177,11 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
             <button
               ref={submitButtonRef}
               type="submit"
-              className="hidden md:block w-full text-white hover:opacity-90 py-2 px-4 rounded-lg transition-colors bg-alla-purple"
+              disabled={form.formState.isSubmitting}
+              className="hidden md:block w-full text-white hover:opacity-90 py-2 px-4 rounded-lg transition-colors bg-alla-purple disabled:opacity-50"
               data-testid="client-info-submit-btn"
             >
-              {t('continue')}
+              {form.formState.isSubmitting ? t('processing') || 'Processing...' : t('continue')}
             </button>
           </form>
         </Form>
@@ -191,10 +192,11 @@ export default function ClientInfo({ onSubmit }: ClientInfoProps) {
         <button
           type="submit"
           form="client-info-form"
-          className="w-full text-white hover:opacity-90 py-4 px-4 rounded-lg transition-colors text-lg font-medium bg-alla-purple"
+          disabled={form.formState.isSubmitting}
+          className="w-full text-white hover:opacity-90 py-4 px-4 rounded-lg transition-colors text-lg font-medium bg-alla-purple disabled:opacity-50"
           data-testid="client-info-submit-btn-mobile"
         >
-          {t('continue')}
+          {form.formState.isSubmitting ? t('processing') || 'Processing...' : t('continue')}
         </button>
       </div>
       

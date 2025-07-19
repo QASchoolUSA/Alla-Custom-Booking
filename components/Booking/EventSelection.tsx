@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { getLocalizedEvents } from '../../utils/eventTypes'; // Import localized events function
 import type { EventType } from '../../utils/eventTypes';
@@ -17,9 +17,17 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
   const tBooking = useTranslations('booking');
   const tEvents = useTranslations();
   const continueButtonRef = useRef<HTMLDivElement>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   
   // Memoize events to prevent recalculation on every render
   const events = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
+
+  const handleContinue = () => {
+    if (!isProcessing) {
+      setIsProcessing(true);
+      onContinue();
+    }
+  };
 
   // No scrolling behavior needed - desktop doesn't scroll, mobile uses sticky buttons
   
@@ -46,6 +54,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
               salePrice: event.salePrice ? parseFloat(event.salePrice) * 100 : undefined,
               duration: event.duration,
               type: 'consultation',
+              quantity: event.quantity || 1,
               sessions: event.quantity || 1
             })}
             data-testid={`event-card-${event.id}`}
@@ -93,11 +102,12 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
           <div ref={continueButtonRef} className="hidden md:block mt-8">
             <Button
               type="button"
-              onClick={onContinue}
+              onClick={handleContinue}
+              disabled={isProcessing}
               className="w-full font-semibold px-6 py-2 rounded transition-colors duration-200 text-white hover:opacity-90 bg-alla-purple"
               data-testid="event-selection-continue-btn"
             >
-              {tBooking('continue')}
+              {isProcessing ? tBooking('processing') || 'Processing...' : tBooking('continue')}
             </Button>
           </div>
           
@@ -105,11 +115,12 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
           <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
             <Button
               type="button"
-              onClick={onContinue}
+              onClick={handleContinue}
+              disabled={isProcessing}
               className="w-full font-semibold px-6 py-4 rounded transition-colors duration-200 text-white hover:opacity-90 text-lg bg-alla-purple"
               data-testid="event-selection-continue-btn-mobile"
             >
-              {tBooking('continue')}
+              {isProcessing ? tBooking('processing') || 'Processing...' : tBooking('continue')}
             </Button>
           </div>
           

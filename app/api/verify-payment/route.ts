@@ -7,8 +7,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sessionId = searchParams.get('session_id');
-  console.log('Received sessionId:', sessionId);
-
   if (!sessionId) {
     return NextResponse.json({ success: false, message: 'Session ID is required' });
   }
@@ -19,24 +17,21 @@ export async function GET(request: Request) {
       expand: ['line_items', 'payment_intent', 'customer']
     });
 
-    console.log('Session metadata:', session.metadata);
-
     if (session.payment_status === 'paid') {
       // Extract booking details from session metadata or your database
       // This assumes you stored these details in the session metadata when creating the checkout session
+      
       const bookingDetails = {
         eventName: session.metadata?.eventName || 'Booking',
         eventId: session.metadata?.eventId,
-        sessionsCount: session.metadata?.sessionsCount || 1,
+        quantity: parseInt(session.metadata?.quantity || '1'),
+        sessionsCount: parseInt(session.metadata?.sessionsCount || '1'),
         startTime: session.metadata?.startTime,
         endTime: session.metadata?.endTime,
         customerName: session.metadata?.customerName,
         customerEmail: session.customer_email || session.metadata?.customerEmail,
         customerPhone: session.metadata?.customerPhone
       };
-
-      // Log the booking details to help with debugging
-      console.log('Extracted booking details:', bookingDetails);
 
       // Validate required fields
       if (!bookingDetails.startTime || !bookingDetails.endTime) {

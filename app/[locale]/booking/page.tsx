@@ -299,7 +299,7 @@ export default function BookingPage() {
                     amount={selectedEvent.price}
                     eventName={selectedEvent.name}
                     eventId={selectedEvent.id}
-                    quantity={1}
+                    quantity={selectedEvent.quantity || 1}
                     sessionsCount={selectedEvent.quantity}
                     customerName={clientData ? `${clientData.firstName} ${clientData.lastName}` : undefined}
                     customerEmail={clientData?.email}

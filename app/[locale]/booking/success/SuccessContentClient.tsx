@@ -37,7 +37,9 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
           try {
             // The verify-payment endpoint should return booking details
             if (data.bookingDetails) {
-              const { eventName, eventId, startTime, endTime, customerName, customerEmail, customerPhone, sessionsCount } = data.bookingDetails;
+              const { eventName, eventId, startTime, endTime, customerName, customerEmail, customerPhone, quantity, sessionsCount } = data.bookingDetails;
+              
+
 
               // Save booking to Supabase (add this block)
               // Extract base event name without session numbering for database storage
@@ -55,7 +57,7 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
                   date: startTime ? startTime.split('T')[0] : undefined,
                   start_time: startTime,
                   end_time: endTime,
-                  quantity: sessionsCount || 1, // Use the quantity from bookingDetails
+                  quantity: quantity || sessionsCount || 1, // Use the correct quantity from bookingDetails
                   locale: locale || 'ru'
                 }),
               });
