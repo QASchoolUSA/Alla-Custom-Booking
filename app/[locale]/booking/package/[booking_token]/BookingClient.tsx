@@ -20,6 +20,7 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
   const [step, setStep] = useState<'calendar' | 'client-info' | 'payment' | 'success'>('calendar');
   const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
   const [clientInfo, setClientInfo] = useState<Record<string, unknown> | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
   
   // Get localized events to find the correct event details
   const localizedEvents = getLocalizedEvents(tEvents);
@@ -48,7 +49,10 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
   }
 
   const handleDateTimeSelect = async (dateTime: Date) => {
+    if (isBooking) return; // Prevent double-clicks
+    
     setSelectedDateTime(dateTime);
+    setIsBooking(true);
     
     // For existing clients with tokens, skip client info and payment
     // and directly book the appointment
@@ -78,9 +82,11 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
         setStep('success');
       } else {
         console.error('Failed to save booking');
+        setIsBooking(false); // Reset on error
       }
     } catch (error) {
       console.error('Error saving booking:', error);
+      setIsBooking(false); // Reset on error
     }
   };
 
@@ -96,20 +102,22 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
   switch (step) {
     case 'calendar':
       return (
-        <div className="pt-20 min-h-screen">
-          <BookingCalendar
-            event={{
-              id: 'package-booking',
-              name: booking.event_name as string,
-              price: 0,
-              duration: localizedEvents.find(e => 
-                (booking.event_name as string)?.includes(e.name) || 
-                (booking.event_name as string)?.includes(e.id)
-              )?.duration || '1 hour'
-            } as SelectedEvent}
-            onBack={() => window.history.back()}
-            onDateTimeSelected={handleDateTimeSelect}
-          />
+        <div className="min-h-screen bg-neutral-50 pt-8 md:pt-12 pb-16 flex flex-col items-center px-4 md:px-6">
+          <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+            <BookingCalendar
+              event={{
+                id: 'package-booking',
+                name: booking.event_name as string,
+                price: 0,
+                duration: localizedEvents.find(e => 
+                  (booking.event_name as string)?.includes(e.name) || 
+                  (booking.event_name as string)?.includes(e.id)
+                )?.duration || '1 hour'
+              } as SelectedEvent}
+              onBack={() => window.history.back()}
+              onDateTimeSelected={handleDateTimeSelect}
+            />
+          </div>
         </div>
       );
     case 'client-info':
@@ -145,24 +153,26 @@ const BookingClient: React.FC<BookingClientProps> = ({ booking_token }) => {
       );
     case 'success':
       return (
-        <div className="pt-20 min-h-screen flex items-center justify-center">
-          <div className="max-w-md mx-auto p-6 bg-green-50 border border-green-200 rounded-lg">
-            <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+        <div className="min-h-screen bg-neutral-50 pt-8 md:pt-12 pb-16 flex flex-col items-center px-4 md:px-6">
+          <div className="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 md:p-8 flex items-center justify-center">
+            <div className="max-w-md mx-auto p-6 bg-green-50 border border-green-200 rounded-lg">
+              <div className="text-center">
+                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                  <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 className="text-lg font-medium text-green-900 mb-2">{tBooking('appointmentBooked')}</h2>
+                <p className="text-sm text-green-700 mb-4">
+                  Your appointment has been successfully scheduled for {selectedDateTime?.toLocaleDateString()} at {selectedDateTime?.toLocaleTimeString()}.
+                </p>
+                <p className="text-xs text-green-600">
+                  You will receive a confirmation email shortly.
+                </p>
               </div>
-              <h2 className="text-lg font-medium text-green-900 mb-2">{tBooking('appointmentBooked')}</h2>
-              <p className="text-sm text-green-700 mb-4">
-                Your appointment has been successfully scheduled for {selectedDateTime?.toLocaleDateString()} at {selectedDateTime?.toLocaleTimeString()}.
-              </p>
-              <p className="text-xs text-green-600">
-                You will receive a confirmation email shortly.
-              </p>
-            </div>
-            <div className="mt-4 text-sm text-muted-foreground text-center" data-testid="cancellation-policy">
-              {tBooking('cancellationPolicy')}
+              <div className="mt-4 text-sm text-muted-foreground text-center" data-testid="cancellation-policy">
+                {tBooking('cancellationPolicy')}
+              </div>
             </div>
           </div>
         </div>

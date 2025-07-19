@@ -19,11 +19,14 @@ export async function POST(request: Request) {
       is_package_booking,
       clientTimezone 
     } = data;
+    
+    // Debug logging for save-booking
+
 
 
 
     if (is_package_booking && booking_token) {
-      // For package bookings with tokens, create a new appointment and decrement sessions
+      // For package bookings with tokens, update the existing booking with appointment details
       // First, find the original booking to get the current sessions count
       const { data: originalBooking, error: fetchError } = await supabase
         .from('bookings')
@@ -39,7 +42,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false, error: 'No sessions remaining' }, { status: 400 });
       }
 
-      // Create the appointment booking
       // Extract the base event name without session numbering
       const baseEventName = event_name.split(' - ')[0]; // Remove existing session numbering
       const sessionEventName = getSessionEventName(
@@ -49,29 +51,15 @@ export async function POST(request: Request) {
         locale || 'ru'
       );
 
-      const { error: insertError } = await supabase.from('bookings').insert([
-        {
-          event_name: baseEventName, // Store base event name for admin display
-          client_name,
-          client_email,
-          client_phone,
+      // Update the existing booking with appointment details and decrement sessions
+      const { error: updateError } = await supabase
+        .from('bookings')
+        .update({ 
           date,
           start_time,
           end_time,
-          quantity: 1, // Single appointment
-          sessions: 0, // Completed appointment
-          booking_token: null, // No token for individual appointments
-        }
-      ]);
-
-      if (insertError) {
-        return NextResponse.json({ success: false, error: insertError.message }, { status: 500 });
-      }
-
-      // Decrement sessions from the original booking
-      const { error: updateError } = await supabase
-        .from('bookings')
-        .update({ sessions: originalBooking.sessions - 1 })
+          sessions: originalBooking.sessions - 1
+        })
         .eq('booking_token', booking_token);
 
       if (updateError) {

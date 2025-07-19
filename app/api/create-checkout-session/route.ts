@@ -12,6 +12,9 @@ export async function POST(request: Request) {
     console.log('-- [Received request body] --', body);
     console.log(body);
     const { amount, currency, eventName, eventId, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'ru' } = body;
+    
+
+    
     // Get the base URL from the request headers to support dynamic domains
     const host = request.headers.get('host');
     const protocol = request.headers.get('x-forwarded-proto') || 'https';
@@ -19,15 +22,7 @@ export async function POST(request: Request) {
     const successUrl = `${baseUrl}/${locale}/booking/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${baseUrl}/${locale}/booking?canceled=true`;
 
-    // Log the request data for debugging
-    console.log('Checkout session request data:', {
-      eventName,
-      quantity,
-      startTime,
-      endTime,
-      customerName,
-      appointmentDate
-    });
+
 
     // Calculate start and end times if not provided but appointmentDate is available
     let finalStartTime = startTime;
@@ -56,7 +51,7 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    const sessionsCountValue = sessionsCount || quantity || 1;
+    const sessionsCountValue = quantity || sessionsCount || 1;
 
     // Calculate session number for package deals
     let finalEventName = eventName;
@@ -106,7 +101,8 @@ export async function POST(request: Request) {
         customerEmail,
         customerPhone,
         appointmentDate,
-        sessionsCount: sessionsCountValue,
+        quantity: (quantity || sessionsCount || 1)?.toString(),
+        sessionsCount: (sessionsCount || quantity || 1)?.toString(),
       },
     });
 

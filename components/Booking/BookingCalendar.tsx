@@ -30,6 +30,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
   const [slotsError, setSlotsError] = useState<string | null>(null);
   const [availabilityCache, setAvailabilityCache] = useState<Map<string, BusySlotData[]>>(new Map());
   const [clientTimezone, setClientTimezone] = useState<string>('Europe/Kiev');
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const continueButtonRef = useRef<HTMLDivElement>(null);
 
   // Helper to format Date to YYYY-MM-DD string
@@ -182,7 +183,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
   // No scrolling behavior needed - desktop doesn't scroll, mobile uses sticky buttons
 
   const handleContinue = () => {
-    if (selectedTimeSlot) {
+    if (selectedTimeSlot && !isProcessing) {
+      setIsProcessing(true);
       onDateTimeSelected(selectedTimeSlot, clientTimezone);
     }
   };
@@ -267,11 +269,11 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
         
         <Button
           onClick={handleContinue}
-          disabled={!selectedTimeSlot}
+          disabled={!selectedTimeSlot || isProcessing}
           className="w-1/2 text-white hover:opacity-90 bg-alla-purple"
           data-testid="continue-btn"
         >
-          {t('continue')}
+          {isProcessing ? t('processing') || 'Processing...' : t('continue')}
         </Button>
       </div>
       
@@ -290,11 +292,11 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ event, onDateTimeSele
           
           <Button
             onClick={handleContinue}
-            disabled={!selectedTimeSlot}
+            disabled={!selectedTimeSlot || isProcessing}
             className="w-1/2 py-4 text-white hover:opacity-90 bg-alla-purple"
             data-testid="continue-btn-mobile"
           >
-            {t('continue')}
+            {isProcessing ? t('processing') || 'Processing...' : t('continue')}
           </Button>
         </div>
       </div>
