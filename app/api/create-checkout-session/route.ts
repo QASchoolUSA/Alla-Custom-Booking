@@ -51,8 +51,6 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    const sessionsCountValue = quantity || sessionsCount || 1;
-
     // Calculate session number for package deals
     let finalEventName = eventName;
     if (customerEmail && quantity && quantity > 1) {
