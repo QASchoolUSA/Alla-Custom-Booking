@@ -177,15 +177,17 @@ export default function Header() {
                         const targetUrl = getLanguageSwitchUrl(lang.code);
                         router.push(targetUrl);
                       }}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center justify-center px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                       locale === lang.code 
-                        ? 'bg-white text-gray-900 shadow-sm' 
+                        ? 'text-white shadow-sm' 
                         : 'text-white hover:bg-white/20'
                     }`}
+                    style={{
+                      backgroundColor: locale === lang.code ? '#4B3F72' : undefined
+                    }}
                     aria-label={`Switch to ${lang.name}`}
                   >
                     <span className="text-base">{lang.flag}</span>
-                    <span className="hidden sm:inline">{lang.code.toUpperCase()}</span>
                   </button>
                 ))}
               </div>
@@ -391,7 +393,6 @@ export default function Header() {
                           }}
                         >
                           <span className="text-2xl">{lang.flag}</span>
-                          <span className="text-sm font-medium">{lang.name}</span>
                         </button>
                       ))}
                     </div>
