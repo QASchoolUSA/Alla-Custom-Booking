@@ -93,11 +93,35 @@ const SilkPlane = forwardRef<Mesh, SilkPlaneProps>(function SilkPlane(
   { uniforms },
   ref
 ) {
-  const isMobileDevice = useCallback(() => {
-    return typeof window !== 'undefined' && window.innerWidth <= 768;
+  const getResponsiveScale = useCallback(() => {
+    if (typeof window === 'undefined') return 3;
+    
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    // Calculate scale based on screen dimensions to ensure full coverage
+    // Use the larger dimension to determine scale
+    const maxDimension = Math.max(width, height);
+    
+    if (width <= 768) {
+      // Mobile devices
+      return 4;
+    } else if (maxDimension <= 1366) {
+      // Small to medium desktop (1366x768, 1280x720, etc.)
+      return 3.5;
+    } else if (maxDimension <= 1920) {
+      // Full HD and similar (1920x1080, 1680x1050, etc.)
+      return 4.5;
+    } else if (maxDimension <= 2560) {
+      // 1440p and similar (2560x1440, 2048x1152, etc.)
+      return 5.5;
+    } else {
+      // 4K and larger displays
+      return 6.5;
+    }
   }, []);
   
-  const fixedScale = isMobileDevice() ? 4 : 3; // Larger scale on mobile to prevent edge artifacts
+  const fixedScale = getResponsiveScale();
 
   useLayoutEffect(() => {
     if (ref && typeof ref !== 'function' && ref.current) {
@@ -109,7 +133,7 @@ const SilkPlane = forwardRef<Mesh, SilkPlaneProps>(function SilkPlane(
 
   // Static time-based animation that ignores scroll and viewport changes
   const startTime = useRef(Date.now());
-  const isMobile = isMobileDevice();
+  const isMobile = window.innerWidth <= 768;
   
   useFrame(() => {
     if (ref && typeof ref !== 'function' && ref.current) {
