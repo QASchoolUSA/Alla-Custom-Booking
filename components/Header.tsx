@@ -41,8 +41,27 @@ export default function Header() {
     }, [isOpen]);
 
     const languages = [
-      { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-      { code: 'ua', name: 'Українська', flag: '🇺🇦' }
+      { 
+        code: 'ru', 
+        name: 'Русский', 
+        flag: (
+          <svg width="20" height="15" viewBox="0 0 3 2" className="inline-block">
+            <rect width="3" height="0.67" fill="#fff"/>
+            <rect width="3" height="0.67" y="0.67" fill="#0039a6"/>
+            <rect width="3" height="0.66" y="1.34" fill="#d52b1e"/>
+          </svg>
+        )
+      },
+      { 
+        code: 'ua', 
+        name: 'Українська', 
+        flag: (
+          <svg width="20" height="15" viewBox="0 0 3 2" className="inline-block">
+            <rect width="3" height="1" fill="#005bbb"/>
+            <rect width="3" height="1" y="1" fill="#ffd500"/>
+          </svg>
+        )
+      }
     ];
 
     // const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
