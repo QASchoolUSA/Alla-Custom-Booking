@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 interface NewClientData {
   firstName: string;
@@ -25,6 +26,7 @@ export default function NewClientModal({
   onClose,
   onClientAdded
 }: NewClientModalProps) {
+  const tAdmin = useTranslations('admin');
   const [formData, setFormData] = useState<NewClientData>({
     firstName: '',
     lastName: '',
@@ -41,14 +43,14 @@ export default function NewClientModal({
     e.preventDefault();
     
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
-      toast.error('Please fill in all fields');
+      toast.error(tAdmin('pleaseFillAllFields'));
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address');
+      toast.error(tAdmin('pleaseEnterValidEmail'));
       return;
     }
 
@@ -57,7 +59,7 @@ export default function NewClientModal({
     try {
       // Pass the client data back to parent component
       onClientAdded(formData);
-      toast.success('Client added successfully');
+      toast.success(tAdmin('clientAddedSuccessfully'));
       onClose();
       // Reset form
       setFormData({
@@ -68,7 +70,7 @@ export default function NewClientModal({
       });
     } catch (error) {
       console.error('Error adding client:', error);
-      toast.error('Failed to add client');
+      toast.error(tAdmin('failedToAddClient'));
     } finally {
       setIsSubmitting(false);
     }
@@ -91,53 +93,53 @@ export default function NewClientModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Add New Client</DialogTitle>
+          <DialogTitle>{tAdmin('addNewClientTitle')}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">{tAdmin('firstName')}</Label>
               <Input
                 id="firstName"
                 type="text"
                 value={formData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
-                placeholder="Enter first name"
+                placeholder={tAdmin('enterFirstName')}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="lastName">{tAdmin('lastName')}</Label>
               <Input
                 id="lastName"
                 type="text"
                 value={formData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
-                placeholder="Enter last name"
+                placeholder={tAdmin('enterLastName')}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{tAdmin('email')}</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              placeholder="Enter email address"
+              placeholder={tAdmin('enterEmailAddress')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{tAdmin('phone')}</Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              placeholder="Enter phone number"
+              placeholder={tAdmin('enterPhoneNumber')}
             />
           </div>
 
@@ -148,10 +150,10 @@ export default function NewClientModal({
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              Cancel
+              {tAdmin('cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Adding...' : 'Add Client'}
+              {isSubmitting ? tAdmin('adding') : tAdmin('addClient')}
             </Button>
           </div>
         </form>

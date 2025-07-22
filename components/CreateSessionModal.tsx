@@ -59,6 +59,7 @@ export default function CreateSessionModal({
   clientSessions
 }: CreateSessionModalProps) {
   const tEvents = useTranslations();
+  const tAdmin = useTranslations('admin');
   const [selectedClient, setSelectedClient] = useState<string>('');
   const [selectedEvent, setSelectedEvent] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -233,17 +234,17 @@ export default function CreateSessionModal({
     
     // Validation
     if (!selectedEvent || !selectedTimeSlot) {
-      toast.error('Please select an event type and time slot');
+      toast.error(tAdmin('pleaseSelectEventAndTime'));
       return;
     }
 
     if (clientType === 'existing' && !selectedClient) {
-      toast.error('Please select a client');
+      toast.error(tAdmin('pleaseSelectClient'));
       return;
     }
 
     if (clientType === 'new' && !newClientData) {
-      toast.error('Please add client information');
+      toast.error(tAdmin('pleaseAddClientInfo'));
       return;
     }
 
@@ -253,7 +254,7 @@ export default function CreateSessionModal({
       const event = localizedEvents.find(e => e.id === selectedEvent);
       
       if (!event) {
-        toast.error('Invalid event selection');
+        toast.error(tAdmin('invalidEventSelection'));
         return;
       }
 
@@ -262,7 +263,7 @@ export default function CreateSessionModal({
       if (clientType === 'existing') {
         const client = clientSessions[selectedClient];
         if (!client) {
-          toast.error('Invalid client selection');
+          toast.error(tAdmin('invalidClientSelection'));
           return;
         }
         clientName = client.client_name;
@@ -294,7 +295,7 @@ export default function CreateSessionModal({
       });
 
       if (response.ok) {
-        toast.success('Session created successfully!');
+        toast.success(tAdmin('sessionCreatedSuccessfully'));
         onSessionCreated();
         onClose();
         // Reset form
@@ -309,11 +310,11 @@ export default function CreateSessionModal({
         setShowNewClientModal(false);
       } else {
         const errorData = await response.json();
-        toast.error(errorData.error || 'Failed to create session');
+        toast.error(errorData.error || tAdmin('failedToCreateSessionError'));
       }
     } catch (error) {
-      console.error('Error creating session:', error);
-      toast.error('Failed to create session');
+      console.error(tAdmin('errorCreatingSession'), error);
+      toast.error(tAdmin('failedToCreateSessionError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -334,16 +335,16 @@ export default function CreateSessionModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create New Session</DialogTitle>
+          <DialogTitle>{tAdmin('createNewSession')}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Event Selection */}
           <div className="space-y-2">
-            <Label htmlFor="event">Select Event Type</Label>
+            <Label htmlFor="event">{tAdmin('selectEventType')}</Label>
             <Select value={selectedEvent} onValueChange={setSelectedEvent}>
               <SelectTrigger>
-                <SelectValue placeholder="Choose an event type" />
+                <SelectValue placeholder={tAdmin('chooseEventType')} />
               </SelectTrigger>
               <SelectContent>
                 {localizedEvents.map((event) => (
@@ -357,7 +358,7 @@ export default function CreateSessionModal({
 
           {/* Client Type Selection */}
           <div className="space-y-2">
-            <Label>Client</Label>
+            <Label>{tAdmin('client')}</Label>
             <div className="flex gap-4 mb-3">
               <label className="flex items-center">
                 <input
@@ -367,7 +368,7 @@ export default function CreateSessionModal({
                   onChange={(e) => setClientType(e.target.value as 'existing' | 'new')}
                   className="mr-2"
                 />
-                Existing Client
+                {tAdmin('existingClient')}
               </label>
               <label className="flex items-center">
                 <input
@@ -377,14 +378,14 @@ export default function CreateSessionModal({
                   onChange={(e) => setClientType(e.target.value as 'existing' | 'new')}
                   className="mr-2"
                 />
-                New Client
+                {tAdmin('newClient')}
               </label>
             </div>
 
             {clientType === 'existing' ? (
               <Select value={selectedClient} onValueChange={setSelectedClient}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose a client" />
+                  <SelectValue placeholder={tAdmin('chooseClient')} />
                 </SelectTrigger>
                 <SelectContent>
                   {clients.map((client) => (
@@ -408,7 +409,7 @@ export default function CreateSessionModal({
                       onClick={() => setShowNewClientModal(true)}
                       className="mt-2 text-sm text-blue-600 hover:text-blue-800"
                     >
-                      Edit Client Info
+                      {tAdmin('editClientInfo')}
                     </Button>
                   </div>
                 ) : (
@@ -419,7 +420,7 @@ export default function CreateSessionModal({
                     className="w-full border-dashed flex items-center justify-center gap-2"
                   >
                     <Plus className="w-4 h-4" />
-                    Add New Client
+                    {tAdmin('addNewClient')}
                   </Button>
                 )}
               </div>
@@ -428,22 +429,24 @@ export default function CreateSessionModal({
 
           {/* Date and Time Selection */}
           <div className="space-y-2">
-            <Label>Date & Time</Label>
+            <Label>{tAdmin('dateTime')}</Label>
             <div className="space-y-4">
               {/* Calendar */}
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                disabled={(date) => date < new Date()}
-                className="rounded-md border"
-              />
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={(date) => date < new Date()}
+                  className="rounded-md border"
+                />
+              </div>
               
               {/* Time Slots */}
               {selectedDate && (
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 mb-2">
-                    Available Time Slots
+                    {tAdmin('availableTimeSlots')}
                   </h4>
                   {isLoadingSlots ? (
                     <div className="grid grid-cols-3 gap-2">
@@ -454,7 +457,7 @@ export default function CreateSessionModal({
                   ) : slotsError ? (
                     <p className="text-red-600 text-sm">{slotsError}</p>
                   ) : availableSlots.length === 0 ? (
-                    <p className="text-gray-500 text-sm">No available time slots for this date.</p>
+                    <p className="text-gray-500 text-sm">{tAdmin('noAvailableTimeSlots')}</p>
                   ) : (
                     <div className="grid grid-cols-3 gap-2 max-h-40 overflow-y-auto">
                        {availableSlots.map((slot, index) => (
@@ -483,10 +486,10 @@ export default function CreateSessionModal({
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              Cancel
+              {tAdmin('cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Creating...' : 'Create Session'}
+              {isSubmitting ? tAdmin('creating') : tAdmin('createSession')}
             </Button>
           </div>
         </form>
