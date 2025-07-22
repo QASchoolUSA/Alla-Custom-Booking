@@ -94,7 +94,7 @@ export default function SuccessContentClient({ locale }: { locale: string }) {
         {status === 'loading' && (
           <div className="text-center" data-testid="payment-verification-loading">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto" data-testid="loading-spinner"></div>
-            <h2 className="mt-6 text-xl font-semibold text-gray-900" data-testid="loading-message">Verifying your payment...</h2>
+            <h2 className="mt-6 text-xl font-semibold text-gray-900" data-testid="loading-message">{messages.booking.verifyingPayment}</h2>
           </div>
         )}
         
