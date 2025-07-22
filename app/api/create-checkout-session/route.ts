@@ -90,6 +90,8 @@ export async function POST(request: Request) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       locale: 'ru', // Always use Russian for Stripe as Ukrainian is not supported
+      // Pre-fill customer email if provided
+      ...(customerEmail && { customer_email: customerEmail }),
       metadata: {
         eventName: finalEventName,
         eventId: eventId,
