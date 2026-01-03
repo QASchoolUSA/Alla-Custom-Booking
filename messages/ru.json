@@ -5,7 +5,9 @@
     "booking": "Запись",
     "about": "О нас",
     "contact": "Контакты",
-    "bookNow": "Записаться"
+    "bookNow": "Записаться",
+    "services": "Услуги",
+    "language": "Язык"
   },
   "hero": {
     "title": "Алла Сидор",
