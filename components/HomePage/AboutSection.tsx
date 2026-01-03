@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { Book, HandHeart, BookHeart } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import ProfileCard from '@/lib/profileCard';
 import CertificatesGallery from './CertificatesGallery';
@@ -16,7 +16,7 @@ const AboutSection: React.FC = () => {
   };
 
   // Animation variants for container
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -28,7 +28,7 @@ const AboutSection: React.FC = () => {
   };
 
   // Animation variants for individual cards
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { y: 50, opacity: 0 },
     visible: {
       y: 0,
@@ -51,7 +51,7 @@ const AboutSection: React.FC = () => {
   };
 
   // Animation variants for icons
-  const iconVariants = {
+  const iconVariants: Variants = {
     hidden: { scale: 0 },
     visible: {
       scale: 1,
