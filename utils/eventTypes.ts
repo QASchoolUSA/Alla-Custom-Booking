@@ -6,6 +6,7 @@ export interface EventType {
   salePrice?: string; // Optional sale price
   quantity: number;
   description: string;
+  bonus?: string;
 }
 
 // Function to get localized events
@@ -18,14 +19,6 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     salePrice: '50',
     quantity: 1,
     description: t('events.initialMeeting.description')
-  },
-  {
-    id: 'consultation-session',
-    name: t('events.consultation.name'),
-    duration: t('events.consultation.duration'),
-    price: '100',
-    quantity: 1,
-    description: t('events.consultation.description')
   },
   {
     id: 'therapy-session',
@@ -42,7 +35,8 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     price: '750',
     salePrice: '650',
     quantity: 5,
-    description: t('events.package5.description')
+    description: t('events.package5.description'),
+    bonus: t('events.package5.bonus')
   },
   {
     id: 'package-10',
@@ -51,14 +45,14 @@ export const getLocalizedEvents = (t: any): EventType[] => [
     price: '1500',
     salePrice: '1250',
     quantity: 10,
-    description: t('events.package10.description')
+    description: t('events.package10.description'),
+    bonus: t('events.package10.bonus')
   },
   {
     id: 'group-therapy',
     name: t('events.groupTherapy.name'),
     duration: t('events.groupTherapy.duration'),
-    price: '350',
-    salePrice: '299',
+    price: '400',
     quantity: 8,
     description: t('events.groupTherapy.description'),
   },
@@ -74,14 +68,7 @@ export const events: EventType[] = [
     quantity: 1,
     description: 'A first introduction and discussion of your needs.'
   },
-  {
-    id: 'consultation-session',
-    name: 'Consultation Session',
-    duration: '2 hours',
-    price: '100',
-    quantity: 1,
-    description: 'A deep-dive consultation session.'
-  },
+
   {
     id: 'therapy-session',
     name: 'Therapy Session',
@@ -96,7 +83,7 @@ export const events: EventType[] = [
     duration: '2 hours each',
     price: '650',
     quantity: 5,
-    description: 'A package of 5 therapy sessions.'
+    description: 'A package of 5 therapy sessions.\n+ 2 sessions of "reality contact techniques" (1 hour each)'
   },
   {
     id: 'package-10',
@@ -104,15 +91,15 @@ export const events: EventType[] = [
     duration: '2 hours each',
     price: '1250',
     quantity: 10,
-    description: 'A package of 10 therapy sessions.'
+    description: 'A package of 10 therapy sessions.\n+ 4 sessions of "reality contact techniques" (1 hour each)'
   },
   {
     id: 'group-therapy',
-    name: 'Group Therapy',
+    name: 'Group Therapy "Reboot"',
     duration: '3 hours',
-    price: '299',
+    price: '400',
     quantity: 8,
-    description: 'A therapy session in a group setting.'
+    description: '8 online sessions of 3 hours. Max 6 people.'
   }
 ];
 

@@ -10,7 +10,7 @@ export default function Footer() {
   const t = useTranslations('footer');
 
   return (
-    <footer 
+    <footer
       className="text-white border-t border-white/10"
       style={{
         background: 'linear-gradient(135deg, rgba(218, 212, 254, 0.08) 0%, rgba(218, 212, 254, 0.03) 100%)',
@@ -24,9 +24,9 @@ export default function Footer() {
           {/* Column 1: Logo and About */}
           <div>
             <Link href="/" className="flex items-center space-x-3 text-2xl font-semibold text-white mb-4">
-              <Image 
-                src="/alla-psychology-logo.webp" 
-                alt="Alla Psychology Logo" 
+              <Image
+                src="/alla-psychology-logo.webp"
+                alt="Alla Psychology Logo"
                 width={96}
                 height={96}
                 className="w-24 h-24 object-contain"
@@ -52,7 +52,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => {
                     const aboutSection = document.getElementById('about-section');
                     if (aboutSection) {
@@ -65,7 +65,7 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => {
                     const servicesSection = document.getElementById('services-section');
                     if (servicesSection) {
@@ -94,7 +94,7 @@ export default function Footer() {
               <li className="flex items-center">
                 <Mail size={18} className="mr-2 text-white/80" />
                 <a href="mailto:contact@allapsychology.com" className="text-white/70 hover:text-white transition-colors duration-200">
-                contact@allapsychology.com
+                  contact@allapsychology.com
                 </a>
               </li>
               <li className="flex items-center">
@@ -108,9 +108,9 @@ export default function Footer() {
                   {t('socialMedia')}
                 </h5>
                 <div className="flex space-x-4 mt-2">
-                  <a 
-                    href="https://www.instagram.com/alla.psychology_" 
-                    target="_blank" 
+                  <a
+                    href="https://www.instagram.com/alla.psy_?igsh=NmVoOHp5Nm43Nnkz"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 rounded-lg border border-white/20 text-white/70 hover:text-white transition-all duration-200"
                     style={{
@@ -122,9 +122,9 @@ export default function Footer() {
                   >
                     <Instagram size={20} />
                   </a>
-                  <a 
-                    href="https://t.me/alla_psychology" 
-                    target="_blank" 
+                  <a
+                    href="https://t.me/alla_psy_coach"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 rounded-lg border border-white/20 text-white/70 hover:text-white transition-all duration-200"
                     style={{

@@ -6,14 +6,15 @@ import { Book, HandHeart, BookHeart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import ProfileCard from '@/lib/profileCard';
+import CertificatesGallery from './CertificatesGallery';
 
 const AboutSection: React.FC = () => {
   const t = useTranslations('about');
-  
+
   const handleContactClick = () => {
-    window.open('https://t.me/alla_psychology', '_blank');
+    window.open('https://t.me/alla_psy_coach', '_blank');
   };
-  
+
   // Animation variants for container
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -29,8 +30,8 @@ const AboutSection: React.FC = () => {
   // Animation variants for individual cards
   const cardVariants = {
     hidden: { y: 50, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
       transition: {
         type: "spring",
@@ -52,7 +53,7 @@ const AboutSection: React.FC = () => {
   // Animation variants for icons
   const iconVariants = {
     hidden: { scale: 0 },
-    visible: { 
+    visible: {
       scale: 1,
       transition: {
         type: "spring",
@@ -66,7 +67,7 @@ const AboutSection: React.FC = () => {
   return (
     <section id="about-section" className="w-full bg-neutral-50 py-16 md:py-24 overflow-hidden">
       <div className="container mx-auto px-6">
-        <motion.div 
+        <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -84,29 +85,29 @@ const AboutSection: React.FC = () => {
         <div className="flex justify-center mb-12">
           <ProfileCard
             name="Алла Сидор"
-            title="Психолог | Релив Терапевт"
-            handle="alla_psychology"
-            contactText="Telegram Me"
+            title="Релив-терапевт"
+            handle="alla_psy_coach"
+            contactText="@alla_psy_coach"
             avatarUrl="/alla-psychology-background.webp"
             onContactClick={handleContactClick}
             showUserInfo={true}
             enableTilt={true}
           />
         </div>
-        
-        <motion.div 
+
+        <motion.div
           className="grid md:grid-cols-3 gap-8 text-center"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          <motion.div 
+          <motion.div
             className="p-6 bg-white rounded-xl shadow-lg"
             variants={cardVariants}
             whileHover="hover"
           >
-            <motion.div 
+            <motion.div
               className="w-12 h-12 bg-alla-purple text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
@@ -122,13 +123,13 @@ const AboutSection: React.FC = () => {
               ))}
             </div>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="p-6 bg-white rounded-xl shadow-lg"
             variants={cardVariants}
             whileHover="hover"
           >
-            <motion.div 
+            <motion.div
               className="w-12 h-12 bg-alla-purple text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
@@ -144,13 +145,13 @@ const AboutSection: React.FC = () => {
               ))}
             </div>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="p-6 bg-white rounded-xl shadow-lg"
             variants={cardVariants}
             whileHover="hover"
           >
-            <motion.div 
+            <motion.div
               className="w-12 h-12 bg-alla-purple text-white rounded-full flex items-center justify-center mx-auto mb-4"
               variants={iconVariants}
             >
@@ -167,6 +168,8 @@ const AboutSection: React.FC = () => {
             </div>
           </motion.div>
         </motion.div>
+
+        <CertificatesGallery />
       </div>
     </section>
   );

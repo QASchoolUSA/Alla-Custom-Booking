@@ -14,7 +14,7 @@ export default function ServicesSection() {
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           {t('services.title')}
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((event, index) => (
             <motion.div
@@ -36,7 +36,7 @@ export default function ServicesSection() {
                 </div>
                 <h3 className="text-xl font-semibold">{event.name}</h3>
               </div>
-              
+
               <div className="text-gray-600 mb-4">
                 {event.description.split('\n').map((line, index, arr) => (
                   <React.Fragment key={index}>
@@ -45,9 +45,18 @@ export default function ServicesSection() {
                   </React.Fragment>
                 ))}
               </div>
-              
+
+              {event.bonus && (
+                <div className="mb-4 p-2 bg-alla-purple/5 border border-alla-purple/20 rounded-md">
+                  <p className="text-alla-purple text-sm font-medium flex items-start">
+                    <span className="mr-2">🎁</span>
+                    <span>{event.bonus}</span>
+                  </p>
+                </div>
+              )}
+
               {/* Removed the features section and replaced with nothing for now */}
-              
+
               <div className="mt-6 flex justify-between items-center">
                 <div className="flex flex-col">
                   {event.salePrice ? (

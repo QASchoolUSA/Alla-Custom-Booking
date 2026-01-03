@@ -1,6 +1,36 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { getSessionEventName } from '@/utils/eventTypes';
+import ruTranslations from '@/messages/ru.json';
+import uaTranslations from '@/messages/ua.json';
+
+// Mapping from kebab-case event IDs to camelCase translation keys
+const eventIdToTranslationKey: Record<string, string> = {
+  'initial-meeting': 'initialMeeting',
+  'consultation-session': 'consultation',
+  'therapy-session': 'therapy',
+  'package-5': 'package5',
+  'package-10': 'package10',
+  'group-therapy': 'groupTherapy',
+  'packageOf5': 'packageOf5',
+  'packageOf10': 'packageOf10'
+};
+
+// Function to get localized event name using translation files
+const getLocalizedEventName = (eventId: string, locale: string = 'ru'): string => {
+  const translations = locale === 'ua' ? uaTranslations : ruTranslations;
+  
+  // Map kebab-case eventId to camelCase translation key
+  const translationKey = eventIdToTranslationKey[eventId] || eventId;
+  
+  // Check if the translation key exists in the events translations
+  if (translations.events && translations.events[translationKey as keyof typeof translations.events]) {
+    return translations.events[translationKey as keyof typeof translations.events].name;
+  }
+  
+  // Fallback to the original eventId if not found
+  return eventId;
+};
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +45,8 @@ export async function POST(request: Request) {
       /* totalSessions,  // Removed unused variable */
       /* amount,         // Removed unused variable */
       /* status,         // Removed unused variable */
-      clientTimezone 
+      clientTimezone,
+      locale = 'ru'
     } = data;
 
     // Validate required fields
@@ -33,7 +64,12 @@ export async function POST(request: Request) {
     const date = startDateTime.toISOString().split('T')[0];
     const start_time = startDateTime.toISOString();
     const end_time = endDateTime.toISOString();
-    const event_name = getSessionEventName(eventType, 1, 1, 'ru');
+    console.log('Debug - eventType:', eventType);
+    console.log('Debug - locale:', locale);
+    const localizedEventName = getLocalizedEventName(eventType, locale);
+    console.log('Debug - localizedEventName:', localizedEventName);
+    const event_name = getSessionEventName(localizedEventName, 1, 1, locale);
+    console.log('Debug - final event_name:', event_name);
 
     // Create the session booking directly in the database
     const { error: insertError } = await supabase.from('bookings').insert([
@@ -60,7 +96,7 @@ export async function POST(request: Request) {
 
     // Add event to Google Calendar
     try {
-      const sessionEventName = getSessionEventName(event_name, 1, 1, 'ru');
+      const sessionEventName = event_name; // Already localized above
       
       // Dynamically determine the base URL from request headers
       const host = request.headers.get('host');

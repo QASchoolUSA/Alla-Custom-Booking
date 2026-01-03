@@ -50,13 +50,15 @@ interface CreateSessionModalProps {
   onClose: () => void;
   onSessionCreated: () => void;
   clientSessions: Record<string, Booking & { sessions: number }>;
+  locale: string;
 }
 
 export default function CreateSessionModal({
   isOpen,
   onClose,
   onSessionCreated,
-  clientSessions
+  clientSessions,
+  locale
 }: CreateSessionModalProps) {
   const tEvents = useTranslations();
   const tAdmin = useTranslations('admin');
@@ -290,7 +292,8 @@ export default function CreateSessionModal({
           totalSessions: 1,
           amount: 0, // Admin-created sessions are free
           status: 'completed',
-          clientTimezone: clientTimezone
+          clientTimezone: clientTimezone,
+          locale: locale
         }),
       });
 
