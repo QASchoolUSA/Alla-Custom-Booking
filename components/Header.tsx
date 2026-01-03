@@ -128,7 +128,7 @@ export default function Header() {
 
           {/* Centered Logo on Mobile */}
           <Link href={getLocalizedPath('/')} className="flex items-center">
-            <Image src="/alla-psychology-logo.webp" alt="Alla Psychology Logo" width={90} height={90} priority />
+            <Image src="/alla-psychology-logo.webp" alt="Alla Psy Coach Logo" width={70} height={70} priority className="translate-y-1" />
           </Link>
 
           {/* Mobile Menu Button */}
@@ -146,8 +146,8 @@ export default function Header() {
         <div className="hidden md:flex justify-between items-center h-full">
           {/* Logo */}
           <Link href={getLocalizedPath('/')} className="flex items-center space-x-3">
-            <Image src="/alla-psychology-logo.webp" alt="Alla Psychology Logo" width={90} height={90} priority />
-            <span className="text-white font-semibold text-lg font-alla-custom">Alla Psychology</span>
+            <Image src="/alla-psychology-logo.webp" alt="Alla Psy Coach Logo" width={70} height={70} priority className="translate-y-1" />
+            <span className="text-white font-semibold text-lg font-alla-custom">Alla Psy Coach</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -157,8 +157,8 @@ export default function Header() {
                 key={link.path}
                 href={link.path}
                 className={`font-medium transition-colors duration-200 hover:underline decoration-double ${isLinkActive(link.path)
-                    ? 'underline decoration-double text-white font-bold'
-                    : 'text-white'
+                  ? 'underline decoration-double text-white font-bold'
+                  : 'text-white'
                   }`}
               >
                 {link.label}
@@ -178,8 +178,8 @@ export default function Header() {
                     router.push(targetUrl);
                   }}
                   className={`flex items-center justify-center px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${locale === lang.code
-                      ? 'text-white shadow-sm'
-                      : 'text-white hover:bg-white/20'
+                    ? 'text-white shadow-sm'
+                    : 'text-white hover:bg-white/20'
                     }`}
                   style={{
                     backgroundColor: locale === lang.code ? '#4B3F72' : undefined
@@ -195,203 +195,144 @@ export default function Header() {
       </div>
 
       {/* Mobile Navigation - Liquid Glass Design */}
-      {isOpen && (
-        <div className={`md:hidden fixed inset-0 z-[60] backdrop-blur-xl ${isBookingPage
+      {
+        isOpen && (
+          <div className={`md:hidden fixed inset-0 z-[60] backdrop-blur-xl ${isBookingPage
             ? ''
             : 'bg-white/10'
-          }`} style={{
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            position: 'fixed',
-            backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.95)' : undefined
-          }}>
-          <div className="flex flex-col h-full">
-            {/* Header with close button */}
-            <div className={`flex justify-between items-center p-6 border-b ${isBookingPage
+            }`} style={{
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              position: 'fixed',
+              backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.95)' : undefined
+            }}>
+            <div className="flex flex-col h-full">
+              {/* Header with close button */}
+              <div className={`flex justify-between items-center p-6 border-b ${isBookingPage
                 ? 'border-opacity-70'
                 : 'border-white/30 bg-white/5'
-              }`} style={{
-                borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.7)' : undefined,
-                backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined
-              }}>
-              <h2 className="text-white text-xl font-bold">Alla Psychology</h2>
-              <button
-                onClick={toggleMenu}
-                className={`text-white p-2 rounded-lg transition-colors ${isBookingPage
+                }`} style={{
+                  borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.7)' : undefined,
+                  backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined
+                }}>
+                <h2 className="text-white text-xl font-bold">Alla Psy Coach</h2>
+                <button
+                  onClick={toggleMenu}
+                  className={`text-white p-2 rounded-lg transition-colors ${isBookingPage
                     ? ''
                     : 'hover:bg-white/10'
-                  }`}
-                style={{}}
-                onMouseEnter={(e) => {
-                  if (isBookingPage) {
-                    e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.5)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (isBookingPage) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <X size={24} />
-              </button>
-            </div>
+                    }`}
+                  style={{}}
+                  onMouseEnter={(e) => {
+                    if (isBookingPage) {
+                      e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.5)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (isBookingPage) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                >
+                  <X size={24} />
+                </button>
+              </div>
 
-            {/* Navigation Links */}
-            <nav className="flex-1 flex flex-col justify-center px-8 space-y-4">
-              {navigationLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  href={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border backdrop-blur-sm ${isLinkActive(link.path)
+              {/* Navigation Links */}
+              <nav className="flex-1 flex flex-col justify-center px-8 space-y-4">
+                {navigationLinks.map((link) => (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    onClick={() => setIsOpen(false)}
+                    className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border backdrop-blur-sm ${isLinkActive(link.path)
                       ? isBookingPage
                         ? 'text-yellow-400 shadow-lg'
                         : 'text-yellow-400 bg-white/20 border-yellow-400/30 shadow-lg'
                       : isBookingPage
                         ? 'text-white hover:text-yellow-300 hover:shadow-md'
                         : 'text-white hover:text-yellow-300 hover:bg-white/15 border-white/20 hover:border-white/40 hover:shadow-md'
-                    }`}
-                  style={{
-                    backgroundColor: isLinkActive(link.path) && isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined,
-                    borderColor: isLinkActive(link.path) && isBookingPage ? 'rgba(255, 193, 7, 0.5)' : isBookingPage && !isLinkActive(link.path) ? 'rgba(75, 63, 114, 0.6)' : undefined
-                  }}
-                  onMouseEnter={(e) => {
-                    if (isBookingPage && !isLinkActive(link.path)) {
-                      e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
-                      e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (isBookingPage && !isLinkActive(link.path)) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
-                    }
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
+                      }`}
+                    style={{
+                      backgroundColor: isLinkActive(link.path) && isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined,
+                      borderColor: isLinkActive(link.path) && isBookingPage ? 'rgba(255, 193, 7, 0.5)' : isBookingPage && !isLinkActive(link.path) ? 'rgba(75, 63, 114, 0.6)' : undefined
+                    }}
+                    onMouseEnter={(e) => {
+                      if (isBookingPage && !isLinkActive(link.path)) {
+                        e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
+                        e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (isBookingPage && !isLinkActive(link.path)) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
+                      }
+                    }}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
 
-              {/* Section Navigation Buttons */}
-              <button
-                onClick={() => {
-                  const aboutSection = document.getElementById('about-section');
-                  if (aboutSection) {
-                    aboutSection.scrollIntoView({ behavior: 'smooth' });
-                    setIsOpen(false);
-                  }
-                }}
-                className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border backdrop-blur-sm ${isBookingPage
-                    ? 'text-white hover:text-yellow-300 hover:shadow-md'
-                    : 'text-white hover:text-yellow-300 hover:bg-white/15 border-white/20 hover:border-white/40 hover:shadow-md'
-                  }`}
-                style={{
-                  borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.6)' : undefined
-                }}
-                onMouseEnter={(e) => {
-                  if (isBookingPage) {
-                    e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (isBookingPage) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
-                  }
-                }}
-              >
-                About
-              </button>
 
-              <button
-                onClick={() => {
-                  const servicesSection = document.getElementById('services-section');
-                  if (servicesSection) {
-                    servicesSection.scrollIntoView({ behavior: 'smooth' });
-                    setIsOpen(false);
-                  }
-                }}
-                className={`text-center py-5 px-8 text-xl font-medium rounded-2xl transition-all duration-300 border backdrop-blur-sm ${isBookingPage
-                    ? 'text-white hover:text-yellow-300 hover:shadow-md'
-                    : 'text-white hover:text-yellow-300 hover:bg-white/15 border-white/20 hover:border-white/40 hover:shadow-md'
-                  }`}
-                style={{
-                  borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.6)' : undefined
-                }}
-                onMouseEnter={(e) => {
-                  if (isBookingPage) {
-                    e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (isBookingPage) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
-                  }
-                }}
-              >
-                Services
-              </button>
 
-              {/* Language Switcher */}
-              <div className={`border-t pt-8 mt-8 pb-6 rounded-3xl ${isBookingPage
+                {/* Language Switcher */}
+                <div className={`border-t pt-8 mt-8 pb-6 rounded-3xl ${isBookingPage
                   ? ''
                   : 'border-white/30 bg-white/5'
-                }`} style={{
-                  borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.7)' : undefined,
-                  backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.3)' : undefined
-                }}>
-                <h3 className="text-white text-lg font-semibold mb-4 text-center">Language</h3>
-                <div className="flex justify-center space-x-4">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        if (locale === lang.code) {
-                          return;
-                        }
-                        const targetUrl = getLanguageSwitchUrl(lang.code);
-                        router.push(targetUrl);
-                      }}
-                      className={`flex flex-col items-center space-y-3 py-4 px-6 rounded-2xl transition-all duration-300 border backdrop-blur-sm ${locale === lang.code
+                  }`} style={{
+                    borderColor: isBookingPage ? 'rgba(75, 63, 114, 0.7)' : undefined,
+                    backgroundColor: isBookingPage ? 'rgba(75, 63, 114, 0.3)' : undefined
+                  }}>
+                  <h3 className="text-white text-lg font-semibold mb-4 text-center">Language</h3>
+                  <div className="flex justify-center space-x-4">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          if (locale === lang.code) {
+                            return;
+                          }
+                          const targetUrl = getLanguageSwitchUrl(lang.code);
+                          router.push(targetUrl);
+                        }}
+                        className={`flex flex-col items-center space-y-3 py-4 px-6 rounded-2xl transition-all duration-300 border backdrop-blur-sm ${locale === lang.code
                           ? isBookingPage
                             ? 'text-white shadow-lg'
                             : 'bg-white/25 text-white border-white/40 shadow-lg'
                           : isBookingPage
                             ? 'text-white hover:shadow-md'
                             : 'text-white hover:bg-white/15 border-white/25 hover:border-white/40 hover:shadow-md'
-                        }`}
-                      style={{
-                        backgroundColor: locale === lang.code && isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined,
-                        borderColor: locale === lang.code && isBookingPage ? 'rgba(75, 63, 114, 0.6)' : isBookingPage && locale !== lang.code ? 'rgba(75, 63, 114, 0.6)' : undefined
-                      }}
-                      onMouseEnter={(e) => {
-                        if (isBookingPage && locale !== lang.code) {
-                          e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
-                          e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (isBookingPage && locale !== lang.code) {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
-                        }
-                      }}
-                    >
-                      <span className="text-2xl">{lang.flag}</span>
-                    </button>
-                  ))}
+                          }`}
+                        style={{
+                          backgroundColor: locale === lang.code && isBookingPage ? 'rgba(75, 63, 114, 0.5)' : undefined,
+                          borderColor: locale === lang.code && isBookingPage ? 'rgba(75, 63, 114, 0.6)' : isBookingPage && locale !== lang.code ? 'rgba(75, 63, 114, 0.6)' : undefined
+                        }}
+                        onMouseEnter={(e) => {
+                          if (isBookingPage && locale !== lang.code) {
+                            e.currentTarget.style.backgroundColor = 'rgba(75, 63, 114, 0.3)';
+                            e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.5)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (isBookingPage && locale !== lang.code) {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.borderColor = 'rgba(75, 63, 114, 0.6)';
+                          }
+                        }}
+                      >
+                        <span className="text-2xl">{lang.flag}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </nav>
+              </nav>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       <style jsx>{`
             @keyframes slideInFromRight {
@@ -405,6 +346,6 @@ export default function Header() {
               }
             }
           `}</style>
-    </header>
+    </header >
   );
 }

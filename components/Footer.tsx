@@ -26,12 +26,12 @@ export default function Footer() {
             <Link href="/" className="flex items-center space-x-3 text-2xl font-semibold text-white mb-4">
               <Image
                 src="/alla-psychology-logo.webp"
-                alt="Alla Psychology Logo"
+                alt="Alla Psy Coach Logo"
                 width={96}
                 height={96}
                 className="w-24 h-24 object-contain"
               />
-              <span className="font-alla-custom">Alla Relive Therapist</span>
+              <span className="font-alla-custom">Alla Psy Coach</span>
             </Link>
             <div className="text-white/70 mt-4">
               <p className="leading-relaxed whitespace-pre-line">
