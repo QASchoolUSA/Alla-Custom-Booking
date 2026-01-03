@@ -79,6 +79,15 @@ export default function ServicesSection() {
                   {event.duration}
                 </span>
               </div>
+
+              <a
+                href="https://scheduler.zoom.us/alla-sidor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 block w-full text-center py-2 px-4 bg-alla-purple text-white rounded-lg hover:bg-alla-purple/90 transition-colors"
+              >
+                {t('header.bookNow') || "Book Now"}
+              </a>
             </motion.div>
           ))}
         </div>
