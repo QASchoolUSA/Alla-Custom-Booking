@@ -20,14 +20,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Alla Psychology",
-  description: "Alla Psychology - Psychotherapeutic Services",
-  keywords: "psychology, therapy, psychotherapist, mental health, counseling",
+  title: "Alla Relive Therapist",
+  description: "Alla Relive Therapist",
+  keywords: "relive, therapy, psychotherapist, mental health, counseling",
   authors: [{ name: "Alla Sidor" }],
   robots: "index, follow",
   openGraph: {
-    title: "Alla Psychology",
-    description: "Alla Psychology - Psychotherapeutic Services",
+    title: "Alla Relive Therapist",
+    description: "Alla Relive Therapist",
     type: "website",
   },
 };
@@ -40,7 +40,7 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  
+
   // Use next-intl's getMessages with locale parameter
   const messages = await getMessages({ locale });
 
@@ -62,7 +62,7 @@ export default async function RootLayout({
               color="#4B3F72"
             />
           </div>
-          
+
           {/* Content */}
           <div className="relative z-10">
             <Header />
