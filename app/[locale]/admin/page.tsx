@@ -27,8 +27,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { MoreHorizontal, Calendar, Link, CheckCircle, User, Mail, DollarSign, Plus } from 'lucide-react';
-import { calculateSessionNumber, getSessionEventName } from '@/utils/eventTypes';
-import { useTranslations } from 'next-intl';
+import { calculateSessionNumber, getSessionEventName, getLocalizedEvents } from '@/utils/eventTypes';
+import { useTranslations, useLocale } from 'next-intl';
 import CreateSessionModal from '@/components/CreateSessionModal';
 import BookingCalendar from '../../../components/Booking/BookingCalendar';
 
@@ -47,7 +47,8 @@ interface Booking {
 
 export default function AdminDashboard() {
   const t = useTranslations('admin');
-  // const tEvents = useTranslations();
+  const tEvents = useTranslations();
+  const locale = useLocale();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -119,7 +120,13 @@ export default function AdminDashboard() {
   }, []);
 
   // Memoize localized events to prevent recalculation on every render
-  // const localizedEvents = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
+  const localizedEvents = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
+
+  // Helper function to get localized event name by ID
+  const getLocalizedEventName = useCallback((eventId: string) => {
+    const event = localizedEvents.find(e => e.id === eventId);
+    return event ? event.name : eventId;
+  }, [localizedEvents]);
 
   const handleCreateSession = useCallback(() => {
     setShowCreateSession(true);
@@ -252,7 +259,7 @@ export default function AdminDashboard() {
                                 </div>
                               </TableCell>
                               <TableCell className="hidden md:table-cell" data-testid={`event-type-${client.client_email}`}>
-                                <Badge variant="outline" data-testid={`event-badge-${client.client_email}`}>{client.event_name}</Badge>
+                                <Badge variant="outline" data-testid={`event-badge-${client.client_email}`}>{getLocalizedEventName(client.event_name)}</Badge>
                               </TableCell>
                               <TableCell className="hidden lg:table-cell" data-testid={`last-session-${client.client_email}`}>
                                 <p className="text-sm text-muted-foreground" data-testid={`last-session-date-${client.client_email}`}>
@@ -281,7 +288,7 @@ export default function AdminDashboard() {
                                   </div>
                                   {/* Mobile-only: Show event type and date */}
                                   <div className="md:hidden space-y-1" data-testid={`mobile-info-${client.client_email}`}>
-                                    <Badge variant="outline" className="text-xs" data-testid={`mobile-event-badge-${client.client_email}`}>{client.event_name}</Badge>
+                                    <Badge variant="outline" className="text-xs" data-testid={`mobile-event-badge-${client.client_email}`}>{getLocalizedEventName(client.event_name)}</Badge>
                                     <p className="text-xs text-muted-foreground" data-testid={`mobile-date-${client.client_email}`}>
                                       {new Date(client.date).toLocaleDateString()}
                                     </p>
@@ -407,7 +414,8 @@ export default function AdminDashboard() {
                 const sessionNumber = calculateSessionNumber(originalQuantity, remainingSessions);
                 // Get locale from URL params
                 const locale = window.location.pathname.split('/')[1] || 'ru';
-                const sessionEventName = getSessionEventName(calendarClient.event_name, originalQuantity, sessionNumber, locale);
+                const localizedEventName = getLocalizedEventName(calendarClient.event_name);
+                const sessionEventName = getSessionEventName(localizedEventName, originalQuantity, sessionNumber, locale);
                 
                 try {
                   const response = await fetch('/api/add-to-calendar', {
@@ -461,6 +469,7 @@ export default function AdminDashboard() {
            onClose={() => setShowCreateSession(false)}
            onSessionCreated={handleSessionCreated}
            clientSessions={clientSessions}
+           locale={locale}
          />
       )}
     </div>

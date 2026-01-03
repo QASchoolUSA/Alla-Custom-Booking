@@ -1,6 +1,36 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { getSessionEventName } from '@/utils/eventTypes';
+import ruTranslations from '@/messages/ru.json';
+import uaTranslations from '@/messages/ua.json';
+
+// Mapping from kebab-case event IDs to camelCase translation keys
+const eventIdToTranslationKey: Record<string, string> = {
+  'initial-meeting': 'initialMeeting',
+  'consultation-session': 'consultation',
+  'therapy-session': 'therapy',
+  'package-5': 'package5',
+  'package-10': 'package10',
+  'group-therapy': 'groupTherapy',
+  'packageOf5': 'packageOf5',
+  'packageOf10': 'packageOf10'
+};
+
+// Function to get localized event name using translation files
+const getLocalizedEventName = (eventId: string, locale: string = 'ru'): string => {
+  const translations = locale === 'ua' ? uaTranslations : ruTranslations;
+  
+  // Map kebab-case eventId to camelCase translation key
+  const translationKey = eventIdToTranslationKey[eventId] || eventId;
+  
+  // Check if the translation key exists in the events translations
+  if (translations.events && translations.events[translationKey as keyof typeof translations.events]) {
+    return translations.events[translationKey as keyof typeof translations.events].name;
+  }
+  
+  // Fallback to the original eventId if not found
+  return eventId;
+};
 
 export async function POST(request: Request) {
   try {
@@ -42,10 +72,11 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false, error: 'No sessions remaining' }, { status: 400 });
       }
 
-      // Extract the base event name without session numbering
+      // Extract the base event name without session numbering and localize it
       const baseEventName = event_name.split(' - ')[0]; // Remove existing session numbering
+      const localizedEventName = getLocalizedEventName(baseEventName, locale || 'ru');
       const sessionEventName = getSessionEventName(
-        baseEventName, 
+        localizedEventName, 
         originalBooking.quantity || 1, 
         (originalBooking.quantity - originalBooking.sessions + 1), 
         locale || 'ru'
@@ -106,7 +137,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true });
     } else {
       // Original logic for regular bookings
-      const sessionEventName = getSessionEventName(event_name, quantity || 1, 1, locale || 'ru');
+      const localizedEventName = getLocalizedEventName(event_name, locale || 'ru');
+      const sessionEventName = getSessionEventName(localizedEventName, quantity || 1, 1, locale || 'ru');
 
       const { error } = await supabase.from('bookings').insert([
         {

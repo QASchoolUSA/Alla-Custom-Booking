@@ -18,7 +18,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
   const tEvents = useTranslations();
   const continueButtonRef = useRef<HTMLDivElement>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  
+
   // Memoize events to prevent recalculation on every render
   const events = useMemo(() => getLocalizedEvents(tEvents), [tEvents]);
 
@@ -30,7 +30,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
   };
 
   // No scrolling behavior needed - desktop doesn't scroll, mobile uses sticky buttons
-  
+
   return (
     <div className="max-w-3xl mx-auto event-selection-container">
       <h2 className="text-2xl font-semibold mb-6 text-center" data-testid="event-selection-title">
@@ -41,11 +41,10 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
         {events.map((event: EventType) => (
           <div
             key={event.id}
-            className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-300 ease-in-out ${
-              selectedEvent?.id === event.id
-                ? 'border-alla-purple bg-primary-100 shadow-xl'
-                : 'border-neutral-300 hover:border-primary-400 hover:shadow-lg bg-white'
-            }`}
+            className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-300 ease-in-out ${selectedEvent?.id === event.id
+              ? 'border-alla-purple bg-primary-100 shadow-xl'
+              : 'border-neutral-300 hover:border-primary-400 hover:shadow-lg bg-white'
+              }`}
             onClick={() => onSelectEvent({
               id: event.id,
               name: event.name,
@@ -71,6 +70,14 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
                 <p className="text-neutral-700 mt-2 whitespace-pre-line">
                   {event.description}
                 </p>
+                {event.bonus && (
+                  <div className="mt-3 p-2 bg-alla-purple/5 border border-alla-purple/20 rounded-md">
+                    <p className="text-alla-purple text-sm font-medium flex items-start">
+                      <span className="mr-2">🎁</span>
+                      <span>{event.bonus}</span>
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="mt-4 md:mt-0 md:ml-4 flex items-center">
                 <div className="flex flex-col items-end mr-4">
@@ -110,7 +117,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
               {isProcessing ? tBooking('processing') || 'Processing...' : tBooking('continue')}
             </Button>
           </div>
-          
+
           {/* Mobile Sticky Continue Button */}
           <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg z-50">
             <Button
@@ -123,7 +130,7 @@ const EventSelection: React.FC<EventSelectionProps> = React.memo(({
               {isProcessing ? tBooking('processing') || 'Processing...' : tBooking('continue')}
             </Button>
           </div>
-          
+
           {/* Mobile spacer to prevent content from being hidden behind sticky button */}
           <div className="md:hidden h-20"></div>
         </>
