@@ -31,7 +31,7 @@ export default function Footer() {
                 height={96}
                 className="w-24 h-24 object-contain"
               />
-              <span className="font-alla-custom">Alla Psychology</span>
+              <span className="font-alla-custom">Alla Relive Therapist</span>
             </Link>
             <div className="text-white/70 mt-4">
               <p className="leading-relaxed whitespace-pre-line">
