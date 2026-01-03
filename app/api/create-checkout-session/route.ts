@@ -1,8 +1,8 @@
 // This is a suggested implementation - you'll need to adapt it to your actual data structure
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getSessionEventName, calculateSessionNumber } from '@/utils/eventTypes';
-import { supabase } from '@/lib/supabase';
+
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -12,9 +12,9 @@ export async function POST(request: Request) {
     console.log('-- [Received request body] --', body);
     console.log(body);
     const { amount, currency, eventName, eventId, quantity, sessionsCount, customerName, customerEmail, customerPhone, appointmentDate, startTime, endTime, locale = 'ru' } = body;
-    
 
-    
+
+
     // Get the base URL from the request headers to support dynamic domains
     const host = request.headers.get('host');
     const protocol = request.headers.get('x-forwarded-proto') || 'https';
@@ -27,11 +27,11 @@ export async function POST(request: Request) {
     // Calculate start and end times if not provided but appointmentDate is available
     let finalStartTime = startTime;
     let finalEndTime = endTime;
-    
+
     if (!finalStartTime && appointmentDate) {
       // If we only have appointmentDate, use it as startTime
       finalStartTime = new Date(appointmentDate).toISOString();
-      
+
       // Set endTime to be 1 hour after startTime if not provided
       if (!finalEndTime) {
         const endDate = new Date(appointmentDate);
@@ -42,8 +42,8 @@ export async function POST(request: Request) {
 
     // Validate required fields
     if (!finalStartTime || !finalEndTime) {
-      return NextResponse.json({ 
-        error: 'Missing required fields', 
+      return NextResponse.json({
+        error: 'Missing required fields',
         missingFields: [
           !finalStartTime ? 'startTime' : null,
           !finalEndTime ? 'endTime' : null
@@ -52,23 +52,14 @@ export async function POST(request: Request) {
     }
 
     // Calculate session number for package deals
-    let finalEventName = eventName;
-    if (customerEmail && quantity && quantity > 1) {
-      // Get the client's remaining sessions to calculate current session number
-      const { data: clientBookings } = await supabase
-        .from('bookings')
-        .select('quantity')
-        .eq('client_email', customerEmail)
-        .gt('quantity', 0)
-        .order('date', { ascending: false })
-        .limit(1);
-      
-      if (clientBookings && clientBookings.length > 0) {
-        const remainingSessions = clientBookings[0].quantity;
-        const sessionNumber = calculateSessionNumber(quantity, remainingSessions);
-        finalEventName = getSessionEventName(eventName, quantity, sessionNumber, locale);
-      }
-    }
+    // Calculate session number for package deals
+    // Simplified: Just use eventName as we are no longer tracking session counts via Supabase
+    const finalEventName = eventName;
+    /*
+     * Previous logic for checking session counts via Supabase has been removed.
+     * If session tracking is needed, it should be implemented via another method
+     * or passed explicitly in the request body.
+     */
 
     // Create a checkout session with metadata
     const session = await stripe.checkout.sessions.create({

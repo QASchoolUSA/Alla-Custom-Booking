@@ -5,49 +5,87 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+
+const certificates = [
+    { id: 1, src: '/CERTIFICATE0844.JPG', alt: 'Certificate 1' },
+    { id: 2, src: '/CERTIFICATE0845.JPG', alt: 'Certificate 2' },
+    { id: 3, src: '/CERTIFICATE3178.PNG', alt: 'Certificate 3' },
+    { id: 4, src: '/CERTIFICATE3371.PNG', alt: 'Certificate 4' },
+    { id: 5, src: '/CERTIFICATE3372.PNG', alt: 'Certificate 5' },
+    { id: 6, src: '/CERTIFICATE6129.JPG', alt: 'Certificate 6' },
+    { id: 7, src: '/CERTIFICATE6506.PNG', alt: 'Certificate 7' },
+    { id: 8, src: '/CERTIFICATE8941.JPG', alt: 'Certificate 8' },
+    { id: 9, src: '/CERTIFICATE9006.JPG', alt: 'Certificate 9' },
+];
+
+interface CertificateThumbnailProps {
+    cert: typeof certificates[0];
+    index: number;
+    onClick: () => void;
+}
+
+const CertificateThumbnail = ({ cert, index, onClick }: CertificateThumbnailProps) => {
+    const [isLoading, setIsLoading] = useState(true);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.05 }}
+            className="relative flex-shrink-0 w-64 md:w-80 aspect-[4/3] cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow snap-center bg-gray-100"
+            onClick={onClick}
+        >
+            {isLoading && <Skeleton className="absolute inset-0 w-full h-full animate-pulse bg-gray-200" />}
+            <Image
+                src={cert.src}
+                alt={cert.alt}
+                fill
+                className={cn(
+                    "object-cover transition-opacity duration-500",
+                    isLoading ? "opacity-0" : "opacity-100"
+                )}
+                sizes="(max-width: 768px) 100vw, 33vw"
+                onLoad={() => setIsLoading(false)}
+            />
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300" />
+        </motion.div>
+    );
+};
 
 const CertificatesGallery = () => {
     const t = useTranslations('about.gallery');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [lightboxImageLoaded, setLightboxImageLoaded] = useState(false);
 
-    const certificates = [
-        { id: 1, src: '/CERTIFICATE0844.JPG', alt: 'Certificate 1' },
-        { id: 2, src: '/CERTIFICATE0845.JPG', alt: 'Certificate 2' },
-        { id: 3, src: '/CERTIFICATE3178.PNG', alt: 'Certificate 3' },
-        { id: 4, src: '/CERTIFICATE3371.PNG', alt: 'Certificate 4' },
-        { id: 5, src: '/CERTIFICATE3372.PNG', alt: 'Certificate 5' },
-        { id: 6, src: '/CERTIFICATE6129.JPG', alt: 'Certificate 6' },
-        { id: 7, src: '/CERTIFICATE6506.PNG', alt: 'Certificate 7' },
-        { id: 8, src: '/CERTIFICATE8941.JPG', alt: 'Certificate 8' },
-        { id: 9, src: '/CERTIFICATE9006.JPG', alt: 'Certificate 9' },
-    ];
-
-    const handleNext = (e?: React.MouseEvent) => {
+    const handleNext = React.useCallback((e?: React.MouseEvent) => {
         e?.stopPropagation();
-        if (selectedIndex !== null) {
-            setSelectedIndex((prev) => (prev !== null && prev < certificates.length - 1 ? prev + 1 : 0));
-        }
-    };
+        setLightboxImageLoaded(false);
+        setSelectedIndex((prev) => (prev !== null && prev < certificates.length - 1 ? prev + 1 : 0));
+    }, []);
 
-    const handlePrev = (e?: React.MouseEvent) => {
+    const handlePrev = React.useCallback((e?: React.MouseEvent) => {
         e?.stopPropagation();
-        if (selectedIndex !== null) {
-            setSelectedIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : certificates.length - 1));
-        }
-    };
+        setLightboxImageLoaded(false);
+        setSelectedIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : certificates.length - 1));
+    }, []);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = React.useCallback((e: KeyboardEvent) => {
         if (e.key === 'ArrowRight') handleNext();
         if (e.key === 'ArrowLeft') handlePrev();
         if (e.key === 'Escape') setSelectedIndex(null);
-    };
+    }, [handleNext, handlePrev]);
 
     React.useEffect(() => {
         if (selectedIndex !== null) {
+            setLightboxImageLoaded(false);
             window.addEventListener('keydown', handleKeyDown);
             return () => window.removeEventListener('keydown', handleKeyDown);
         }
-    }, [selectedIndex]);
+    }, [selectedIndex, handleKeyDown]);
 
     return (
         <div className="mt-20">
@@ -70,25 +108,12 @@ const CertificatesGallery = () => {
             <div className="relative group">
                 <div className="flex overflow-x-auto gap-4 px-4 pb-8 snap-x snap-mandatory scrollbar-hide">
                     {certificates.map((cert, index) => (
-                        <motion.div
+                        <CertificateThumbnail
                             key={cert.id}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4, delay: index * 0.1 }}
-                            viewport={{ once: true }}
-                            whileHover={{ scale: 1.05 }}
-                            className="relative flex-shrink-0 w-64 md:w-80 aspect-[4/3] cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow snap-center"
+                            cert={cert}
+                            index={index}
                             onClick={() => setSelectedIndex(index)}
-                        >
-                            <Image
-                                src={cert.src}
-                                alt={cert.alt}
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw, 33vw"
-                            />
-                            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300" />
-                        </motion.div>
+                        />
                     ))}
                 </div>
 
@@ -133,7 +158,7 @@ const CertificatesGallery = () => {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.3 }}
-                            className="relative w-full max-w-5xl h-[80vh]"
+                            className="relative w-full max-w-5xl h-[80vh] flex items-center justify-center"
                             onClick={(e) => e.stopPropagation()}
                             drag="x"
                             dragConstraints={{ left: 0, right: 0 }}
@@ -147,13 +172,20 @@ const CertificatesGallery = () => {
                                 }
                             }}
                         >
+                            {!lightboxImageLoaded && (
+                                <Skeleton className="absolute w-full h-full max-w-lg max-h-[60vh] rounded-lg bg-gray-800/50 animate-pulse" />
+                            )}
                             <Image
                                 src={certificates[selectedIndex].src}
                                 alt="Certificate Full View"
                                 fill
-                                className="object-contain"
+                                className={cn(
+                                    "object-contain transition-opacity duration-300",
+                                    !lightboxImageLoaded ? "opacity-0" : "opacity-100"
+                                )}
                                 quality={100}
                                 priority
+                                onLoad={() => setLightboxImageLoaded(true)}
                             />
                         </motion.div>
 
