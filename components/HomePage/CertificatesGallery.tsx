@@ -9,12 +9,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 const certificates = [
+    { id: 6, src: '/CERTIFICATE6129.JPG', alt: 'Certificate 6' },
     { id: 1, src: '/CERTIFICATE0844.JPG', alt: 'Certificate 1' },
     { id: 2, src: '/CERTIFICATE0845.JPG', alt: 'Certificate 2' },
     { id: 3, src: '/CERTIFICATE3178.PNG', alt: 'Certificate 3' },
     { id: 4, src: '/CERTIFICATE3371.PNG', alt: 'Certificate 4' },
     { id: 5, src: '/CERTIFICATE3372.PNG', alt: 'Certificate 5' },
-    { id: 6, src: '/CERTIFICATE6129.JPG', alt: 'Certificate 6' },
     { id: 7, src: '/CERTIFICATE6506.PNG', alt: 'Certificate 7' },
     { id: 8, src: '/CERTIFICATE8941.JPG', alt: 'Certificate 8' },
     { id: 9, src: '/CERTIFICATE9006.JPG', alt: 'Certificate 9' },
