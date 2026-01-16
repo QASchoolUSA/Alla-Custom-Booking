@@ -10,20 +10,20 @@ const HeroSection: React.FC = () => {
   const t = useTranslations('hero');
   const locale = useLocale();
   const [fixedHeight, setFixedHeight] = useState<number | null>(null);
-  
+
   // Set fixed height on initial load to prevent resizing during scroll
   useEffect(() => {
     if (typeof window !== 'undefined' && fixedHeight === null) {
       setFixedHeight(window.innerHeight);
     }
   }, [fixedHeight]);
-  
+
   // Handle 'always' locale prefix correctly
   const getLocalizedPath = (path: string) => {
     // With localePrefix: 'always', all locales need prefixes
     return `/${locale}${path}`;
   };
-  
+
   // Scroll to about section
   const scrollToAbout = () => {
     const aboutSection = document.getElementById('about-section');
@@ -31,11 +31,11 @@ const HeroSection: React.FC = () => {
       aboutSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
-  
+
   return (
-    <section 
+    <section
       className="relative w-full flex items-center justify-center text-white overflow-hidden min-h-screen"
-      style={{ 
+      style={{
         height: fixedHeight ? `${fixedHeight}px` : '100vh',
         marginTop: '-80px', // Offset header height
         paddingTop: '80px'   // Add padding to maintain content position
@@ -60,12 +60,14 @@ const HeroSection: React.FC = () => {
           {t('subtitle')}
         </p>
         <Link
-          href={getLocalizedPath('/booking')}
+          href="https://scheduler.zoom.us/alla-sidor"
+          target="_blank"
+          rel="noopener noreferrer"
           className="bg-white text-black font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300 text-lg transform hover:scale-105"
         >
           {t('cta')}
         </Link>
-        
+
         {/* Animated down arrow */}
         <button
           onClick={scrollToAbout}
