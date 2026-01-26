@@ -20,14 +20,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Alla Relive Therapist",
-  description: "Alla Relive Therapist",
+  title: "Alla Psy coach",
+  description: "Alla Psy coach",
   keywords: "relive, therapy, psychotherapist, mental health, counseling",
   authors: [{ name: "Alla Sidor" }],
   robots: "index, follow",
   openGraph: {
-    title: "Alla Relive Therapist",
-    description: "Alla Relive Therapist",
+    title: "Alla Psy coach",
+    description: "Alla Psy coach",
     type: "website",
   },
 };
