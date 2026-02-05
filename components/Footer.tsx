@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Instagram, Phone, Send } from 'lucide-react';
+import { Instagram, Send } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
@@ -93,11 +93,12 @@ export default function Footer() {
             <ul className="space-y-4">
 
               <li className="flex items-center">
-                <Phone size={18} className="mr-2 text-white/80" />
-                <a href="tel:+14078680405" className="text-white/70 hover:text-white transition-colors duration-200">
-                  +1 407 868 0405
+                <Send size={18} className="mr-2 text-white/80" />
+                <a href="https://t.me/alla_psy_coach" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors duration-200">
+                  Text me on Telegram
                 </a>
               </li>
+
               <li>
                 <h5 className="text-sm uppercase tracking-wider text-white/60 mb-2">
                   {t('socialMedia')}
