@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Instagram, Mail, Phone, Send } from 'lucide-react';
+import { Instagram, Phone, Send } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
@@ -91,12 +91,7 @@ export default function Footer() {
               {t('contactInfo')}
             </h4>
             <ul className="space-y-4">
-              <li className="flex items-center">
-                <Mail size={18} className="mr-2 text-white/80" />
-                <a href="mailto:contact@allapsychology.com" className="text-white/70 hover:text-white transition-colors duration-200">
-                  contact@allapsychology.com
-                </a>
-              </li>
+
               <li className="flex items-center">
                 <Phone size={18} className="mr-2 text-white/80" />
                 <a href="tel:+14078680405" className="text-white/70 hover:text-white transition-colors duration-200">
